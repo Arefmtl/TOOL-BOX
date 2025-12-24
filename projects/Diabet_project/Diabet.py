@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
 # Load the data
-file_path = r"C:\Users\ASUS\Desktop\code\karlancer\DATASETS\diabetes.csv"
+file_path = r""
 
 # Read the data from either CSV or Excel file
 if file_path.endswith('.csv'):

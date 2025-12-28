@@ -32,12 +32,14 @@ A comprehensive collection of machine learning and data science tools for Python
 - K-Nearest Neighbors (KNN)
 - Naive Bayes
 - Decision Tree Classifier
+- **XGBoost Classifier** (NEW)
 
 **Functions**:
 - Individual training methods for each algorithm
-- `train_multiple_models()`: Train multiple models at once
+- `train_multiple_models()`: Train multiple models at once (includes XGBoost)
 - `predict_single_model()`: Make predictions with trained models
 - `predict_proba_single_model()`: Get probability predictions
+- `train_xgboost_classifier()`: Train XGBoost with advanced parameters
 
 ### 3. Regression Tool (`regression_tool.py`)
 **Purpose**: Multiple regression algorithms for machine learning
@@ -51,11 +53,13 @@ A comprehensive collection of machine learning and data science tools for Python
 - Gradient Boosting Regressor
 - K-Nearest Neighbors Regressor
 - Decision Tree Regressor
+- **XGBoost Regressor** (NEW)
 
 **Functions**:
 - Individual training methods for each algorithm
-- `train_multiple_models()`: Train multiple models at once
+- `train_multiple_models()`: Train multiple models at once (includes XGBoost)
 - `predict_single_model()`: Make predictions with trained models
+- `train_xgboost_regressor()`: Train XGBoost with advanced parameters
 
 ### 4. Model Evaluation Tool (`model_evaluation_tool.py`)
 **Purpose**: Comprehensive model evaluation and comparison utilities
@@ -164,7 +168,7 @@ tuner = HyperparameterTuningTool()
 # Split your processed data
 X_train, X_test, y_train, y_test = train_test_split(processed_data['X'], processed_data['y'])
 
-# Train models
+# Train models (now includes XGBoost!)
 models = classifier.train_multiple_models(X_train, y_train)
 
 # Evaluate models
@@ -172,10 +176,71 @@ results = evaluator.evaluate_classification_models(models, X_test, y_test)
 evaluator.plot_model_comparison(results)
 
 # Cross-validate best model
-cv_results = cv_tool.k_fold_cross_validation(models['random_forest'], processed_data['X'], processed_data['y'])
+cv_results = cv_tool.k_fold_cross_validation(models['xgboost'], processed_data['X'], processed_data['y'])
 
-# Hyperparameter tuning
-tuned_model = tuner.tune_classification_model('random_forest', X_train, y_train)
+# Hyperparameter tuning (now supports XGBoost!)
+tuned_model = tuner.tune_classification_model('xgboost', X_train, y_train)
+```
+
+### XGBoost-Specific Examples
+
+#### Train XGBoost Classifier
+```python
+from Tool_box import ClassificationTool
+
+classifier = ClassificationTool()
+
+# Train XGBoost with default parameters
+xgb_model = classifier.train_xgboost_classifier(X_train, y_train)
+
+# Train XGBoost with custom parameters
+xgb_model = classifier.train_xgboost_classifier(
+    X_train, y_train,
+    n_estimators=200,
+    max_depth=6,
+    learning_rate=0.1,
+    subsample=0.9,
+    colsample_bytree=0.8
+)
+
+# Train with early stopping
+eval_set = [(X_val, y_val)]
+xgb_model = classifier.train_xgboost_classifier(
+    X_train, y_train,
+    eval_set=eval_set,
+    early_stopping_rounds=10
+)
+```
+
+#### Train XGBoost Regressor
+```python
+from Tool_box import RegressionTool
+
+regressor = RegressionTool()
+
+# Train XGBoost regressor
+xgb_model = regressor.train_xgboost_regressor(X_train, y_train)
+
+# Train with custom parameters
+xgb_model = regressor.train_xgboost_regressor(
+    X_train, y_train,
+    n_estimators=300,
+    max_depth=5,
+    learning_rate=0.05
+)
+```
+
+#### XGBoost Hyperparameter Tuning
+```python
+from Tool_box import HyperparameterTuningTool
+
+tuner = HyperparameterTuningTool()
+
+# Grid search for XGBoost
+xgb_results = tuner.tune_classification_model('xgboost', X_train, y_train, method='grid')
+
+# Random search for XGBoost
+xgb_results = tuner.tune_classification_model('xgboost', X_train, y_train, method='random')
 ```
 
 ## Installation

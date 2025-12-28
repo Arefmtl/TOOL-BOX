@@ -10,6 +10,14 @@ from typing import Dict, List, Optional, Union, Any
 import warnings
 warnings.filterwarnings('ignore')
 
+# Try to import XGBoost with fallback
+try:
+    import xgboost as xgb
+    XGBOOST_AVAILABLE = True
+except ImportError:
+    XGBOOST_AVAILABLE = False
+    print("Warning: XGBoost not available. Install with: pip install xgboost")
+
 class HyperparameterTuningTool:
     """A comprehensive tool for hyperparameter tuning and optimization."""
 
@@ -169,6 +177,15 @@ class HyperparameterTuningTool:
                 'C': [0.1, 1, 10, 100],
                 'kernel': ['linear', 'rbf', 'poly'],
                 'gamma': ['scale', 'auto', 0.001, 0.01, 0.1]
+            },
+            'xgboost': {
+                'n_estimators': [100, 200, 500],
+                'max_depth': [3, 5, 7, 9],
+                'learning_rate': [0.01, 0.1, 0.2],
+                'subsample': [0.8, 0.9, 1.0],
+                'colsample_bytree': [0.8, 0.9, 1.0],
+                'reg_alpha': [0, 0.1, 1],
+                'reg_lambda': [0, 0.1, 1]
             }
         }
 

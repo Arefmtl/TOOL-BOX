@@ -8,9 +8,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.cluster import (
     KMeans, DBSCAN, AgglomerativeClustering, SpectralClustering,
-    Birch, MiniBatchKMeans, OPTICS, MeanShift, AffinityPropagation,
-    GaussianMixture
+    Birch, MiniBatchKMeans, OPTICS, MeanShift, AffinityPropagation
 )
+try:
+    from sklearn.mixture import GaussianMixture
+except ImportError:
+    # For older sklearn versions, GaussianMixture might not be available
+    GaussianMixture = None
 from sklearn.metrics import silhouette_score, calinski_harabasz_score, davies_bouldin_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA

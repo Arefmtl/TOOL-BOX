@@ -15,6 +15,14 @@ from typing import Dict, List, Optional, Union
 import warnings
 warnings.filterwarnings('ignore')
 
+# Try to import XGBoost with fallback
+try:
+    import xgboost as xgb
+    XGBOOST_AVAILABLE = True
+except ImportError:
+    XGBOOST_AVAILABLE = False
+    print("Warning: XGBoost not available. Install with: pip install xgboost")
+
 class ClassificationTool:
     """A comprehensive tool for training multiple classification algorithms."""
 
@@ -184,6 +192,62 @@ class ClassificationTool:
         self.trained_models['decision_tree'] = model
         return model
 
+    def train_xgboost_classifier(self, X_train: pd.DataFrame, y_train: pd.Series,
+                               n_estimators: int = 100, max_depth: int = 6,
+                               learning_rate: float = 0.1, subsample: float = 1.0,
+                               colsample_bytree: float = 1.0, reg_alpha: float = 0,
+                               reg_lambda: float = 1, early_stopping_rounds: Optional[int] = None,
+                               eval_set: Optional[List[tuple]] = None, **kwargs) -> Any:
+        """
+        Train XGBoost Classifier.
+
+        Args:
+            X_train: Training features
+            y_train: Training target
+            n_estimators: Number of boosting rounds
+            max_depth: Maximum depth of trees
+            learning_rate: Learning rate
+            subsample: Subsample ratio of training instances
+            colsample_bytree: Subsample ratio of columns when constructing each tree
+            reg_alpha: L1 regularization term
+            reg_lambda: L2 regularization term
+            early_stopping_rounds: Number of rounds for early stopping
+            eval_set: Evaluation set for early stopping
+            **kwargs: Additional XGBoost parameters
+
+        Returns:
+            Trained XGBoost classifier
+        """
+        if not XGBOOST_AVAILABLE:
+            raise ImportError("XGBoost is not available. Install with: pip install xgboost")
+
+        try:
+            model = xgb.XGBClassifier(
+                n_estimators=n_estimators,
+                max_depth=max_depth,
+                learning_rate=learning_rate,
+                subsample=subsample,
+                colsample_bytree=colsample_bytree,
+                reg_alpha=reg_alpha,
+                reg_lambda=reg_lambda,
+                random_state=self.random_state,
+                **kwargs
+            )
+
+            # Handle early stopping if eval_set is provided
+            if early_stopping_rounds and eval_set:
+                model.fit(X_train, y_train, eval_set=eval_set, 
+                         early_stopping_rounds=early_stopping_rounds, verbose=False)
+            else:
+                model.fit(X_train, y_train)
+
+            self.trained_models['xgboost'] = model
+            return model
+
+        except Exception as e:
+            print(f"Error training XGBoost: {str(e)}")
+            return None
+
     def train_multiple_models(self, X_train: pd.DataFrame, y_train: pd.Series,
                             model_list: Optional[List[str]] = None) -> Dict:
         """
@@ -199,7 +263,7 @@ class ClassificationTool:
         """
         if model_list is None:
             model_list = ['logistic', 'random_forest', 'svm', 'gradient_boosting',
-                         'knn', 'naive_bayes', 'decision_tree']
+                         'knn', 'naive_bayes', 'decision_tree', 'xgboost']
 
         models = {}
 
@@ -219,6 +283,8 @@ class ClassificationTool:
                     models[model_name] = self.train_naive_bayes(X_train, y_train)
                 elif model_name == 'decision_tree':
                     models[model_name] = self.train_decision_tree(X_train, y_train)
+                elif model_name == 'xgboost':
+                    models[model_name] = self.train_xgboost_classifier(X_train, y_train)
             except Exception as e:
                 print(f"Error training {model_name}: {str(e)}")
                 models[model_name] = None

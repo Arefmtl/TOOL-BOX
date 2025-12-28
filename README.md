@@ -6,19 +6,19 @@ A comprehensive machine learning and data science toolbox with **8 specialized m
 
 ```
 TOOL-BOX/
-├── Tool_box/                    # 📦 Modular ML tools package
-│   ├── __init__.py             # 🏗️ Package initialization
-│   ├── README.md               # 📚 Tool documentation
-│   ├── data_processing_tool.py # 🧹 Data cleaning & preprocessing
-│   ├── classification_tool.py  # 🧠 7 classification algorithms
-│   ├── regression_tool.py      # 📈 8 regression algorithms
-│   ├── model_evaluation_tool.py # 📊 Model evaluation & comparison
-│   ├── cross_validation_tool.py # 🔄 6 cross-validation techniques
-│   ├── hyperparameter_tuning_tool.py # ⚙️ Grid & random search tuning
-│   ├── feature_importance_tool.py   # 🎯 Multi-method importance analysis
-│   └── clustering_tool.py      # 🎨 9 clustering algorithms
-├── projects/                    # 🚀 Example projects
-│   ├── README.md               # 📖 Projects documentation
+├── Tool_box/                         # Modular ML tools package
+│   ├── __init__.py                   # Package initialization
+│   ├── README.md                     # Tool documentation
+│   ├── data_processing_tool.py       #  Data cleaning & preprocessing
+│   ├── classification_tool.py        #  7 classification algorithms
+│   ├── regression_tool.py            #  8 regression algorithms
+│   ├── model_evaluation_tool.py      #  Model evaluation & comparison
+│   ├── cross_validation_tool.py      #  6 cross-validation techniques
+│   ├── hyperparameter_tuning_tool.py #  Grid & random search tuning
+│   ├── feature_importance_tool.py    #  Multi-method importance analysis
+│   └── clustering_tool.py            #  9 clustering algorithms
+├── projects/                   #  Example projects
+│   ├── README.md               #  Projects documentation
 │   ├── Diabet_project/         # 🩺 Diabetes prediction
 │   ├── Heartrate_project/      # ❤️ Heart rate prediction
 │   └── Housing_project/        # 🏠 Housing price prediction
@@ -123,26 +123,26 @@ This toolbox is provided as-is for educational and research purposes.
 
 ## فارسی (Persian)
 
-# مخزن TOOL-BOX
+#ریپازتوری TOOL-BOX
 
-یک جعبه ابزار جامع یادگیری ماشین و علوم داده با **8 ابزار تخصصی مدولار** و پروژه های نمونه.
+یک جعبه ابزار جامع یادگیری ماشین و علوم داده با **8 ابزار تخصصی ماژولار** و پروژه های نمونه.
 
-## 📁 ساختار مخزن
+## 📁 ساختار ریپازتوری
 
 ```
 TOOL-BOX/
-├── Tool_box/                    # 📦 بسته ابزارهای مدولار ML
-│   ├── __init__.py             # 🏗️ مقداردهی اولیه بسته
-│   ├── README.md               # 📚 مستندات ابزارها
-│   ├── data_processing_tool.py # 🧹 پاکسازی و پیش‌پردازش داده
-│   ├── classification_tool.py  # 🧠 7 الگوریتم دسته‌بندی
-│   ├── regression_tool.py      # 📈 8 الگوریتم رگرسیون
-│   ├── model_evaluation_tool.py # 📊 ارزیابی و مقایسه مدل‌ها
-│   ├── cross_validation_tool.py # 🔄 6 تکنیک اعتبارسنجی متقابل
-│   ├── hyperparameter_tuning_tool.py # ⚙️ تنظیم پارامترها
-│   ├── feature_importance_tool.py   # 🎯 تحلیل اهمیت ویژگی‌ها
-│   └── clustering_tool.py      # 🎨 9 الگوریتم خوشه‌بندی
-├── projects/                    # 🚀 پروژه های نمونه
+├── Tool_box/                         # بسته ابزارهای ماژولار ML
+│   ├── __init__.py                   # مقداردهی اولیه بسته
+│   ├── README.md                     # مستندات ابزارها
+│   ├── data_processing_tool.py       # پاکسازی و پیش‌پردازش داده
+│   ├── classification_tool.py        # 7 الگوریتم دسته‌بندی
+│   ├── regression_tool.py            # 8 الگوریتم رگرسیون
+│   ├── model_evaluation_tool.py      # ارزیابی و مقایسه مدل‌ها
+│   ├── cross_validation_tool.py      # 6 تکنیک اعتبارسنجی متقابل
+│   ├── hyperparameter_tuning_tool.py # تنظیم پارامترها
+│   ├── feature_importance_tool.py    # تحلیل اهمیت ویژگی‌ها
+│   └── clustering_tool.py            # 9 الگوریتم خوشه‌بندی
+├── projects/                   #  پروژه های نمونه
 │   ├── README.md               # 📖 مستندات پروژه ها
 │   ├── Diabet_project/         # 🩺 پیش‌بینی دیابت
 │   ├── Heartrate_project/      # ❤️ پیش‌بینی ضربان قلب
@@ -240,18 +240,18 @@ Eine umfassende Toolbox für maschinelles Lernen und Datenwissenschaft mit **8 s
 
 ```
 TOOL-BOX/
-├── Tool_box/                    # 📦 Modulares ML-Tools-Paket
-│   ├── __init__.py             # 🏗️ Paket-Initialisierung
-│   ├── README.md               # 📚 Tool-Dokumentation
-│   ├── data_processing_tool.py # 🧹 Datenbereinigung & -vorverarbeitung
-│   ├── classification_tool.py  # 🧠 7 Klassifikationsalgorithmen
-│   ├── regression_tool.py      # 📈 8 Regressionsalgorithmen
-│   ├── model_evaluation_tool.py # 📊 Modellbewertung & -vergleich
-│   ├── cross_validation_tool.py # 🔄 6 Kreuzvalidierungstechniken
-│   ├── hyperparameter_tuning_tool.py # ⚙️ Grid- & Random-Search-Tuning
-│   ├── feature_importance_tool.py   # 🎯 Mehrfachmethoden-Importance-Analyse
-│   └── clustering_tool.py      # 🎨 9 Clustering-Algorithmen
-├── projects/                    # 🚀 Beispielprojekte
+├── Tool_box/                         # Modulares ML-Tools-Paket
+│   ├── __init__.py                   # Paket-Initialisierung
+│   ├── README.md                     # Tool-Dokumentation
+│   ├── data_processing_tool.py       # Datenbereinigung & -vorverarbeitung
+│   ├── classification_tool.py        # 7 Klassifikationsalgorithmen
+│   ├── regression_tool.py            # 8 Regressionsalgorithmen
+│   ├── model_evaluation_tool.py      # Modellbewertung & -vergleich
+│   ├── cross_validation_tool.py      # 6 Kreuzvalidierungstechniken
+│   ├── hyperparameter_tuning_tool.py # Grid- & Random-Search-Tuning
+│   ├── feature_importance_tool.py    # Mehrfachmethoden-Importance-Analyse
+│   └── clustering_tool.py            # 9 Clustering-Algorithmen
+├── projects/                   # Beispielprojekte
 │   ├── README.md               # 📖 Projektdokumentation
 │   ├── Diabet_project/         # 🩺 Diabetes-Vorhersage
 │   ├── Heartrate_project/      # ❤️ Herzfrequenz-Vorhersage

@@ -1,6 +1,6 @@
 # TOOL-BOX Repository
 
-A comprehensive machine learning and data science toolbox with **8 specialized modular tools** and example projects.
+A comprehensive machine learning and data science toolbox with **8 specialized modular tools**, API server, web interface, and example projects.
 
 ## 📁 Repository Structure
 
@@ -8,37 +8,49 @@ A comprehensive machine learning and data science toolbox with **8 specialized m
 TOOL-BOX/
 ├── Tool_box/                         # Modular ML tools package
 │   ├── __init__.py                   # Package initialization
-│   ├── README.md                     # Tool documentation
-│   ├── data_processing_tool.py       #  Data cleaning & preprocessing
-│   ├── classification_tool.py        #  7 classification algorithms
-│   ├── regression_tool.py            #  8 regression algorithms
-│   ├── model_evaluation_tool.py      #  Model evaluation & comparison
-│   ├── cross_validation_tool.py      #  6 cross-validation techniques
-│   ├── hyperparameter_tuning_tool.py #  Grid & random search tuning
-│   ├── feature_importance_tool.py    #  Multi-method importance analysis
-│   └── clustering_tool.py            #  9 clustering algorithms
-├── projects/                   #  Example projects
-│   ├── README.md               #  Projects documentation
-│   ├── Diabet_project/         # 🩺 Diabetes prediction
-│   ├── Heartrate_project/      # ❤️ Heart rate prediction
-│   └── Housing_project/        # 🏠 Housing price prediction
-├── reposetori.md               # ℹ️ Repository information
-└── README.md                   # 🌍 Main README (EN/FA/DE)
+│   ├── data_processing_tool.py       # Data cleaning & preprocessing
+│   ├── classification_tool.py        # 15 classification algorithms
+│   ├── regression_tool.py            # 16 regression algorithms
+│   ├── model_evaluation_tool.py      # Model evaluation & comparison
+│   ├── cross_validation_tool.py      # 6 cross-validation techniques
+│   ├── clustering_tool.py            # 9 clustering algorithms
+│   ├── optimizer.py                  # Hyperparameter optimization
+│   ├── feature_selector.py           # Feature selection methods
+│   ├── model_interpreter.py          # Model interpretation tools
+│   └── decorators.py                 # Utility decorators
+├── projects/                         # Example projects
+│   ├── Diabet_project/               # Diabetes prediction
+│   ├── Heartrate_project/            # Heart rate prediction
+│   └── Housing_project/              # Housing price prediction
+├── interface/                        # Web interfaces
+│   ├── html/                         # HTML frontend (7 steps)
+│   ├── html_new/                     # New HTML interface
+│   └── streamlit/                    # Streamlit app
+├── api_server.py                     # FastAPI REST server
+├── run_api_server.py                 # Server launcher
+├── run_pipeline_demo.py              # Pipeline demo script
+└── requirements.txt                  # Python dependencies
 ```
 
 ## 🛠️ Available Tools
 
 ### Core ML Tools
 - **Data Processing Tool**: Comprehensive data cleaning, preprocessing, and EDA
-- **Classification Tool**: 7 algorithms (Logistic, RF, SVM, GB, KNN, NB, Decision Tree)
-- **Regression Tool**: 8 algorithms (Linear, Ridge, Lasso, RF, SVM, GB, KNN, Decision Tree)
+- **Classification Tool**: 15 algorithms (Logistic, RF, SVM, GB, KNN, NB, Decision Tree, AdaBoost, Extra Trees, MLP, XGBoost, LightGBM, CatBoost, QDA, Ridge)
+- **Regression Tool**: 16 algorithms (Linear, Ridge, Lasso, ElasticNet, Huber, RF, SVR, GB, HistGradientBoosting, KNN, Decision Tree, Extra Trees, MLP, XGBoost, LightGBM, CatBoost)
 - **Model Evaluation Tool**: Comprehensive evaluation metrics and visualization
 
 ### Advanced ML Tools
 - **Cross Validation Tool**: 6 techniques (K-Fold, Stratified, Time Series, Repeated, Leave-One-Out, Shuffle Split)
-- **Hyperparameter Tuning Tool**: Grid search and randomized search optimization
-- **Feature Importance Tool**: Multi-method importance analysis (tree, linear, permutation, univariate)
-- **Clustering Tool**: 9 algorithms (K-Means, DBSCAN, Hierarchical, Spectral, BIRCH, OPTICS, Mean Shift, Affinity Propagation, Gaussian Mixture)
+- **Clustering Tool**: 9 algorithms (K-Means, Mini-Batch K-Means, DBSCAN, HDBSCAN, Hierarchical, Spectral, BIRCH, OPTICS, Gaussian Mixture)
+- **Optimizer**: Hyperparameter optimization with grid and random search
+- **Feature Selector**: Feature selection methods
+- **Model Interpreter**: Model interpretation and explainability
+
+### API & Interface
+- **API Server**: FastAPI REST endpoints for ML pipeline
+- **Web Interface**: HTML frontend with 7-step workflow
+- **Streamlit App**: Interactive Streamlit interface
 
 ## 📊 Example Projects
 
@@ -106,6 +118,22 @@ This repository helps you learn:
 - **Feature engineering** and importance analysis
 - **Clustering algorithms** and validation
 - **Best practices** in ML project structure
+
+## 🔧 Recent Bug Fixes (v3.0)
+
+### Critical Fixes
+- **Data leakage prevented**: `prepare_data_for_ml` now splits data before scaling
+- **Consistent scaling**: `api_server.py` fits scaler on train data only
+- **Stale models fixed**: `train_multiple_models` returns only newly trained models
+
+### Security Fixes
+- **SSRF protection**: `/load-from-url` blocks private/loopback IPs
+- **CORS restricted**: Default to localhost, configurable via `CORS_ORIGINS` env var
+- **Deserialization warning**: `joblib.load` warns about untrusted files
+
+### Other Fixes
+- **Clustering compare**: Tests all `n_clusters` values, reports best silhouette score
+- **Scaler consistency**: All scaling methods store scaler in `self.scaler`
 
 ## 🤝 Contributing
 

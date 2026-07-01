@@ -408,44 +408,58 @@ class ClusteringTool:
         Args:
             X: Feature matrix
             algorithms: List of algorithms to compare (None = all available)
-            n_clusters_range: Range of cluster numbers to try (for algo that need it)
+            n_clusters_range: Cluster numbers to try (for algorithms that need it)
 
         Returns:
-            Dictionary of comparison results
+            Dictionary of comparison results with best n_clusters per algorithm
         """
         if algorithms is None:
             algorithms = ['kmeans', 'mini_batch_kmeans', 'hierarchical', 'birch', 'gmm']
 
-        n_clusters = n_clusters_range[0] if n_clusters_range else 3
         results = {}
+        needs_n_clusters = {'kmeans', 'mini_batch_kmeans', 'hierarchical', 'spectral', 'birch', 'gmm'}
 
         for algo in algorithms:
             try:
-                if algo == 'kmeans':
-                    res = self.kmeans_clustering(X, n_clusters=n_clusters, **kwargs)
-                elif algo == 'mini_batch_kmeans':
-                    res = self.mini_batch_kmeans(X, n_clusters=n_clusters, **kwargs)
-                elif algo == 'dbscan':
-                    res = self.dbscan_clustering(X, **kwargs)
-                elif algo == 'hdbscan':
-                    res = self.hdbscan_clustering(X, **kwargs)
-                elif algo == 'hierarchical':
-                    res = self.hierarchical_clustering(X, n_clusters=n_clusters, **kwargs)
-                elif algo == 'spectral':
-                    res = self.spectral_clustering(X, n_clusters=n_clusters, **kwargs)
-                elif algo == 'birch':
-                    res = self.birch_clustering(X, n_clusters=n_clusters, **kwargs)
-                elif algo == 'gmm':
-                    res = self.gmm_clustering(X, n_clusters=n_clusters, **kwargs)
-                else:
+                if algo not in needs_n_clusters:
+                    if algo == 'dbscan':
+                        res = self.dbscan_clustering(X, **kwargs)
+                    elif algo == 'hdbscan':
+                        res = self.hdbscan_clustering(X, **kwargs)
+                    else:
+                        continue
+                    if 'error' not in res:
+                        metrics = self.evaluate_clustering(res['labels'], X)
+                        results[algo] = {'metrics': metrics}
                     continue
 
-                if 'error' not in res:
-                    metrics = self.evaluate_clustering(res['labels'], X)
-                    results[algo] = {
-                        'n_clusters': res.get('n_clusters', n_clusters),
-                        'metrics': metrics
-                    }
+                best_result = None
+                best_score = -1
+                for n_clusters in n_clusters_range:
+                    if algo == 'kmeans':
+                        res = self.kmeans_clustering(X, n_clusters=n_clusters, **kwargs)
+                    elif algo == 'mini_batch_kmeans':
+                        res = self.mini_batch_kmeans(X, n_clusters=n_clusters, **kwargs)
+                    elif algo == 'hierarchical':
+                        res = self.hierarchical_clustering(X, n_clusters=n_clusters, **kwargs)
+                    elif algo == 'spectral':
+                        res = self.spectral_clustering(X, n_clusters=n_clusters, **kwargs)
+                    elif algo == 'birch':
+                        res = self.birch_clustering(X, n_clusters=n_clusters, **kwargs)
+                    elif algo == 'gmm':
+                        res = self.gmm_clustering(X, n_clusters=n_clusters, **kwargs)
+                    else:
+                        continue
+
+                    if 'error' not in res:
+                        metrics = self.evaluate_clustering(res['labels'], X)
+                        silhouette = metrics.get('silhouette', -1)
+                        if silhouette > best_score:
+                            best_score = silhouette
+                            best_result = {'n_clusters': n_clusters, 'metrics': metrics}
+
+                if best_result:
+                    results[algo] = best_result
             except Exception as e:
                 results[algo] = {'error': str(e)}
 

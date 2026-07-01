@@ -191,12 +191,24 @@ async def upload_data(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing file: {str(e)}")
 
+def _is_private_ip(hostname: str) -> bool:
+    import ipaddress, socket
+    try:
+        ip = ipaddress.ip_address(socket.gethostbyname(hostname))
+        return ip.is_private or ip.is_loopback or ip.is_reserved or ip.is_link_local
+    except (ValueError, socket.gaierror):
+        return False
+
 @app.post("/load-from-url", response_model=DataUploadResponse)
 async def load_from_url(request: LoadFromUrlRequest):
     try:
+        from urllib.parse import urlparse
         url = request.url.strip()
         if not url.startswith(('http://', 'https://')):
             raise HTTPException(status_code=400, detail="Invalid URL. Must start with http:// or https://")
+        hostname = urlparse(url).hostname
+        if not hostname or _is_private_ip(hostname):
+            raise HTTPException(status_code=400, detail="URL must point to a public host")
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=60) as resp:
             content = resp.read()

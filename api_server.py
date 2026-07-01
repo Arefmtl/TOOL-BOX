@@ -255,8 +255,14 @@ async def process_data(request: ProcessDataRequest):
                 X_train, _ = data_processor.encode_categorical(X_train)
                 X_test, _ = data_processor.encode_categorical(X_test)
             if 'scale' in steps:
-                X_train = data_processor.scale_features(X_train)
-                X_test = data_processor.scale_features(X_test)
+                numeric_cols = X_train.select_dtypes(include=[np.number]).columns
+                if len(numeric_cols) > 0:
+                    from sklearn.preprocessing import StandardScaler
+                    scaler = StandardScaler()
+                    X_train = X_train.copy()
+                    X_test = X_test.copy()
+                    X_train[numeric_cols] = scaler.fit_transform(X_train[numeric_cols])
+                    X_test[numeric_cols] = scaler.transform(X_test[numeric_cols])
 
             # Ensure columns match (reindex X_test to X_train columns)
             X_test = X_test.reindex(columns=X_train.columns, fill_value=0)

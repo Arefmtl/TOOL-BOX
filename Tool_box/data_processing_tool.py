@@ -287,19 +287,16 @@ class DataProcessingTool:
             return scaled_data
 
         if method == 'standard':
-            scaled_features = self.scaler.fit_transform(scaled_data[numeric_cols])
-            scaled_data[numeric_cols] = scaled_features
+            from sklearn.preprocessing import StandardScaler
+            self.scaler = StandardScaler()
         elif method == 'minmax':
             from sklearn.preprocessing import MinMaxScaler
-            mm_scaler = MinMaxScaler()
-            scaled_features = mm_scaler.fit_transform(scaled_data[numeric_cols])
-            scaled_data[numeric_cols] = scaled_features
+            self.scaler = MinMaxScaler()
         elif method == 'robust':
             from sklearn.preprocessing import RobustScaler
-            r_scaler = RobustScaler()
-            scaled_features = r_scaler.fit_transform(scaled_data[numeric_cols])
-            scaled_data[numeric_cols] = scaled_features
+            self.scaler = RobustScaler()
 
+        scaled_data[numeric_cols] = self.scaler.fit_transform(scaled_data[numeric_cols])
         return scaled_data
 
     @step('Outlier Handling')

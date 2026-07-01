@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://adni.loni.usc.edu/wp-content/themes/adni_2023/images/adni-logo.png" alt="ADNI Logo" width="400">
+</p>
+
 # TOOL-BOX Repository
 
 A comprehensive machine learning and data science toolbox with **8 specialized modular tools**, API server, web interface, and example projects.

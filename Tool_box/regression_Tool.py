@@ -381,9 +381,9 @@ class RegressionTool:
             delayed(_train_single)(name) for name in to_train
         )
 
-        trained = dict(results)
-        self.trained_models.update({k: v for k, v in trained.items() if v is not None})
-        return self.trained_models
+        trained = {k: v for k, v in dict(results).items() if v is not None}
+        self.trained_models.update(trained)
+        return trained
 
     @step('Train All Regressors')
     def train_all_regressors(self, X_train: pd.DataFrame, y_train: pd.Series,
@@ -437,6 +437,12 @@ class RegressionTool:
     @step('Load Model')
     def load_model(self, path: str, model_name: Optional[str] = None) -> Any:
         """Load a trained model from disk."""
+        import warnings
+        warnings.warn(
+            f"Loading model from '{path}'. Only load models from trusted sources — "
+            "joblib deserialization can execute arbitrary code.",
+            UserWarning, stacklevel=2
+        )
         model = joblib.load(path)
         if model_name:
             self.trained_models[model_name] = model

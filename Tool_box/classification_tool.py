@@ -495,6 +495,12 @@ class ClassificationTool:
         Returns:
             Loaded model
         """
+        import warnings
+        warnings.warn(
+            f"Loading model from '{path}'. Only load models from trusted sources — "
+            "joblib deserialization can execute arbitrary code.",
+            UserWarning, stacklevel=2
+        )
         model = joblib.load(path)
         if model_name:
             self.trained_models[model_name] = model

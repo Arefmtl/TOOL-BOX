@@ -672,14 +672,20 @@ class DataProcessingTool:
         if 'encode' in preprocessing_steps or 'all' in preprocessing_steps:
             processed_data, _ = self.encode_categorical(processed_data)
 
-        if 'scale' in preprocessing_steps or 'all' in preprocessing_steps:
-            processed_data = self.scale_features(processed_data)
-
         if target_column and target_column in processed_data.columns:
             X = processed_data.drop(target_column, axis=1)
             y = processed_data[target_column]
             X_train, X_test, y_train, y_test = train_test_split(
                 X, y, test_size=test_size, random_state=self.random_state)
+
+            if 'scale' in preprocessing_steps or 'all' in preprocessing_steps:
+                numeric_cols = X_train.select_dtypes(include=[np.number]).columns
+                if len(numeric_cols) > 0:
+                    self.scaler.fit(X_train[numeric_cols])
+                    X_train = X_train.copy()
+                    X_test = X_test.copy()
+                    X_train[numeric_cols] = self.scaler.transform(X_train[numeric_cols])
+                    X_test[numeric_cols] = self.scaler.transform(X_test[numeric_cols])
 
             return {
                 'X_train': X_train,
@@ -689,6 +695,8 @@ class DataProcessingTool:
                 'full_processed': processed_data
             }
         else:
+            if 'scale' in preprocessing_steps or 'all' in preprocessing_steps:
+                processed_data = self.scale_features(processed_data)
             return {'processed_data': processed_data}
 
     # ─── Plotting helpers ─────────────────────────────────────────────

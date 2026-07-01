@@ -151,9 +151,9 @@ This toolbox is provided as-is for educational and research purposes.
 
 ## فارسی (Persian)
 
-#ریپازتوری TOOL-BOX
+# ریپازتوری TOOL-BOX
 
-یک جعبه ابزار جامع یادگیری ماشین و علوم داده با **8 ابزار تخصصی ماژولار** و پروژه های نمونه.
+یک جعبه ابزار جامع یادگیری ماشین و علوم داده با **8 ابزار تخصصی ماژولار**، سرور API، رابط کاربری وب و پروژه‌های نمونه.
 
 ## 📁 ساختار ریپازتوری
 
@@ -161,61 +161,85 @@ This toolbox is provided as-is for educational and research purposes.
 TOOL-BOX/
 ├── Tool_box/                         # بسته ابزارهای ماژولار ML
 │   ├── __init__.py                   # مقداردهی اولیه بسته
-│   ├── README.md                     # مستندات ابزارها
 │   ├── data_processing_tool.py       # پاکسازی و پیش‌پردازش داده
-│   ├── classification_tool.py        # 7 الگوریتم دسته‌بندی
-│   ├── regression_tool.py            # 8 الگوریتم رگرسیون
+│   ├── classification_tool.py        # 15 الگوریتم دسته‌بندی
+│   ├── regression_tool.py            # 16 الگوریتم رگرسیون
 │   ├── model_evaluation_tool.py      # ارزیابی و مقایسه مدل‌ها
 │   ├── cross_validation_tool.py      # 6 تکنیک اعتبارسنجی متقابل
-│   ├── hyperparameter_tuning_tool.py # تنظیم پارامترها
-│   ├── feature_importance_tool.py    # تحلیل اهمیت ویژگی‌ها
-│   └── clustering_tool.py            # 9 الگوریتم خوشه‌بندی
-├── projects/                   #  پروژه های نمونه
-│   ├── README.md               # 📖 مستندات پروژه ها
-│   ├── Diabet_project/         # 🩺 پیش‌بینی دیابت
-│   ├── Heartrate_project/      # ❤️ پیش‌بینی ضربان قلب
-│   └── Housing_project/        # 🏠 پیش‌بینی قیمت مسکن
-├── reposetori.md               # ℹ️ اطلاعات مخزن
-└── README.md                   # 🌍 README اصلی (EN/FA/DE)
+│   ├── clustering_tool.py            # 9 الگوریتم خوشه‌بندی
+│   ├── optimizer.py                  # بهینه‌سازی ابرپارامترها
+│   ├── feature_selector.py           # روش‌های انتخاب ویژگی
+│   ├── model_interpreter.py          # ابزارهای تفسیر مدل
+│   └── decorators.py                 # دکوراتورهای کمکی
+├── projects/                         # پروژه‌های نمونه
+│   ├── Diabet_project/               # پیش‌بینی دیابت
+│   ├── Heartrate_project/            # پیش‌بینی ضربان قلب
+│   └── Housing_project/              # پیش‌بینی قیمت مسکن
+├── interface/                        # رابط‌های کاربری وب
+│   ├── html/                         # رابط HTML (7 مرحله)
+│   ├── html_new/                     # رابط HTML جدید
+│   └── streamlit/                    # اپلیکیشن Streamlit
+├── api_server.py                     # سرور REST با FastAPI
+├── run_api_server.py                 # اجرای سرور
+├── run_pipeline_demo.py              # دموی پایپلاین
+└── requirements.txt                  # وابستگی‌های پایتون
 ```
 
 ## 🛠️ ابزارهای موجود
 
 ### ابزارهای اصلی ML
 - **ابزار پردازش داده**: پاکسازی جامع، پیش‌پردازش و تحلیل اکتشافی داده
-- **ابزار دسته‌بندی**: 7 الگوریتم (لجستیک، RF، SVM، GB، KNN، NB، درخت تصمیم)
-- **ابزار رگرسیون**: 8 الگوریتم (خطی، Ridge، Lasso، RF، SVM، GB، KNN، درخت تصمیم)
+- **ابزار دسته‌بندی**: 15 الگوریتم (لجستیک، RF، SVM، GB، KNN، NB، درخت تصمیم، AdaBoost، Extra Trees، MLP، XGBoost، LightGBM، CatBoost، QDA، Ridge)
+- **ابزار رگرسیون**: 16 الگوریتم (خطی، Ridge، Lasso، ElasticNet، Huber، RF، SVR، GB، HistGradientBoosting، KNN، درخت تصمیم، Extra Trees، MLP، XGBoost، LightGBM، CatBoost)
 - **ابزار ارزیابی مدل**: معیارهای جامع ارزیابی و نمایش گرافیکی
 
 ### ابزارهای پیشرفته ML
 - **ابزار اعتبارسنجی متقابل**: 6 تکنیک (K-Fold، Stratified، Time Series، Repeated، Leave-One-Out، Shuffle Split)
-- **ابزار تنظیم پارامترها**: جستجوی شبکه و تصادفی برای بهینه‌سازی
-- **ابزار اهمیت ویژگی**: تحلیل چند روشه اهمیت (درخت، خطی، پرموتاسیون، تک متغیره)
-- **ابزار خوشه‌بندی**: 9 الگوریتم (K-Means، DBSCAN، Hierarchical، Spectral، BIRCH، OPTICS، Mean Shift، Affinity Propagation، Gaussian Mixture)
+- **ابزار خوشه‌بندی**: 9 الگوریتم (K-Means، Mini-Batch K-Means، DBSCAN، HDBSCAN، Hierarchical، Spectral، BIRCH، OPTICS، Gaussian Mixture)
+- **اپتیمایزر**: بهینه‌سازی ابرپارامترها با Grid و Random Search
+- **انتخاب‌گر ویژگی**: روش‌های انتخاب ویژگی
+- **تفسیرگر مدل**: تفسیر و توضیح‌پذیری مدل
 
-## 📊 پروژه های نمونه
+### API و رابط کاربری
+- **سرور API**: اندپوینت‌های REST با FastAPI
+- **رابط کاربری وب**: رابط HTML با گردش کار 7 مرحله‌ای
+- **اپلیکیشن Streamlit**: رابط تعاملی Streamlit
+
+## 📊 پروژه‌های نمونه
 
 ### دسته‌بندی
-- **پیش‌بینی دیابت**: دسته‌بندی شبکه عصبی با استفاده از داده های پزشکی
+- **پیش‌بینی دیابت**: دسته‌بندی شبکه عصبی با استفاده از داده‌های پزشکی
 
 ### رگرسیون
-- **پیش‌بینی نرخ قلب**: مقایسه الگوریتم های چندگانه برای داده های فیزیولوژیکی
+- **پیش‌بینی نرخ قلب**: مقایسه الگوریتم‌های چندگانه برای داده‌های فیزیولوژیکی
 - **پیش‌بینی قیمت مسکن**: پیش‌بینی قیمت مسکن کالیفرنیا با مهندسی ویژگی
 
 ## 🚀 شروع سریع
 
-### استفاده از ابزارهای جداگانه
+### گردش کار کامل ML
 ```python
-from Tool_box import data_cleaner_tool, regression_tool
+from Tool_box import (
+    DataProcessingTool,      # آماده‌سازی داده
+    ClassificationTool,      # مدل‌های دسته‌بندی چندگانه
+    ModelEvaluationTool,     # ارزیابی و مقایسه
+    CrossValidationTool,     # اعتبارسنجی پیشرفته
+)
 
-# پاکسازی داده های شما
-cleaned_data = data_cleaner_tool.clean_data(your_dataframe)
+# پردازش داده
+processor = DataProcessingTool()
+data = processor.load_data("data.csv")
+processed_data = processor.prepare_data_for_ml(data, target_column="target")
 
-# اجرای تحلیل رگرسیون
-# (دنبال کردن پایپلاین تعاملی در regression_tool.py)
+# آموزش و ارزیابی مدل
+classifier = ClassificationTool()
+models = classifier.train_multiple_models(processed_data['X_train'], processed_data['y_train'])
+
+evaluator = ModelEvaluationTool()
+results = evaluator.evaluate_classification_models(models, processed_data['X_test'], processed_data['y_test'])
+evaluator.plot_model_comparison(results)
 ```
 
-### اجرای پروژه ها
+### اجرای پروژه‌ها
 ```bash
 cd projects/Diabet_project
 python Diabet.py
@@ -233,7 +257,7 @@ python Diabet.py
 ## 📖 مستندات
 
 - [مستندات Tool Box](./Tool_box/README.md)
-- [مستندات پروژه ها](./projects/README.md)
+- [مستندات پروژه‌ها](./projects/README.md)
 
 ## 🎯 اهداف یادگیری
 
@@ -247,9 +271,9 @@ python Diabet.py
 ## 🤝 مشارکت
 
 1. پیروی از قراردادهای نام‌گذاری Python (snake_case)
-2. اضافه کردن docstring های جامع
+2. اضافه کردن docstring‌های جامع
 3. شامل مدیریت خطا
-4. تست کامل پیاده‌سازی ها
+4. تست کامل پیاده‌سازی‌ها
 5. به‌روزرسانی مستندات
 
 ## 📄 مجوز
@@ -262,7 +286,7 @@ python Diabet.py
 
 # TOOL-BOX Repository
 
-Eine umfassende Toolbox für maschinelles Lernen und Datenwissenschaft mit **8 spezialisierten modularen Tools** und Beispielprojekten.
+Eine umfassende Toolbox für maschinelles Lernen und Datenwissenschaft mit **8 spezialisierten modularen Tools**, API-Server, Weboberfläche und Beispielprojekten.
 
 ## 📁 Repository-Struktur
 
@@ -270,37 +294,49 @@ Eine umfassende Toolbox für maschinelles Lernen und Datenwissenschaft mit **8 s
 TOOL-BOX/
 ├── Tool_box/                         # Modulares ML-Tools-Paket
 │   ├── __init__.py                   # Paket-Initialisierung
-│   ├── README.md                     # Tool-Dokumentation
 │   ├── data_processing_tool.py       # Datenbereinigung & -vorverarbeitung
-│   ├── classification_tool.py        # 7 Klassifikationsalgorithmen
-│   ├── regression_tool.py            # 8 Regressionsalgorithmen
+│   ├── classification_tool.py        # 15 Klassifikationsalgorithmen
+│   ├── regression_tool.py            # 16 Regressionsalgorithmen
 │   ├── model_evaluation_tool.py      # Modellbewertung & -vergleich
 │   ├── cross_validation_tool.py      # 6 Kreuzvalidierungstechniken
-│   ├── hyperparameter_tuning_tool.py # Grid- & Random-Search-Tuning
-│   ├── feature_importance_tool.py    # Mehrfachmethoden-Importance-Analyse
-│   └── clustering_tool.py            # 9 Clustering-Algorithmen
-├── projects/                   # Beispielprojekte
-│   ├── README.md               # 📖 Projektdokumentation
-│   ├── Diabet_project/         # 🩺 Diabetes-Vorhersage
-│   ├── Heartrate_project/      # ❤️ Herzfrequenz-Vorhersage
-│   └── Housing_project/        # 🏠 Wohnungs-Preis-Vorhersage
-├── reposetori.md               # ℹ️ Repository-Informationen
-└── README.md                   # 🌍 Haupt-README (EN/FA/DE)
+│   ├── clustering_tool.py            # 9 Clustering-Algorithmen
+│   ├── optimizer.py                  # Hyperparameter-Optimierung
+│   ├── feature_selector.py           # Feature-Auswahlmethoden
+│   ├── model_interpreter.py          # Modell-Interpretationswerkzeuge
+│   └── decorators.py                 # Hilfsdekorateure
+├── projects/                         # Beispielprojekte
+│   ├── Diabet_project/               # Diabetes-Vorhersage
+│   ├── Heartrate_project/            # Herzfrequenz-Vorhersage
+│   └── Housing_project/              # Wohnungspreis-Vorhersage
+├── interface/                        # Weboberflächen
+│   ├── html/                         # HTML-Frontend (7 Schritte)
+│   ├── html_new/                     # Neues HTML-Interface
+│   └── streamlit/                    # Streamlit-App
+├── api_server.py                     # FastAPI REST-Server
+├── run_api_server.py                 # Server-Startskript
+├── run_pipeline_demo.py              # Pipeline-Demo
+└── requirements.txt                  # Python-Abhängigkeiten
 ```
 
 ## 🛠️ Verfügbare Tools
 
 ### Kern-ML-Tools
 - **Datenverarbeitungs-Tool**: Umfassende Datenbereinigung, -vorverarbeitung und EDA
-- **Klassifikations-Tool**: 7 Algorithmen (Logistic, RF, SVM, GB, KNN, NB, Decision Tree)
-- **Regressions-Tool**: 8 Algorithmen (Linear, Ridge, Lasso, RF, SVM, GB, KNN, Decision Tree)
+- **Klassifikations-Tool**: 15 Algorithmen (Logistic, RF, SVM, GB, KNN, NB, Decision Tree, AdaBoost, Extra Trees, MLP, XGBoost, LightGBM, CatBoost, QDA, Ridge)
+- **Regressions-Tool**: 16 Algorithmen (Linear, Ridge, Lasso, ElasticNet, Huber, RF, SVR, GB, HistGradientBoosting, KNN, Decision Tree, Extra Trees, MLP, XGBoost, LightGBM, CatBoost)
 - **Modellbewertungs-Tool**: Umfassende Bewertungsmetriken und Visualisierung
 
 ### Erweiterte ML-Tools
 - **Kreuzvalidierungs-Tool**: 6 Techniken (K-Fold, Stratified, Time Series, Repeated, Leave-One-Out, Shuffle Split)
-- **Hyperparameter-Tuning-Tool**: Grid-Search und Randomized-Search-Optimierung
-- **Feature-Importance-Tool**: Mehrfachmethoden-Importance-Analyse (Baum, linear, Permutation, univariat)
-- **Clustering-Tool**: 9 Algorithmen (K-Means, DBSCAN, Hierarchical, Spectral, BIRCH, OPTICS, Mean Shift, Affinity Propagation, Gaussian Mixture)
+- **Clustering-Tool**: 9 Algorithmen (K-Means, Mini-Batch K-Means, DBSCAN, HDBSCAN, Hierarchical, Spectral, BIRCH, OPTICS, Gaussian Mixture)
+- **Optimierer**: Hyperparameter-Optimierung mit Grid- und Random Search
+- **Feature-Auswahl**: Feature-Auswahlmethoden
+- **Modell-Interpreter**: Modellinterpretation und -erklärbarkeit
+
+### API & Oberfläche
+- **API-Server**: REST-Endpunkte mit FastAPI
+- **Weboberfläche**: HTML-Frontend mit 7-Schritt-Workflow
+- **Streamlit-App**: Interaktive Streamlit-Oberfläche
 
 ## 📊 Beispielprojekte
 
@@ -313,15 +349,27 @@ TOOL-BOX/
 
 ## 🚀 Schnellstart
 
-### Einzelne Tools verwenden
+### Kompletter ML-Workflow
 ```python
-from Tool_box import data_cleaner_tool, regression_tool
+from Tool_box import (
+    DataProcessingTool,      # Datenaufbereitung
+    ClassificationTool,      # Mehrfache Klassifikationsmodelle
+    ModelEvaluationTool,     # Bewertung & Vergleich
+    CrossValidationTool,     # Erweiterte Validierung
+)
 
-# Ihre Daten bereinigen
-cleaned_data = data_cleaner_tool.clean_data(your_dataframe)
+# Datenverarbeitung
+processor = DataProcessingTool()
+data = processor.load_data("data.csv")
+processed_data = processor.prepare_data_for_ml(data, target_column="target")
 
-# Regressionsanalyse ausführen
-# (Interaktive Pipeline in regression_tool.py folgen)
+# Modelltraining & Bewertung
+classifier = ClassificationTool()
+models = classifier.train_multiple_models(processed_data['X_train'], processed_data['y_train'])
+
+evaluator = ModelEvaluationTool()
+results = evaluator.evaluate_classification_models(models, processed_data['X_test'], processed_data['y_test'])
+evaluator.plot_model_comparison(results)
 ```
 
 ### Projekte ausführen

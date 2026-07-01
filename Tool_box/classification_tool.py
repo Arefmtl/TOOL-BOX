@@ -395,9 +395,9 @@ class ClassificationTool:
             delayed(_train_single)(name) for name in to_train
         )
 
-        trained = dict(results)
-        self.trained_models.update({k: v for k, v in trained.items() if v is not None})
-        return self.trained_models
+        trained = {k: v for k, v in dict(results).items() if v is not None}
+        self.trained_models.update(trained)
+        return trained
 
     @step('Train All Classifiers')
     def train_all_classifiers(self, X_train: pd.DataFrame, y_train: pd.Series,

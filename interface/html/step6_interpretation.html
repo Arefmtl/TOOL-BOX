@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 6: Interpretation - TOOL-BOX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lava: '#F56E0F',
+                        snow: '#FBFBFB',
+                        dusty: '#878787',
+                        glyon: '#1B1B1E',
+                        void: '#151419',
+                        slate: '#262626',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        info: '#3B82F6',
+                    },
+                    fontFamily: {
+                        'mono': ['Courier New', 'Monaco', 'Menlo', 'monospace'],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(245, 110, 15, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #151419;
+            color: #FBFBFB;
+            font-family: 'Courier New', monospace;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card {
+            background: linear-gradient(135deg, #1B1B1E 0%, #151419 100%);
+            border: 1px solid #262626;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #F56E0F 0%, #E66310 100%);
+            color: #151419;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(245, 110, 15, 0.3);
+        }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .btn-secondary {
+            background: #262626;
+            color: #FBFBFB;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+            background: #3B3B3B;
+        }
+        .skeleton {
+            background: linear-gradient(90deg, rgba(245,110,15,0.04) 25%, rgba(245,110,15,0.1) 50%, rgba(245,110,15,0.04) 75%);
+            background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .rec-banner { padding: 12px 16px; border-radius: 8px; font-size: 12px; display: flex; align-items: center; gap: 10px; }
+        .rec-banner.info { background: rgba(245,110,15,0.1); border: 1px solid rgba(245,110,15,0.25); color: #F56E0F; }
+        .rec-banner.warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); color: #F59E0B; }
+        .rec-banner.success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); color: #10B981; }
+        .empty-state { padding: 32px 20px; text-align: center; color: #878787; font-size: 13px; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-void to-glyon border-b border-slate shadow-glow">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <a href="index.html" class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-lava rounded-lg flex items-center justify-center">
+                            <span class="text-void font-bold text-lg">TB</span>
+                        </div>
+                        <div class="font-bold text-xl text-snow font-mono">
+                            <span class="text-lava">TOOL</span>
+                            <span>-BOX</span>
+                        </div>
+                    </a>
+                </div>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <span class="text-lava font-mono">🔍 Step 6: Interpretation</span>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <a href="https://github.com/Arefmtl/TOOL-BOX" target="_blank"
+                       class="flex items-center space-x-2 bg-glyon hover:bg-slate border border-slate rounded-lg px-3 py-2 text-dusty hover:text-snow transition-all duration-200 font-mono text-sm">
+                        ⭐ 42 Stars
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="fixed top-20 left-0 right-0 z-40 bg-void border-b border-slate">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center space-x-2">
+                <span class="text-sm text-dusty font-mono">Progress:</span>
+                <div class="flex-1 bg-slate rounded-full h-2">
+                    <div class="bg-lava h-2 rounded-full" style="width: 75%"></div>
+                </div>
+                <span class="text-sm text-dusty font-mono">6 / 8</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="pt-32">
+        <div class="max-w-6xl mx-auto px-4">
+            <!-- Step Header -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-lava rounded-full flex items-center justify-center text-void font-bold text-2xl font-mono mx-auto mb-4 shadow-glow">
+                    06
+                </div>
+                <h1 class="text-4xl font-bold text-snow font-mono mb-2">🔍 Model Interpretation</h1>
+                <p class="text-xl text-dusty">Understand why your model makes the predictions it does</p>
+            </div>
+
+            <!-- Best Model Summary -->
+            <div class="card mb-8">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">🏆 Best Model</h3>
+                <div id="best-model-summary" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                </div>
+            </div>
+
+            <!-- Interpretation Configuration -->
+            <div class="card mb-8">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">⚙️ Interpretation Settings</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">Select Model</h4>
+                        <select id="interpret-model-select" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                            <option value="">Choose a model...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">Interpretation Method</h4>
+                        <select id="interpret-method" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow" onchange="onMethodChange()">
+                            <option value="lime">LIME — Local explanations per prediction</option>
+                            <option value="shap">SHAP — Global & local feature contributions</option>
+                            <option value="pdp">PDP — Partial dependence plots</option>
+                            <option value="feature_ranking">Feature Ranking — Global importance</option>
+                            <option value="full_report">Full Report — All of the above</option>
+                        </select>
+                        <p id="method-description" class="text-xs text-dusty mt-2">Explains individual predictions by approximating locally</p>
+                    </div>
+                </div>
+
+                <!-- Method-specific options -->
+                <div id="method-options" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div id="pdp-option" class="hidden">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-2">Feature for PDP</h4>
+                        <select id="pdp-feature" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                            <option value="">Select feature...</option>
+                        </select>
+                    </div>
+                    <div id="lime-option" class="hidden">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-2">Sample Index (for LIME)</h4>
+                        <input type="number" id="lime-sample-idx" value="0" min="0" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                    </div>
+                    <div id="n-features-option">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-2">Top Features to Show</h4>
+                        <select id="n-features" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="runInterpretation()" id="interpret-btn" class="btn-primary" disabled>
+                    🔍 Run Interpretation
+                </button>
+            </div>
+
+            <!-- Progress -->
+            <div id="interpret-progress" class="card mb-8 hidden">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">🚀 Running Interpretation</h3>
+                <div class="flex items-center space-x-4">
+                    <div class="skeleton w-full h-4"></div>
+                    <span id="interpret-status" class="text-dusty text-sm">Loading...</span>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div id="interpret-results" class="card mb-8 hidden">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">📊 Interpretation Results</h3>
+                <div id="results-content" class="space-y-6">
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center">
+                <a href="step5_evaluation.html" class="btn-secondary">← Back to Evaluation</a>
+                <div class="flex space-x-4">
+                    <a href="step6_optimization.html" id="next-btn" class="btn-primary hidden">
+                        Continue to Optimization →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-void to-glyon border-t border-slate mt-20">
+        <div class="max-w-7xl mx-auto px-4 py-8 text-center">
+            <p class="text-dusty text-sm font-mono">© 2024 TOOL-BOX. Made with ❤️ by Ali Kazemi.</p>
+        </div>
+    </footer>
+
+    <script>
+        let evaluationResults = null;
+        let currentDataset = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const evalJson = sessionStorage.getItem('toolbox_evaluation_results');
+            if (evalJson) {
+                evaluationResults = JSON.parse(evalJson);
+                initPage();
+                showNotification('Evaluation results loaded', 'success');
+            } else {
+                showNotification('No evaluation results found. Complete evaluation first.', 'error');
+                setTimeout(() => window.location.href = 'step5_evaluation.html', 3000);
+            }
+        });
+
+        function initPage() {
+            if (!evaluationResults) return;
+
+            const best = evaluationResults.best_model;
+            const metric = evaluationResults.task_type === 'classification' ? 'accuracy' : 'r2_score';
+
+            document.getElementById('best-model-summary').innerHTML = `
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-lava">${best.model.replace('_', ' ')}</div>
+                    <div class="text-sm text-dusty">Best Model</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-success">${best[metric]}</div>
+                    <div class="text-sm text-dusty">${metric.replace('_', ' ')}</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-info">${evaluationResults.task_type}</div>
+                    <div class="text-sm text-dusty">Task Type</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-warning">Ready</div>
+                    <div class="text-sm text-dusty">For Interpretation</div>
+                </div>
+            `;
+
+            // populate model select
+            const sel = document.getElementById('interpret-model-select');
+            evaluationResults.results.forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r.model;
+                opt.textContent = r.model.replace('_', ' ');
+                if (r.model === best.model) opt.selected = true;
+                sel.appendChild(opt);
+            });
+
+            // populate feature select from dataset
+            try {
+                currentDataset = JSON.parse(sessionStorage.getItem('toolbox_dataset') || 'null');
+            } catch(e) {}
+            const featureSel = document.getElementById('pdp-feature');
+            if (currentDataset && currentDataset.columns) {
+                currentDataset.columns.forEach(col => {
+                    const opt = document.createElement('option');
+                    opt.value = col;
+                    opt.textContent = col;
+                    featureSel.appendChild(opt);
+                });
+            }
+
+            onMethodChange();
+            document.getElementById('interpret-btn').disabled = false;
+        }
+
+        function onMethodChange() {
+            const method = document.getElementById('interpret-method').value;
+            document.getElementById('pdp-option').classList.toggle('hidden', method !== 'pdp');
+            document.getElementById('lime-option').classList.toggle('hidden', method !== 'lime');
+
+            const descriptions = {
+                lime: 'Explains individual predictions by approximating the model locally with a simpler model',
+                shap: 'Uses Shapley values to show how each feature contributes to predictions globally',
+                pdp: 'Shows how predictions change as a selected feature varies, marginalizing over other features',
+                feature_ranking: 'Ranks all features by their importance to the model (permutation or impurity-based)',
+                full_report: 'Generates a comprehensive report with LIME, SHAP, PDP, and feature ranking'
+            };
+            document.getElementById('method-description').textContent = descriptions[method] || '';
+        }
+
+        async function runInterpretation() {
+            const model = document.getElementById('interpret-model-select').value;
+            const method = document.getElementById('interpret-method').value;
+            const nFeatures = parseInt(document.getElementById('n-features').value);
+            const feature = document.getElementById('pdp-feature').value;
+            const sampleIdx = parseInt(document.getElementById('lime-sample-idx').value) || 0;
+
+            if (!model) { showNotification('Please select a model', 'warning'); return; }
+
+            document.getElementById('interpret-progress').classList.remove('hidden');
+            document.getElementById('interpret-results').classList.add('hidden');
+            document.getElementById('interpret-btn').disabled = true;
+
+            try {
+                const payload = {
+                    model_name: model,
+                    method: method,
+                    feature_idx: nFeatures
+                };
+                if (method === 'pdp' && feature) payload.feature = feature;
+                if (method === 'lime') payload.instance_idx = sampleIdx;
+
+                const resp = await fetch('http://localhost:8000/interpret-model', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
+
+                const data = await resp.json();
+                displayResults(data, method);
+                document.getElementById('next-btn').classList.remove('hidden');
+                showNotification('Interpretation complete!', 'success');
+
+            } catch (err) {
+                // fallback: show mock results so the UI is still useful
+                showMockResults(model, method, nFeatures, feature, sampleIdx);
+                showNotification(`API unavailable, showing demo results: ${err.message}`, 'warning');
+            }
+
+            document.getElementById('interpret-progress').classList.add('hidden');
+            document.getElementById('interpret-btn').disabled = false;
+        }
+
+        function displayResults(data, method) {
+            const container = document.getElementById('results-content');
+            let html = '';
+
+            if (method === 'feature_ranking' || method === 'full_report') {
+                const rankings = data.feature_ranking || data.feature_importances || [];
+                if (rankings.length > 0) {
+                    html += '<div class="mb-6"><h4 class="text-lg font-bold text-snow font-mono mb-4">📊 Feature Importance</h4>';
+                    html += '<table class="w-full border-collapse border border-slate text-sm"><thead><tr class="bg-slate">';
+                    html += '<th class="border border-slate px-3 py-2 text-left text-snow font-mono">#</th>';
+                    html += '<th class="border border-slate px-3 py-2 text-left text-snow font-mono">Feature</th>';
+                    html += '<th class="border border-slate px-3 py-2 text-left text-snow font-mono">Importance</th></tr></thead><tbody>';
+                    rankings.slice(0, 20).forEach((item, i) => {
+                        const name = item.feature || item.name || `Feature ${i}`;
+                        const val = typeof item === 'number' ? item : (item.importance || item.value || 0);
+                        html += `<tr><td class="border border-slate px-3 py-2 text-dusty">${i+1}</td>`;
+                        html += `<td class="border border-slate px-3 py-2 text-snow font-mono">${name}</td>`;
+                        html += `<td class="border border-slate px-3 py-2 text-lava font-bold">${typeof val === 'number' ? val.toFixed(4) : val}</td></tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                }
+            }
+
+            if ((method === 'lime' || method === 'full_report') && data.lime_explanation) {
+                html += '<div class="mb-6"><h4 class="text-lg font-bold text-snow font-mono mb-4">🔬 LIME Explanation</h4>';
+                const expl = data.lime_explanation;
+                html += `<div class="bg-void border border-slate rounded p-4 text-sm font-mono">`;
+                if (typeof expl === 'string') html += `<pre class="text-dusty whitespace-pre-wrap">${expl}</pre>`;
+                else html += `<p class="text-dusty">${JSON.stringify(expl, null, 2)}</p>`;
+                html += '</div></div>';
+            }
+
+            if ((method === 'shap' || method === 'full_report') && data.shap_summary) {
+                html += '<div class="mb-6"><h4 class="text-lg font-bold text-snow font-mono mb-4">📈 SHAP Summary</h4>';
+                const shap = data.shap_summary;
+                html += `<div class="bg-void border border-slate rounded p-4 text-sm font-mono">`;
+                if (typeof shap === 'string') html += `<pre class="text-dusty whitespace-pre-wrap">${shap}</pre>`;
+                else html += `<p class="text-dusty">${JSON.stringify(shap, null, 2)}</p>`;
+                html += '</div></div>';
+            }
+
+            if ((method === 'pdp' || method === 'full_report') && data.pdp_plot) {
+                html += '<div class="mb-6"><h4 class="text-lg font-bold text-snow font-mono mb-4">📉 Partial Dependence</h4>';
+                const pdp = data.pdp_plot;
+                html += `<div class="bg-void border border-slate rounded p-4 text-sm font-mono">`;
+                if (typeof pdp === 'string') html += `<pre class="text-dusty whitespace-pre-wrap">${pdp}</pre>`;
+                else html += `<p class="text-dusty">${JSON.stringify(pdp, null, 2)}</p>`;
+                html += '</div></div>';
+            }
+
+            // fallback text
+            if (!html) {
+                html = `<div class="empty-state"><p>Interpretation results received. Check the server console for full details.</p></div>`;
+            }
+
+            container.innerHTML = html;
+            document.getElementById('interpret-results').classList.remove('hidden');
+        }
+
+        function showMockResults(model, method) {
+            const container = document.getElementById('results-content');
+            let html = '';
+
+            const features = currentDataset && currentDataset.columns ? currentDataset.columns.slice(0, 10) :
+                ['feature_1','feature_2','feature_3','feature_4','feature_5'];
+
+            if (method === 'feature_ranking') {
+                html += '<div class="mb-6"><h4 class="text-lg font-bold text-snow font-mono mb-4">📊 Feature Importance Ranking</h4>';
+                html += '<table class="w-full border-collapse border border-slate text-sm"><thead><tr class="bg-slate">';
+                html += '<th class="border border-slate px-3 py-2 text-left text-snow font-mono">#</th>';
+                html += '<th class="border border-slate px-3 py-2 text-left text-snow font-mono">Feature</th>';
+                html += '<th class="border border-slate px-3 py-2 text-left text-snow font-mono">Importance</th></tr></thead><tbody>';
+                const ranks = features.map((f, i) => ({ name: f, imp: (1 - i/features.length * 0.8).toFixed(4) }));
+                ranks.sort((a,b) => b.imp - a.imp);
+                ranks.forEach((r, i) => {
+                    html += `<tr><td class="border border-slate px-3 py-2 text-dusty">${i+1}</td>`;
+                    html += `<td class="border border-slate px-3 py-2 text-snow font-mono">${r.name}</td>`;
+                    html += `<td class="border border-slate px-3 py-2 text-lava font-bold">${r.imp}</td></tr>`;
+                });
+                html += '</tbody></table></div>';
+            }
+
+            if (method === 'lime') {
+                html += '<div class="mb-6"><h4 class="text-lg font-bold text-snow font-mono mb-4">🔬 LIME Local Explanation</h4>';
+                html += '<div class="bg-void border border-slate rounded p-4 text-sm font-mono">';
+                html += '<p class="text-success mb-2">✅ Prediction explained locally</p>';
+                features.slice(0, 5).forEach((f, i) => {
+                    const contr = ((i % 2 === 0 ? 1 : -1) * (0.2 + Math.random() * 0.5)).toFixed(3);
+                    const color = parseFloat(contr) > 0 ? 'text-success' : 'text-error';
+                    html += `<div class="flex justify-between py-1"><span>${f}</span><span class="${color}">${contr}</span></div>`;
+                });
+                html += '</div></div>';
+            }
+
+            if (method === 'pdp') {
+                html += '<div class="mb-6"><h4 class="text-lg font-bold text-snow font-mono mb-4">📉 Partial Dependence Plot</h4>';
+                html += '<div class="bg-void border border-slate rounded p-4 text-sm font-mono">';
+                html += '<p class="text-dusty">Partial dependence analysis would display here with interactive chart</p>';
+                html += '<p class="text-dusty text-xs mt-2">Showing average prediction as selected feature varies</p>';
+                html += '</div></div>';
+            }
+
+            if (method === 'shap') {
+                html += '<div class="mb-6"><h4 class="text-lg font-bold text-snow font-mono mb-4">📈 SHAP Summary</h4>';
+                html += '<div class="bg-void border border-slate rounded p-4 text-sm font-mono">';
+                html += '<p class="text-dusty">SHAP values summarize feature contributions across all predictions</p>';
+                features.slice(0, 8).forEach((f, i) => {
+                    const val = (Math.random() * 2 - 1).toFixed(3);
+                    const color = parseFloat(val) > 0 ? 'text-success' : 'text-error';
+                    html += `<div class="flex justify-between py-1"><span>${f}</span><span class="${color}">${val}</span></div>`;
+                });
+                html += '</div></div>';
+            }
+
+            if (method === 'full_report') {
+                html += '<div class="rec-banner success mb-4">✅ Full interpretation report generated with all methods</div>';
+                html += '<div class="mb-6"><h4 class="text-lg font-bold text-snow font-mono mb-4">📊 Feature Importance</h4>';
+                html += '<table class="w-full border-collapse border border-slate text-sm"><thead><tr class="bg-slate">';
+                html += '<th class="border border-slate px-3 py-2 text-left text-snow font-mono">Feature</th>';
+                html += '<th class="border border-slate px-3 py-2 text-left text-snow font-mono">Importance</th></tr></thead><tbody>';
+                features.forEach((f, i) => {
+                    html += `<tr><td class="border border-slate px-3 py-2 text-snow font-mono">${f}</td>`;
+                    html += `<td class="border border-slate px-3 py-2 text-lava font-bold">${(1 - i/features.length * 0.8).toFixed(4)}</td></tr>`;
+                });
+                html += '</tbody></table></div>';
+            }
+
+            if (!html) html = '<div class="empty-state"><p>Select a method and run interpretation</p></div>';
+
+            container.innerHTML = html;
+            document.getElementById('interpret-results').classList.remove('hidden');
+        }
+
+        function showNotification(message, type = 'info') {
+            const n = document.createElement('div');
+            const bgMap = {
+                success: 'rgba(16,185,129,0.95)',
+                error: 'rgba(239,68,68,0.95)',
+                warning: 'rgba(245,158,11,0.95)',
+                info: 'rgba(59,130,246,0.95)'
+            };
+            n.style.cssText = `position:fixed;top:80px;right:16px;z-index:9999;padding:10px 18px;border-radius:8px;color:#FBFBFB;font-family:'Courier New',monospace;font-size:13px;background:${bgMap[type] || bgMap.info};border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(4px);max-width:420px;word-break:break-word;`;
+            n.textContent = message;
+            document.body.appendChild(n);
+            setTimeout(() => { n.style.opacity = '0'; n.style.transition = 'opacity 0.3s'; setTimeout(() => n.remove(), 300); }, 5000);
+        }
+    </script>
+</body>
+</html>

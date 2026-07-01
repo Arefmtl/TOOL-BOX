@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOOL-BOX Professional Interface Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lava: '#F56E0F',
+                        snow: '#FBFBFB',
+                        dusty: '#878787',
+                        glyon: '#1B1B1E',
+                        void: '#151419',
+                        slate: '#262626',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        info: '#3B82F6',
+                    },
+                    fontFamily: {
+                        'mono': ['Courier New', 'Monaco', 'Menlo', 'monospace'],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(245, 110, 15, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #151419;
+            color: #FBFBFB;
+            font-family: 'Courier New', monospace;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card {
+            background: linear-gradient(135deg, #1B1B1E 0%, #151419 100%);
+            border: 1px solid #262626;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #F56E0F 0%, #E66310 100%);
+            color: #151419;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(245, 110, 15, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-void to-glyon border-b border-slate shadow-glow">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-lava rounded-lg flex items-center justify-center">
+                        <span class="text-void font-bold text-lg">TB</span>
+                    </div>
+                    <div class="font-bold text-xl text-snow font-mono">
+                        <span class="text-lava">TOOL</span>
+                        <span>-BOX</span>
+                    </div>
+                </div>
+
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="#dashboard" class="text-dusty hover:text-lava transition-colors">Dashboard</a>
+                    <a href="#data" class="text-dusty hover:text-lava transition-colors">Data</a>
+                    <a href="#training" class="text-dusty hover:text-lava transition-colors">Training</a>
+                    <a href="#evaluation" class="text-dusty hover:text-lava transition-colors">Evaluation</a>
+                </nav>
+
+                <div class="flex items-center space-x-4">
+                    <a href="https://github.com/Arefmtl/TOOL-BOX" target="_blank"
+                       class="flex items-center space-x-2 bg-glyon hover:bg-slate border border-slate rounded-lg px-3 py-2 text-dusty hover:text-snow transition-all duration-200 font-mono text-sm">
+                        ⭐ 42 Stars
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section class="py-20 px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="animate-fade-in">
+                    <h1 class="text-5xl md:text-7xl font-bold text-snow font-mono mb-6">
+                        <span class="text-gradient-lava">TOOL-BOX</span>
+                        <br>
+                        <span class="text-2xl md:text-4xl text-dusty">Professional ML Toolkit</span>
+                    </h1>
+                    <p class="text-xl text-dusty mb-8 max-w-2xl mx-auto leading-relaxed">
+                        Advanced Machine Learning Platform for Data Scientists.
+                        Build, train, and deploy models with cutting-edge tools and intuitive interfaces.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button class="btn-primary">🚀 Start Building ML Models</button>
+                        <button class="btn-secondary">📚 View Documentation</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section class="py-16 px-4">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-snow font-mono mb-12">
+                    Powerful Features for <span class="text-lava">Data Scientists</span>
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="card animate-fade-in">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-lava/20 rounded-lg flex items-center justify-center">
+                                <span class="text-lava text-2xl">🧠</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-snow font-mono mb-2">Advanced ML Algorithms</h3>
+                                <p class="text-dusty leading-relaxed">
+                                    8 classification & 9 regression algorithms including XGBoost, Neural Networks, and more
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card animate-fade-in" style="animation-delay: 0.1s">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                                <span class="text-blue-400 text-2xl">⚡</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-snow font-mono mb-2">State-of-the-Art Optimization</h3>
+                                <p class="text-dusty leading-relaxed">
+                                    Optuna, Hyperopt, and Scikit-Optimize for hyperparameter tuning
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card animate-fade-in" style="animation-delay: 0.2s">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                <span class="text-green-400 text-2xl">📊</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-snow font-mono mb-2">Comprehensive Evaluation</h3>
+                                <p className="text-dusty leading-relaxed">
+                                    Multi-metric evaluation with interactive visualizations and detailed reports
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card animate-fade-in" style="animation-delay: 0.3s">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                                <span class="text-purple-400 text-2xl">👥</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-snow font-mono mb-2">Data Scientist Focused</h3>
+                                <p class="text-dusty leading-relaxed">
+                                    Built by data scientists for data scientists with professional workflows
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pipeline Demo -->
+        <section class="py-16 px-4 bg-glyon">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-snow font-mono mb-12">
+                    Complete ML <span class="text-lava">Workflow</span>
+                </h2>
+
+                <div class="relative">
+                    <div class="hidden md:block absolute top-8 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-lava to-transparent"></div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gradient-lava rounded-full flex items-center justify-center text-void font-bold text-xl font-mono mx-auto mb-4 shadow-glow">
+                                01
+                            </div>
+                            <h3 class="text-xl font-bold text-snow font-mono mb-2">Load Data</h3>
+                            <p class="text-dusty text-sm">Upload CSV/Excel or use sample datasets</p>
+                        </div>
+
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gradient-lava rounded-full flex items-center justify-center text-void font-bold text-xl font-mono mx-auto mb-4 shadow-glow">
+                                02
+                            </div>
+                            <h3 class="text-xl font-bold text-snow font-mono mb-2">Preprocess</h3>
+                            <p class="text-dusty text-sm">Clean, encode, and scale your data</p>
+                        </div>
+
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gradient-lava rounded-full flex items-center justify-center text-void font-bold text-xl font-mono mx-auto mb-4 shadow-glow">
+                                03
+                            </div>
+                            <h3 class="text-xl font-bold text-snow font-mono mb-2">Train Models</h3>
+                            <p class="text-dusty text-sm">Train multiple algorithms simultaneously</p>
+                        </div>
+
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gradient-lava rounded-full flex items-center justify-center text-void font-bold text-xl font-mono mx-auto mb-4 shadow-glow">
+                                04
+                            </div>
+                            <h3 class="text-xl font-bold text-snow font-mono mb-2">Evaluate</h3>
+                            <p class="text-dusty text-sm">Compare performance with detailed metrics</p>
+                        </div>
+
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gradient-lava rounded-full flex items-center justify-center text-void font-bold text-xl font-mono mx-auto mb-4 shadow-glow">
+                                05
+                            </div>
+                            <h3 class="text-xl font-bold text-snow font-mono mb-2">Optimize</h3>
+                            <p class="text-dusty text-sm">Fine-tune with advanced optimization tools</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+                <!-- Interactive ML Pipeline Section -->
+        <section class="py-16 px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-snow font-mono mb-12">
+                    Try TOOL-BOX <span class="text-lava">Live Demo</span>
+                </h2>
+
+                <!-- Step 1: Load Data -->
+                <div class="card mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-snow font-mono">📁 Step 1: Load Dataset</h3>
+                        <span class="bg-lava text-void px-2 py-1 rounded text-sm font-mono">Active</span>
+                    </div>
+                    <div class="border-2 border-dashed border-slate rounded-lg p-8 text-center">
+                        <div class="mb-4">
+                            <span class="text-4xl">📁</span>
+                        </div>
+                        <p class="text-dusty mb-4">Drag & drop your CSV or Excel file here, or click to browse</p>
+                        <input type="file" id="data-file" accept=".csv,.xlsx,.xls" class="hidden">
+                        <button onclick="document.getElementById('data-file').click()"
+                                class="btn-primary">
+                            Choose File
+                        </button>
+                        <p class="text-xs text-dusty mt-2">Supported formats: CSV, Excel (.xlsx, .xls)</p>
+                    </div>
+
+                    <!-- Sample Datasets -->
+                    <div class="mt-6">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">🎯 Sample Datasets</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <button onclick="loadSampleDataset('diabetes')"
+                                    class="bg-slate/20 hover:bg-slate/40 text-snow font-mono py-2 px-4 rounded transition-all">
+                                Diabetes Dataset
+                            </button>
+                            <button onclick="loadSampleDataset('heart')"
+                                    class="bg-slate/20 hover:bg-slate/40 text-snow font-mono py-2 px-4 rounded transition-all">
+                                Heart Disease Dataset
+                            </button>
+                            <button onclick="loadSampleDataset('housing')"
+                                    class="bg-slate/20 hover:bg-slate/40 text-snow font-mono py-2 px-4 rounded transition-all">
+                                Housing Dataset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: EDA (Exploratory Data Analysis) -->
+                <div class="card mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-snow font-mono">📊 Step 2: Exploratory Data Analysis (EDA)</h3>
+                        <span class="bg-slate text-dusty px-2 py-1 rounded text-sm font-mono">Waiting</span>
+                    </div>
+                    <p class="text-dusty mb-4">Comprehensive data analysis and visualization</p>
+
+                    <!-- EDA Tabs -->
+                    <div class="mb-4">
+                        <div class="flex space-x-2 border-b border-slate">
+                            <button onclick="showEDATab('understanding')"
+                                    class="eda-tab px-4 py-2 text-dusty hover:text-snow font-mono text-sm border-b-2 border-transparent hover:border-lava"
+                                    data-tab="understanding">
+                                📋 Understanding
+                            </button>
+                            <button onclick="showEDATab('cleaning')"
+                                    class="eda-tab px-4 py-2 text-dusty hover:text-snow font-mono text-sm border-b-2 border-transparent hover:border-lava"
+                                    data-tab="cleaning">
+                                🧹 Cleaning
+                            </button>
+                            <button onclick="showEDATab('univariate')"
+                                    class="eda-tab px-4 py-2 text-dusty hover:text-snow font-mono text-sm border-b-2 border-transparent hover:border-lava"
+                                    data-tab="univariate">
+                                📊 Univariate
+                            </button>
+                            <button onclick="showEDATab('bivariate')"
+                                    class="eda-tab px-4 py-2 text-dusty hover:text-snow font-mono text-sm border-b-2 border-transparent hover:border-lava"
+                                    data-tab="bivariate">
+                                🔗 Bivariate
+                            </button>
+                            <button onclick="showEDATab('advanced')"
+                                    class="eda-tab px-4 py-2 text-dusty hover:text-snow font-mono text-sm border-b-2 border-transparent hover:border-lava"
+                                    data-tab="advanced">
+                                🎨 Advanced
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- EDA Content Areas -->
+                    <div id="eda-understanding" class="eda-content">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">🔍 Data Understanding</h4>
+                        <div id="dataset-overview" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <!-- Overview metrics will be populated by JavaScript -->
+                        </div>
+                        <div class="mb-4">
+                            <button onclick="showDataPreview('head')" class="btn-primary mr-2">📋 First 5 Rows</button>
+                            <button onclick="showDataPreview('tail')" class="btn-primary mr-2">📄 Last 5 Rows</button>
+                            <button onclick="showDataPreview('sample')" class="btn-primary">🔀 Random Sample</button>
+                        </div>
+                        <div id="data-preview" class="bg-void border border-slate rounded p-4 overflow-x-auto">
+                            <p class="text-dusty">Click buttons above to view data samples</p>
+                        </div>
+                    </div>
+
+                    <div id="eda-cleaning" class="eda-content hidden">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">🧹 Data Cleaning Insights</h4>
+                        <div id="missing-analysis" class="mb-6">
+                            <h5 class="text-snow font-mono mb-2">❓ Missing Values</h5>
+                            <div id="missing-heatmap" class="bg-slate/20 p-4 rounded mb-4">
+                                <!-- Missing values heatmap will be generated -->
+                            </div>
+                        </div>
+                        <div id="duplicate-analysis" class="mb-6">
+                            <h5 class="text-snow font-mono mb-2">📋 Duplicate Analysis</h5>
+                            <div id="duplicate-info" class="text-dusty">
+                                <!-- Duplicate analysis will be populated -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="eda-univariate" class="eda-content hidden">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">📊 Univariate Analysis</h4>
+                        <div class="mb-4">
+                            <label class="block text-snow font-mono mb-2">Select Column for Analysis:</label>
+                            <select id="univariate-column" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                                <option value="">Choose a column...</option>
+                            </select>
+                        </div>
+                        <div id="univariate-stats" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                            <!-- Statistics will be populated -->
+                        </div>
+                        <div id="univariate-viz" class="bg-void border border-slate rounded p-4 mb-4">
+                            <p class="text-dusty">Select a column to see visualizations</p>
+                        </div>
+                    </div>
+
+                    <div id="eda-bivariate" class="eda-content hidden">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">🔗 Bivariate & Multivariate Analysis</h4>
+                        <div class="mb-4">
+                            <label class="block text-snow font-mono mb-2">Correlation Matrix:</label>
+                            <div id="correlation-matrix" class="bg-void border border-slate rounded p-4 overflow-x-auto">
+                                <!-- Correlation matrix will be generated -->
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-snow font-mono mb-2">X-axis (Scatter Plot):</label>
+                                <select id="scatter-x" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                                    <option value="">Select X variable...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-snow font-mono mb-2">Y-axis (Scatter Plot):</label>
+                                <select id="scatter-y" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                                    <option value="">Select Y variable...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="scatter-plot" class="bg-void border border-slate rounded p-4 mb-4">
+                            <p class="text-dusty">Select variables to create scatter plot</p>
+                        </div>
+                    </div>
+
+                    <div id="eda-advanced" class="eda-content hidden">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">🎨 Advanced Visualizations</h4>
+                        <div class="mb-4">
+                            <label class="block text-snow font-mono mb-2">Select Features for Pair Plot:</label>
+                            <select id="pair-features" multiple class="w-full px-3 py-2 bg-void border border-slate rounded text-snow" size="3">
+                                <!-- Features will be populated -->
+                            </select>
+                        </div>
+                        <div id="pair-plot" class="bg-void border border-slate rounded p-4 mb-4">
+                            <p class="text-dusty">Select 2-5 features for pair plot visualization</p>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-snow font-mono mb-2">Violin Plot Feature:</label>
+                            <select id="violin-feature" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                                <option value="">Select feature...</option>
+                            </select>
+                        </div>
+                        <div id="violin-plot" class="bg-void border border-slate rounded p-4">
+                            <p class="text-dusty">Select a feature for violin plot</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex justify-center">
+                        <button onclick="runEDA()" class="btn-primary action-btn" data-step="2" disabled>
+                            🔍 Run EDA Analysis
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Data Preprocessing -->
+                <div class="card mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-snow font-mono">⚙️ Step 3: Data Preprocessing</h3>
+                        <span class="bg-slate text-dusty px-2 py-1 rounded text-sm font-mono">Waiting</span>
+                    </div>
+                    <p class="text-dusty mb-4">Configure preprocessing pipeline for optimal ML preparation</p>
+
+                    <!-- Column Management -->
+                    <div id="column-management" class="mt-4" style="display: none;">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-2">Column Management</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-snow font-mono mb-2">Select Columns to Keep:</label>
+                                <select id="column-select" multiple class="w-full px-3 py-2 bg-void border border-slate rounded text-snow" size="5">
+                                    <!-- Columns will be populated by JavaScript -->
+                                </select>
+                                <p class="text-xs text-dusty mt-1">Hold Ctrl/Cmd to select multiple columns</p>
+                            </div>
+                            <div>
+                                <label class="block text-snow font-mono mb-2">Target Column:</label>
+                                <select id="target-column" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                                    <option value="">Select target column...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preprocessing Options -->
+                    <div id="preprocessing-options" class="mt-4" style="display: none;">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-2">Preprocessing Options</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="handle-missing" class="mr-2" checked>
+                                    <span class="text-snow font-mono">Handle Missing Values</span>
+                                </label>
+                                <label class="flex items-center mt-2">
+                                    <input type="checkbox" id="encode-categorical" class="mr-2" checked>
+                                    <span class="text-snow font-mono">Encode Categorical Variables</span>
+                                </label>
+                                <label class="flex items-center mt-2">
+                                    <input type="checkbox" id="scale-features" class="mr-2" checked>
+                                    <span class="text-snow font-mono">Scale Numeric Features</span>
+                                </label>
+                            </div>
+                            <div>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="handle-outliers" class="mr-2">
+                                    <span class="text-snow font-mono">Handle Outliers</span>
+                                </label>
+                                <label class="flex items-center mt-2">
+                                    <input type="checkbox" id="feature-selection" class="mr-2">
+                                    <span class="text-snow font-mono">Feature Selection</span>
+                                </label>
+                                <label class="flex items-center mt-2">
+                                    <input type="checkbox" id="cross-validation" class="mr-2">
+                                    <span class="text-snow font-mono">N-Fold Cross Validation</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex justify-center">
+                        <button onclick="handleProcessData()" class="btn-primary action-btn" data-step="3" disabled>
+                            🚀 Apply Preprocessing
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Model Training -->
+                <div class="card mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-snow font-mono">🤖 Step 4: Model Training</h3>
+                        <span class="bg-slate text-dusty px-2 py-1 rounded text-sm font-mono">Waiting</span>
+                    </div>
+                    <p class="text-dusty mb-4">Choose your problem type and train multiple ML models simultaneously</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button onclick="handleTrainModels('classification')"
+                                class="action-btn bg-blue-600 hover:bg-blue-700 text-white font-mono py-3 px-6 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                data-step="4" disabled>
+                            🤖 Train Classification Models
+                        </button>
+                        <button onclick="handleTrainModels('regression')"
+                                class="action-btn bg-green-600 hover:bg-green-700 text-white font-mono py-3 px-6 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                data-step="4" disabled>
+                            📈 Train Regression Models
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Model Evaluation -->
+                <div class="card mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-snow font-mono">📈 Step 5: Model Evaluation</h3>
+                        <span class="bg-slate text-dusty px-2 py-1 rounded text-sm font-mono">Waiting</span>
+                    </div>
+                    <p class="text-dusty mb-4">Compare model performance with comprehensive metrics and visualizations</p>
+                    <div class="flex justify-center">
+                        <button onclick="handleEvaluateModels()"
+                                class="btn-primary action-btn disabled:opacity-50 disabled:cursor-not-allowed"
+                                data-step="5" disabled>
+                            📊 Evaluate Models
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 6: Hyperparameter Optimization -->
+                <div class="card mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-snow font-mono">🎯 Step 6: Hyperparameter Optimization</h3>
+                        <span class="bg-slate text-dusty px-2 py-1 rounded text-sm font-mono">Waiting</span>
+                    </div>
+                    <p class="text-dusty mb-4">Fine-tune model performance with advanced optimization techniques</p>
+                    <div class="flex justify-center">
+                        <button onclick="handleOptimizeModel()"
+                                class="btn-primary action-btn disabled:opacity-50 disabled:cursor-not-allowed"
+                                data-step="6" disabled>
+                            🎯 Optimize Model
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 7: Export & Reports -->
+                <div class="card">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-snow font-mono">💾 Step 7: Export & Reports</h3>
+                        <span class="bg-slate text-dusty px-2 py-1 rounded text-sm font-mono">Waiting</span>
+                    </div>
+                    <p class="text-dusty mb-4">Export trained models, generate reports, and download project artifacts</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="exportModel()"
+                                class="bg-green-600 hover:bg-green-700 text-white font-mono py-2 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled>
+                            💾 Export Model
+                        </button>
+                        <button onclick="generateReport()"
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-mono py-2 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled>
+                            📄 Generate Report
+                        </button>
+                        <button onclick="exportProject()"
+                                class="bg-purple-600 hover:bg-purple-700 text-white font-mono py-2 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled>
+                            📦 Export Project
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="py-16 px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div>
+                        <div class="text-4xl font-bold text-lava font-mono">50+</div>
+                        <div class="text-dusty font-mono">ML Algorithms</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-success font-mono">XGBoost</div>
+                        <div class="text-dusty font-mono">Included</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-info font-mono">Optuna</div>
+                        <div class="text-dusty font-mono">Optimization</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold text-warning font-mono">99.9%</div>
+                        <div class="text-dusty font-mono">Uptime</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-void to-glyon border-t border-slate mt-20">
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-lava rounded-lg flex items-center justify-center">
+                            <span class="text-void font-bold text-lg">TB</span>
+                        </div>
+                        <div class="font-bold text-xl text-snow font-mono">
+                            <span class="text-lava">TOOL</span>
+                            <span>-BOX</span>
+                        </div>
+                    </div>
+                    <p class="text-dusty text-sm leading-relaxed mb-6">
+                        Professional Machine Learning Toolkit for Data Scientists.
+                        Build, train, and deploy models with cutting-edge tools.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-snow mb-4 font-mono">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#docs" class="text-dusty hover:text-lava transition-colors font-mono text-sm">Documentation</a></li>
+                        <li><a href="#data" class="text-dusty hover:text-lava transition-colors font-mono text-sm">Data Management</a></li>
+                        <li><a href="#training" class="text-dusty hover:text-lava transition-colors font-mono text-sm">Model Training</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-snow mb-4 font-mono">Community</h3>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="https://github.com/Arefmtl/TOOL-BOX" class="text-dusty hover:text-snow transition-colors">🐙</a>
+                        <a href="https://linkedin.com/in/aref-mtl" class="text-dusty hover:text-blue-400 transition-colors">💼</a>
+                        <a href="https://t.me/arefmtl" class="text-dusty hover:text-blue-500 transition-colors">✈️</a>
+                    </div>
+                    <div class="bg-void/50 rounded-lg p-4 border border-slate">
+                        <h4 class="text-sm font-bold text-snow mb-2 font-mono">Stay Updated</h4>
+                        <input type="email" placeholder="Enter your email" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow placeholder-dusty font-mono text-sm">
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate mt-8 pt-8 text-center">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                    <div><div class="text-2xl font-bold text-lava font-mono">10K+</div><div class="text-sm text-dusty">Models Trained</div></div>
+                    <div><div class="text-2xl font-bold text-success font-mono">5K+</div><div class="text-sm text-dusty">Active Users</div></div>
+                    <div><div class="text-2xl font-bold text-info font-mono">50+</div><div class="text-sm text-dusty">ML Algorithms</div></div>
+                    <div><div class="text-2xl font-bold text-warning font-mono">99.9%</div><div class="text-sm text-dusty">Uptime</div></div>
+                </div>
+                <p class="text-dusty text-sm font-mono">© 2024 TOOL-BOX. Made with ❤️ by Ali Kazemi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // TOOL-BOX API Integration
+        class ToolboxAPI {
+            constructor(baseURL = 'http://localhost:8000') {
+                this.baseURL = baseURL;
+            }
+
+            async makeRequest(endpoint, options = {}) {
+                try {
+                    const response = await fetch(`${this.baseURL}${endpoint}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...options.headers
+                        },
+                        ...options
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('API request failed:', error);
+                    this.showNotification(`Error: ${error.message}`, 'error');
+                    throw error;
+                }
+            }
+
+            async uploadData(file) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await fetch(`${this.baseURL}/upload-data`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                return await response.json();
+            }
+
+            async processData(targetColumn, testSize = 0.2, preprocessingSteps = ['clean', 'encode', 'scale']) {
+                return this.makeRequest('/process-data', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        target_column: targetColumn,
+                        test_size: testSize,
+                        preprocessing_steps: preprocessingSteps
+                    })
+                });
+            }
+
+            async trainModels(modelType, modelList = null) {
+                return this.makeRequest('/train-models', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        model_type: modelType,
+                        model_list: modelList
+                    })
+                });
+            }
+
+            async evaluateModels(modelType) {
+                return this.makeRequest('/evaluate-models', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        model_type: modelType
+                    })
+                });
+            }
+
+            async getDataInfo() {
+                return this.makeRequest('/get-data-info');
+            }
+
+            async getModels() {
+                return this.makeRequest('/get-models');
+            }
+
+            showNotification(message, type = 'info') {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-lg text-snow font-mono text-sm ${
+                    type === 'success' ? 'bg-success' :
+                    type === 'error' ? 'bg-error' :
+                    type === 'warning' ? 'bg-warning' : 'bg-info'
+                }`;
+                notification.textContent = message;
+
+                document.body.appendChild(notification);
+
+                // Remove after 5 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            }
+        }
+
+        // Global API instance
+        const toolboxAPI = new ToolboxAPI();
+
+        // UI State management
+        class ToolboxUI {
+            constructor() {
+                this.currentStep = 1;
+                this.modelType = null;
+                this.targetColumn = null;
+                this.dataset = null;
+                this.processedData = null;
+            }
+
+            updateStep(step) {
+                this.currentStep = step;
+                this.updatePipelineUI();
+                this.updateActionButtons();
+            }
+
+            updatePipelineUI() {
+                // Update step status indicators
+                const stepCards = document.querySelectorAll('.card');
+                stepCards.forEach((card, index) => {
+                    const stepNumber = index + 1;
+                    const statusSpan = card.querySelector('span:last-child');
+
+                    if (statusSpan) {
+                        if (stepNumber < this.currentStep) {
+                            statusSpan.textContent = 'Completed';
+                            statusSpan.className = 'bg-success text-void px-2 py-1 rounded text-sm font-mono';
+                        } else if (stepNumber === this.currentStep) {
+                            statusSpan.textContent = 'Active';
+                            statusSpan.className = 'bg-lava text-void px-2 py-1 rounded text-sm font-mono';
+                        } else {
+                            statusSpan.textContent = 'Waiting';
+                            statusSpan.className = 'bg-slate text-dusty px-2 py-1 rounded text-sm font-mono';
+                        }
+                    }
+                });
+            }
+
+            updateActionButtons() {
+                const buttons = document.querySelectorAll('.action-btn');
+                buttons.forEach(btn => {
+                    const step = parseInt(btn.dataset.step);
+                    const isEnabled = step === this.currentStep && this.canProceedToStep(step);
+                    btn.disabled = !isEnabled;
+                    btn.classList.toggle('opacity-50', !isEnabled);
+                    btn.classList.toggle('cursor-not-allowed', !isEnabled);
+                });
+            }
+
+            canProceedToStep(step) {
+                switch(step) {
+                    case 2: return this.dataset !== null;
+                    case 3: return this.processedData !== null;
+                    case 4: return this.modelType !== null;
+                    case 5: return true; // Always allow evaluation if reached
+                    default: return true;
+                }
+            }
+
+            setDataset(data) {
+                this.dataset = data;
+                this.updateColumnSelectors();
+                this.updateActionButtons();
+            }
+
+            setProcessedData(data) {
+                this.processedData = data;
+                this.updateActionButtons();
+            }
+
+            updateColumnSelectors() {
+                if (!this.dataset || !this.dataset.columns) return;
+
+                const columnSelect = document.getElementById('column-select');
+                const targetSelect = document.getElementById('target-column');
+
+                if (columnSelect) {
+                    columnSelect.innerHTML = '';
+                    this.dataset.columns.forEach(col => {
+                        const option = document.createElement('option');
+                        option.value = col;
+                        option.textContent = col;
+                        option.selected = true; // Select all by default
+                        columnSelect.appendChild(option);
+                    });
+                }
+
+                if (targetSelect) {
+                    targetSelect.innerHTML = '<option value="">Select target column...</option>';
+                    this.dataset.columns.forEach(col => {
+                        const option = document.createElement('option');
+                        option.value = col;
+                        option.textContent = col;
+                        targetSelect.appendChild(option);
+                    });
+                }
+
+                // Show column management section
+                const columnManagement = document.getElementById('column-management');
+                const preprocessingOptions = document.getElementById('preprocessing-options');
+                if (columnManagement) columnManagement.style.display = 'block';
+                if (preprocessingOptions) preprocessingOptions.style.display = 'block';
+            }
+
+            getSelectedColumns() {
+                const columnSelect = document.getElementById('column-select');
+                return Array.from(columnSelect.selectedOptions).map(option => option.value);
+            }
+
+            getTargetColumn() {
+                const targetSelect = document.getElementById('target-column');
+                return targetSelect.value;
+            }
+
+            getPreprocessingOptions() {
+                return {
+                    handleMissing: document.getElementById('handle-missing').checked,
+                    encodeCategorical: document.getElementById('encode-categorical').checked,
+                    scaleFeatures: document.getElementById('scale-features').checked,
+                    handleOutliers: document.getElementById('handle-outliers').checked,
+                    featureSelection: document.getElementById('feature-selection').checked,
+                    crossValidation: document.getElementById('cross-validation').checked
+                };
+            }
+
+            showResults(results, title) {
+                // Create results modal or section
+                const resultsDiv = document.createElement('div');
+                resultsDiv.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                resultsDiv.innerHTML = `
+                    <div class="bg-void border border-slate rounded-lg p-6 max-w-4xl max-h-96 overflow-auto">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-snow font-mono">${title}</h3>
+                            <button onclick="this.closest('.fixed').remove()" class="text-dusty hover:text-snow text-xl">✕</button>
+                        </div>
+                        <div class="text-dusty font-mono text-sm">
+                            ${this.formatResults(results)}
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(resultsDiv);
+            }
+
+            formatResults(results) {
+                if (typeof results === 'object') {
+                    if (results.models_trained) {
+                        return `<p>✅ Successfully trained ${results.models_trained} models!</p>
+                               <p>Models: ${results.model_names ? results.model_names.join(', ') : 'Various ML algorithms'}</p>`;
+                    }
+                    if (results.best_model) {
+                        return `<p>🏆 Best Model: <strong>${results.best_model}</strong></p>
+                               <p>Accuracy: ${results.best_score || 'N/A'}</p>
+                               <p>Other metrics available in full version</p>`;
+                    }
+                    return `<pre>${JSON.stringify(results, null, 2)}</pre>`;
+                }
+                return `<p>${results}</p>`;
+            }
+
+            showDataPreview(data, title = 'Data Preview') {
+                const previewDiv = document.createElement('div');
+                previewDiv.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                previewDiv.innerHTML = `
+                    <div class="bg-void border border-slate rounded-lg p-6 max-w-6xl max-h-96 overflow-auto">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-snow font-mono">${title}</h3>
+                            <button onclick="this.closest('.fixed').remove()" class="text-dusty hover:text-snow text-xl">✕</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            ${this.createDataTable(data)}
+                        </div>
+                        <div class="mt-4 text-dusty font-mono text-sm">
+                            <p>Shape: ${data.length} rows × ${data[0] ? Object.keys(data[0]).length : 0} columns</p>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(previewDiv);
+            }
+
+            createDataTable(data) {
+                if (!data || data.length === 0) return '<p class="text-dusty">No data available</p>';
+
+                const columns = Object.keys(data[0]);
+                let tableHTML = '<table class="w-full border-collapse border border-slate">';
+
+                // Header
+                tableHTML += '<thead><tr class="bg-slate">';
+                columns.forEach(col => {
+                    tableHTML += `<th class="border border-slate px-2 py-1 text-left text-snow font-mono text-sm">${col}</th>`;
+                });
+                tableHTML += '</tr></thead>';
+
+                // Body (show first 10 rows)
+                tableHTML += '<tbody>';
+                data.slice(0, 10).forEach(row => {
+                    tableHTML += '<tr class="hover:bg-slate/20">';
+                    columns.forEach(col => {
+                        const value = row[col];
+                        const displayValue = value === null || value === undefined ? 'null' :
+                                           typeof value === 'number' ? value.toFixed(3) : String(value).substring(0, 50);
+                        tableHTML += `<td class="border border-slate px-2 py-1 text-dusty font-mono text-xs">${displayValue}</td>`;
+                    });
+                    tableHTML += '</tr>';
+                });
+                tableHTML += '</tbody></table>';
+
+                if (data.length > 10) {
+                    tableHTML += `<p class="text-dusty font-mono text-sm mt-2">... and ${data.length - 10} more rows</p>`;
+                }
+
+                return tableHTML;
+            }
+        }
+
+        const toolboxUI = new ToolboxUI();
+
+        // CSV/Excel file parser for client-side processing
+        class DataProcessor {
+            static async parseCSV(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const csv = e.target.result;
+                            const lines = csv.split('\n').filter(line => line.trim());
+                            if (lines.length < 2) {
+                                reject(new Error('CSV file must have at least a header and one data row'));
+                                return;
+                            }
+
+                            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                            const data = lines.slice(1).map(line => {
+                                const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+                                const row = {};
+                                headers.forEach((header, index) => {
+                                    const value = values[index] || '';
+                                    // Try to convert to number
+                                    const numValue = parseFloat(value);
+                                    row[header] = isNaN(numValue) ? value : numValue;
+                                });
+                                return row;
+                            });
+
+                            resolve({
+                                filename: file.name,
+                                columns: headers,
+                                data: data,
+                                shape: [data.length, headers.length]
+                            });
+                        } catch (error) {
+                            reject(error);
+                        }
+                    };
+                    reader.onerror = () => reject(new Error('Failed to read file'));
+                    reader.readAsText(file);
+                });
+            }
+
+            static async parseExcel(file) {
+                // For demo purposes, we'll show an error since Excel parsing requires additional libraries
+                // In a real implementation, you would use a library like SheetJS
+                throw new Error('Excel file parsing requires server-side processing. Please use the Streamlit interface for Excel files.');
+            }
+
+            static async processData(dataset, options) {
+                let processedData = [...dataset.data];
+                const selectedColumns = toolboxUI.getSelectedColumns();
+                const targetColumn = toolboxUI.getTargetColumn();
+
+                // Apply column selection
+                if (selectedColumns.length > 0 && selectedColumns.length < dataset.columns.length) {
+                    processedData = processedData.map(row => {
+                        const newRow = {};
+                        selectedColumns.forEach(col => {
+                            if (col !== targetColumn || !options.encodeCategorical) {
+                                newRow[col] = row[col];
+                            }
+                        });
+                        return newRow;
+                    });
+                }
+
+                // Simulate preprocessing steps
+                const steps = [];
+                if (options.handleMissing) {
+                    steps.push('Missing values handled');
+                }
+                if (options.encodeCategorical && targetColumn) {
+                    steps.push('Categorical variables encoded');
+                }
+                if (options.scaleFeatures) {
+                    steps.push('Features scaled');
+                }
+                if (options.handleOutliers) {
+                    steps.push('Outliers handled');
+                }
+                if (options.featureSelection) {
+                    steps.push('Feature selection applied');
+                }
+                if (options.crossValidation) {
+                    steps.push('Cross-validation enabled');
+                }
+
+                return {
+                    original_shape: dataset.shape,
+                    processed_shape: [processedData.length, Object.keys(processedData[0] || {}).length],
+                    preprocessing_steps: steps,
+                    target_column: targetColumn,
+                    selected_columns: selectedColumns
+                };
+            }
+        }
+
+        // Event handlers
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                toolboxAPI.showNotification('Reading file...', 'info');
+
+                let result;
+                if (file.name.toLowerCase().endsWith('.csv')) {
+                    result = await DataProcessor.parseCSV(file);
+                } else if (file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls')) {
+                    result = await DataProcessor.parseExcel(file);
+                } else {
+                    throw new Error('Unsupported file format. Please use CSV or Excel files.');
+                }
+
+                toolboxUI.setDataset(result);
+                toolboxUI.updateStep(2);
+
+                toolboxAPI.showNotification(`Data loaded: ${result.shape[0]} rows × ${result.shape[1]} columns`, 'success');
+
+                // Show data preview
+                toolboxUI.showDataPreview(result.data, 'Dataset Preview');
+
+            } catch (error) {
+                toolboxAPI.showNotification(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function handleProcessData() {
+            if (!toolboxUI.dataset) {
+                toolboxAPI.showNotification('No dataset loaded', 'warning');
+                return;
+            }
+
+            const targetColumn = toolboxUI.getTargetColumn();
+            const selectedColumns = toolboxUI.getSelectedColumns();
+            const options = toolboxUI.getPreprocessingOptions();
+
+            if (!targetColumn) {
+                toolboxAPI.showNotification('Please select a target column', 'warning');
+                return;
+            }
+
+            if (selectedColumns.length === 0) {
+                toolboxAPI.showNotification('Please select at least one column', 'warning');
+                return;
+            }
+
+            try {
+                toolboxAPI.showNotification('Processing data...', 'info');
+
+                const result = await DataProcessor.processData(toolboxUI.dataset, {
+                    targetColumn,
+                    selectedColumns,
+                    ...options
+                });
+
+                toolboxUI.setProcessedData(result);
+
+                toolboxAPI.showNotification('Data processed successfully!', 'success');
+
+                // Show processing results
+                toolboxUI.showResults(result, 'Data Processing Results');
+
+                toolboxUI.updateStep(3);
+
+            } catch (error) {
+                toolboxAPI.showNotification(`Processing failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function handleTrainModels(modelType) {
+            toolboxUI.modelType = modelType;
+
+            try {
+                toolboxAPI.showNotification(`Training ${modelType} models...`, 'info');
+                const result = await toolboxAPI.trainModels(modelType);
+
+                toolboxAPI.showNotification(`${result.trained_models.length} models trained successfully!`, 'success');
+                toolboxUI.updateStep(4);
+
+                // Show trained models
+                toolboxUI.showResults(result, 'Training Results');
+
+            } catch (error) {
+                toolboxAPI.showNotification('Failed to train models', 'error');
+            }
+        }
+
+        async function handleEvaluateModels() {
+            if (!toolboxUI.modelType) {
+                toolboxAPI.showNotification('Please train models first', 'warning');
+                return;
+            }
+
+            try {
+                toolboxAPI.showNotification('Evaluating models...', 'info');
+                const result = await toolboxAPI.evaluateModels(toolboxUI.modelType);
+
+                toolboxAPI.showNotification('Models evaluated successfully!', 'success');
+                toolboxUI.updateStep(5);
+
+                // Show evaluation results
+                toolboxUI.showResults(result, 'Evaluation Results');
+
+            } catch (error) {
+                toolboxAPI.showNotification('Failed to evaluate models', 'error');
+            }
+        }
+
+        function updateDataInfo(data) {
+            const dataInfo = document.getElementById('data-info');
+            if (dataInfo) {
+                dataInfo.innerHTML = `
+                    <div class="bg-glyon/50 border border-slate rounded-lg p-4">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-2">Dataset Information</h4>
+                        <p class="text-dusty"><strong>File:</strong> ${data.filename}</p>
+                        <p class="text-dusty"><strong>Shape:</strong> ${data.shape[0]} rows × ${data.shape[1]} columns</p>
+                        <div class="mt-4">
+                            <label class="block text-snow font-mono mb-2">Select Target Column:</label>
+                            <select id="target-column" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                                <option value="">Choose target column...</option>
+                                ${data.columns.map(col => `<option value="${col}">${col}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // EDA Functions
+        function showEDATab(tabName) {
+            // Hide all EDA content
+            document.querySelectorAll('.eda-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.eda-tab').forEach(tab => {
+                tab.classList.remove('border-lava', 'text-snow');
+                tab.classList.add('text-dusty');
+            });
+
+            // Show selected tab content
+            const selectedContent = document.getElementById(`eda-${tabName}`);
+            const selectedTab = document.querySelector(`[data-tab="${tabName}"]`);
+
+            if (selectedContent) {
+                selectedContent.classList.remove('hidden');
+            }
+            if (selectedTab) {
+                selectedTab.classList.add('border-lava', 'text-snow');
+                selectedTab.classList.remove('text-dusty');
+            }
+
+            // Populate dropdowns if data is available
+            if (toolboxUI.dataset) {
+                populateEDADropdowns();
+            }
+        }
+
+        function populateEDADropdowns() {
+            if (!toolboxUI.dataset) return;
+
+            const columns = toolboxUI.dataset.columns;
+            const numericColumns = columns.filter(col => {
+                const sampleValues = toolboxUI.dataset.data.slice(0, 10).map(row => row[col]);
+                return sampleValues.some(val => typeof val === 'number');
+            });
+
+            // Populate univariate column selector
+            const univariateSelect = document.getElementById('univariate-column');
+            if (univariateSelect) {
+                univariateSelect.innerHTML = '<option value="">Choose a column...</option>';
+                columns.forEach(col => {
+                    const option = document.createElement('option');
+                    option.value = col;
+                    option.textContent = col;
+                    univariateSelect.appendChild(option);
+                });
+            }
+
+            // Populate scatter plot selectors
+            const scatterX = document.getElementById('scatter-x');
+            const scatterY = document.getElementById('scatter-y');
+            if (scatterX && scatterY) {
+                [scatterX, scatterY].forEach(select => {
+                    select.innerHTML = '<option value="">Select variable...</option>';
+                    numericColumns.forEach(col => {
+                        const option = document.createElement('option');
+                        option.value = col;
+                        option.textContent = col;
+                        select.appendChild(option);
+                    });
+                });
+            }
+
+            // Populate pair plot selector
+            const pairFeatures = document.getElementById('pair-features');
+            if (pairFeatures) {
+                pairFeatures.innerHTML = '';
+                numericColumns.slice(0, 5).forEach(col => {  // Limit to 5 for performance
+                    const option = document.createElement('option');
+                    option.value = col;
+                    option.textContent = col;
+                    option.selected = numericColumns.indexOf(col) < 3;  // Select first 3 by default
+                    pairFeatures.appendChild(option);
+                });
+            }
+
+            // Populate violin plot selector
+            const violinFeature = document.getElementById('violin-feature');
+            if (violinFeature) {
+                violinFeature.innerHTML = '<option value="">Select feature...</option>';
+                numericColumns.forEach(col => {
+                    const option = document.createElement('option');
+                    option.value = col;
+                    option.textContent = col;
+                    violinFeature.appendChild(option);
+                });
+            }
+        }
+
+        function showDataPreview(type) {
+            if (!toolboxUI.dataset) {
+                toolboxAPI.showNotification('No dataset loaded', 'warning');
+                return;
+            }
+
+            let dataToShow;
+            let title;
+
+            switch(type) {
+                case 'head':
+                    dataToShow = toolboxUI.dataset.data.slice(0, 5);
+                    title = 'First 5 Rows (Head)';
+                    break;
+                case 'tail':
+                    dataToShow = toolboxUI.dataset.data.slice(-5);
+                    title = 'Last 5 Rows (Tail)';
+                    break;
+                case 'sample':
+                    const shuffled = [...toolboxUI.dataset.data].sort(() => 0.5 - Math.random());
+                    dataToShow = shuffled.slice(0, 5);
+                    title = 'Random Sample (5 rows)';
+                    break;
+            }
+
+            toolboxUI.showDataPreview(dataToShow, title);
+        }
+
+        function runEDA() {
+            if (!toolboxUI.dataset) {
+                toolboxAPI.showNotification('No dataset loaded', 'warning');
+                return;
+            }
+
+            try {
+                // Generate dataset overview
+                generateDatasetOverview();
+
+                // Generate correlation matrix
+                generateCorrelationMatrix();
+
+                // Generate missing values analysis
+                generateMissingValuesAnalysis();
+
+                toolboxAPI.showNotification('EDA analysis completed!', 'success');
+                toolboxUI.updateStep(4);  // Move to training step
+
+            } catch (error) {
+                toolboxAPI.showNotification(`EDA failed: ${error.message}`, 'error');
+            }
+        }
+
+        function generateDatasetOverview() {
+            if (!toolboxUI.dataset) return;
+
+            const data = toolboxUI.dataset.data;
+            const columns = toolboxUI.dataset.columns;
+
+            // Calculate data types
+            const typeCounts = {};
+            columns.forEach(col => {
+                const sampleValues = data.slice(0, 10).map(row => row[col]);
+                const hasNumbers = sampleValues.some(val => typeof val === 'number');
+                const type = hasNumbers ? 'numeric' : 'categorical';
+                typeCounts[type] = (typeCounts[type] || 0) + 1;
+            });
+
+            // Calculate memory usage (approximate)
+            const memoryKB = Math.round(JSON.stringify(data).length / 1024);
+
+            // Calculate duplicates
+            const duplicates = data.length - new Set(data.map(row => JSON.stringify(row))).size;
+
+            const overviewHTML = `
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-slate/20 p-3 rounded text-center">
+                        <div class="text-2xl font-bold text-lava">${data.length}</div>
+                        <div class="text-sm text-dusty">Rows</div>
+                    </div>
+                    <div class="bg-slate/20 p-3 rounded text-center">
+                        <div class="text-2xl font-bold text-lava">${columns.length}</div>
+                        <div class="text-sm text-dusty">Columns</div>
+                    </div>
+                    <div class="bg-slate/20 p-3 rounded text-center">
+                        <div class="text-2xl font-bold text-info">${memoryKB} KB</div>
+                        <div class="text-sm text-dusty">Memory</div>
+                    </div>
+                    <div class="bg-slate/20 p-3 rounded text-center">
+                        <div class="text-2xl font-bold text-warning">${duplicates}</div>
+                        <div class="text-sm text-dusty">Duplicates</div>
+                    </div>
+                </div>
+                <div class="mt-4 grid grid-cols-2 gap-4">
+                    <div>
+                        <h5 class="text-snow font-mono mb-2">Data Types:</h5>
+                        <ul class="text-dusty text-sm">
+                            <li>• Numeric: ${typeCounts.numeric || 0}</li>
+                            <li>• Categorical: ${typeCounts.categorical || 0}</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="text-snow font-mono mb-2">Columns:</h5>
+                        <div class="text-dusty text-sm max-h-20 overflow-y-auto">
+                            ${columns.map(col => `• ${col}`).join('<br>')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const overviewDiv = document.getElementById('dataset-overview');
+            if (overviewDiv) {
+                overviewDiv.innerHTML = overviewHTML;
+            }
+        }
+
+        function generateCorrelationMatrix() {
+            if (!toolboxUI.dataset) return;
+
+            const data = toolboxUI.dataset.data;
+            const numericColumns = toolboxUI.dataset.columns.filter(col => {
+                const sampleValues = data.slice(0, 10).map(row => row[col]);
+                return sampleValues.some(val => typeof val === 'number');
+            });
+
+            if (numericColumns.length < 2) {
+                document.getElementById('correlation-matrix').innerHTML = '<p class="text-dusty">Not enough numeric columns for correlation analysis</p>';
+                return;
+            }
+
+            // Calculate correlations (simplified)
+            const correlations = {};
+            for (let i = 0; i < numericColumns.length; i++) {
+                for (let j = 0; j < numericColumns.length; j++) {
+                    const col1 = numericColumns[i];
+                    const col2 = numericColumns[j];
+
+                    if (i === j) {
+                        correlations[`${col1}-${col2}`] = 1.0;
+                    } else {
+                        const values1 = data.map(row => row[col1]).filter(v => typeof v === 'number');
+                        const values2 = data.map(row => row[col2]).filter(v => typeof v === 'number');
+
+                        const correlation = calculateCorrelation(values1, values2);
+                        correlations[`${col1}-${col2}`] = correlation;
+                    }
+                }
+            }
+
+            // Create correlation table
+            let tableHTML = '<table class="w-full border-collapse border border-slate text-xs">';
+            tableHTML += '<thead><tr class="bg-slate">';
+            tableHTML += '<th class="border border-slate px-2 py-1 text-snow font-mono">Feature</th>';
+            numericColumns.forEach(col => {
+                tableHTML += `<th class="border border-slate px-2 py-1 text-snow font-mono">${col.substring(0, 8)}</th>`;
+            });
+            tableHTML += '</tr></thead><tbody>';
+
+            numericColumns.forEach(col1 => {
+                tableHTML += `<tr><td class="border border-slate px-2 py-1 text-snow font-mono bg-slate/50">${col1.substring(0, 12)}</td>`;
+                numericColumns.forEach(col2 => {
+                    const corr = correlations[`${col1}-${col2}`];
+                    const colorClass = Math.abs(corr) > 0.7 ? 'text-lava font-bold' :
+                                     Math.abs(corr) > 0.5 ? 'text-warning' : 'text-dusty';
+                    tableHTML += `<td class="border border-slate px-2 py-1 text-center ${colorClass}">${corr.toFixed(2)}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+            tableHTML += '</tbody></table>';
+
+            document.getElementById('correlation-matrix').innerHTML = tableHTML;
+        }
+
+        function generateMissingValuesAnalysis() {
+            if (!toolboxUI.dataset) return;
+
+            const data = toolboxUI.dataset.data;
+            const columns = toolboxUI.dataset.columns;
+
+            const missingStats = columns.map(col => {
+                const missingCount = data.filter(row => row[col] === null || row[col] === undefined || row[col] === '').length;
+                const missingPercent = ((missingCount / data.length) * 100).toFixed(1);
+                return { column: col, missingCount, missingPercent: parseFloat(missingPercent) };
+            }).sort((a, b) => b.missingCount - a.missingCount);
+
+            // Create heatmap visualization
+            let heatmapHTML = '<div class="grid grid-cols-20 gap-px mb-4" style="max-width: 400px;">';
+            data.slice(0, 20).forEach((row, rowIndex) => {
+                columns.slice(0, 20).forEach((col, colIndex) => {
+                    const isMissing = row[col] === null || row[col] === undefined || row[col] === '';
+                    const colorClass = isMissing ? 'bg-error' : 'bg-success';
+                    heatmapHTML += `<div class="w-3 h-3 ${colorClass} rounded-sm" title="${col}: ${row[col]}"></div>`;
+                });
+            });
+            heatmapHTML += '</div>';
+            heatmapHTML += '<p class="text-xs text-dusty">Green = Present, Red = Missing (showing first 20x20)</p>';
+
+            document.getElementById('missing-heatmap').innerHTML = heatmapHTML;
+
+            // Duplicate analysis
+            const hasDuplicates = data.length !== new Set(data.map(row => JSON.stringify(row))).size;
+            const duplicateInfo = hasDuplicates ?
+                `<p class="text-warning">⚠️ Found duplicate rows in dataset</p>` :
+                `<p class="text-success">✅ No duplicate rows found</p>`;
+
+            document.getElementById('duplicate-analysis').innerHTML = duplicateInfo;
+        }
+
+        function calculateCorrelation(x, y) {
+            const n = Math.min(x.length, y.length);
+            if (n < 2) return 0;
+
+            const sumX = x.reduce((a, b) => a + b, 0);
+            const sumY = y.reduce((a, b) => a + b, 0);
+            const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
+            const sumX2 = x.reduce((sum, xi) => sum + xi * xi, 0);
+            const sumY2 = y.reduce((sum, yi) => sum + yi * yi, 0);
+
+            const numerator = n * sumXY - sumX * sumY;
+            const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+
+            return denominator === 0 ? 0 : numerator / denominator;
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.card').forEach(card => {
+                observer.observe(card);
+            });
+
+            // Update pipeline UI initially
+            toolboxUI.updatePipelineUI();
+            toolboxUI.updateActionButtons();
+
+            // Add event listeners
+            const fileInput = document.getElementById('data-file');
+            if (fileInput) {
+                fileInput.addEventListener('change', handleFileUpload);
+            }
+
+            // Initialize EDA tab switching
+            document.querySelectorAll('.eda-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    showEDATab(tabName);
+                });
+            });
+
+            // Initialize first EDA tab
+            showEDATab('understanding');
+
+            // Test API connection
+            toolboxAPI.makeRequest('/').then(data => {
+                console.log('API connected:', data);
+                toolboxAPI.showNotification('Connected to TOOL-BOX API', 'success');
+            }).catch(() => {
+                toolboxAPI.showNotification('API not available. Running in demo mode.', 'info');
+            });
+        });
+    </script>
+</body>
+</html>

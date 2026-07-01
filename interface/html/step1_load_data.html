@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 1: Load Data - TOOL-BOX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lava: '#F56E0F',
+                        snow: '#FBFBFB',
+                        dusty: '#878787',
+                        glyon: '#1B1B1E',
+                        void: '#151419',
+                        slate: '#262626',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        info: '#3B82F6',
+                    },
+                    fontFamily: {
+                        'mono': ['Courier New', 'Monaco', 'Menlo', 'monospace'],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(245, 110, 15, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #151419;
+            color: #FBFBFB;
+            font-family: 'Courier New', monospace;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card {
+            background: linear-gradient(135deg, #1B1B1E 0%, #151419 100%);
+            border: 1px solid #262626;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #F56E0F 0%, #E66310 100%);
+            color: #151419;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(245, 110, 15, 0.3);
+        }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .btn-secondary {
+            background: #262626;
+            color: #FBFBFB;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+            background: #3B3B3B;
+        }
+        .skeleton {
+            background: linear-gradient(90deg, rgba(245,110,15,0.04) 25%, rgba(245,110,15,0.1) 50%, rgba(245,110,15,0.04) 75%);
+            background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .rec-banner { padding: 12px 16px; border-radius: 8px; font-size: 12px; display: flex; align-items: center; gap: 10px; }
+        .rec-banner.info { background: rgba(245,110,15,0.1); border: 1px solid rgba(245,110,15,0.25); color: #F56E0F; }
+        .rec-banner.warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); color: #F59E0B; }
+        .rec-banner.success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); color: #10B981; }
+        .empty-state { padding: 32px 20px; text-align: center; color: #878787; font-size: 13px; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-void to-glyon border-b border-slate shadow-glow">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <a href="index.html" class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-lava rounded-lg flex items-center justify-center">
+                            <span class="text-void font-bold text-lg">TB</span>
+                        </div>
+                        <div class="font-bold text-xl text-snow font-mono">
+                            <span class="text-lava">TOOL</span>
+                            <span>-BOX</span>
+                        </div>
+                    </a>
+                </div>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <span class="text-lava font-mono">📁 Step 1: Load Data</span>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <a href="https://github.com/Arefmtl/TOOL-BOX" target="_blank"
+                       class="flex items-center space-x-2 bg-glyon hover:bg-slate border border-slate rounded-lg px-3 py-2 text-dusty hover:text-snow transition-all duration-200 font-mono text-sm">
+                        ⭐ 42 Stars
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="fixed top-20 left-0 right-0 z-40 bg-void border-b border-slate">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center space-x-2">
+                <span class="text-sm text-dusty font-mono">Progress:</span>
+                <div class="flex-1 bg-slate rounded-full h-2">
+                    <div class="bg-lava h-2 rounded-full" style="width: 12.5%"></div>
+                </div>
+                <span class="text-sm text-dusty font-mono">1 / 8</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="pt-32">
+        <div class="max-w-4xl mx-auto px-4">
+            <!-- Step Header -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-lava rounded-full flex items-center justify-center text-void font-bold text-2xl font-mono mx-auto mb-4 shadow-glow">
+                    01
+                </div>
+                <h1 class="text-4xl font-bold text-snow font-mono mb-2">📁 Load Dataset</h1>
+                <p class="text-xl text-dusty">Upload CSV/Excel files or use sample datasets to begin your ML journey</p>
+            </div>
+
+            <!-- Data Loading Options -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- File Upload -->
+                <div class="card">
+                    <h3 class="text-xl font-bold text-snow font-mono mb-4">📤 Upload Your File</h3>
+                    <div class="border-2 border-dashed border-slate rounded-lg p-8 text-center mb-4">
+                        <div class="mb-4">
+                            <span class="text-4xl">📁</span>
+                        </div>
+                        <input type="file" id="data-file" accept=".csv,.xlsx,.xls" class="hidden">
+                        <button onclick="document.getElementById('data-file').click()"
+                                class="btn-primary mb-2">
+                            Choose File
+                        </button>
+                        <p class="text-xs text-dusty">Supported: CSV, Excel (.xlsx, .xls)</p>
+                    </div>
+                    <div id="file-info" class="text-center text-dusty"></div>
+                </div>
+
+                <!-- Sample Datasets -->
+                <div class="card">
+                    <h3 class="text-xl font-bold text-snow font-mono mb-4">🎯 Sample Datasets</h3>
+                    <p class="text-dusty mb-4">Get started quickly with pre-loaded datasets:</p>
+                    <div class="space-y-3">
+                        <button onclick="loadSampleDataset('diabetes')"
+                                class="w-full btn-secondary text-left">
+                            🩺 Diabetes Dataset - Medical prediction
+                        </button>
+                        <button onclick="loadSampleDataset('heart')"
+                                class="w-full btn-secondary text-left">
+                            ❤️ Heart Disease Dataset - Cardiovascular prediction
+                        </button>
+                        <button onclick="loadSampleDataset('housing')"
+                                class="w-full btn-secondary text-left">
+                            🏠 Housing Dataset - Regression examples
+                        </button>
+                        <button onclick="loadSampleDataset('iris')"
+                                class="w-full btn-secondary text-left">
+                            🌸 Iris Dataset - Classic classification
+                        </button>
+                        <button onclick="loadSampleDataset('wine')"
+                                class="w-full btn-secondary text-left">
+                            🍷 Wine Dataset - Quality classification
+                        </button>
+                        <button onclick="loadSampleDataset('breast_cancer')"
+                                class="w-full btn-secondary text-left">
+                            🎀 Breast Cancer Dataset - Medical classification
+                        </button>
+                        <button onclick="loadSampleDataset('titanic')"
+                                class="w-full btn-secondary text-left">
+                            🚢 Titanic Dataset - Survival prediction
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- URL Loading -->
+            <div class="card mb-8">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">🔗 Load from URL</h3>
+                <div class="flex gap-4">
+                    <input type="url" id="data-url" placeholder="https://raw.githubusercontent.com/..." value="https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
+                           class="flex-1 px-3 py-2 bg-void border border-slate rounded text-snow placeholder-dusty font-mono">
+                    <button onclick="loadFromURL()" class="btn-primary">🌐 Load from URL</button>
+                </div>
+                <div id="url-progress" class="hidden mt-3">
+                    <div class="flex items-center gap-3">
+                        <div class="skeleton w-full h-4"></div>
+                        <span id="url-status" class="text-dusty text-sm">Downloading...</span>
+                    </div>
+                </div>
+                <p class="text-xs text-dusty mt-2">Supports raw CSV URLs from GitHub, Kaggle, Hugging Face, and other public dataset sources.</p>
+            </div>
+
+            <!-- Dataset Discovery -->
+            <div class="card mb-8">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">🔎 Find Datasets</h3>
+                <p class="text-dusty mb-4">Not sure which dataset to use? Explore these popular sources:</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <a href="https://www.kaggle.com/datasets" target="_blank" class="p-3 border border-slate rounded-lg hover:border-lava hover:bg-lava/5 transition-all text-center" title="Kaggle: 50,000+ public datasets across all domains">
+                        <div class="text-2xl mb-1">🏆</div>
+                        <div class="text-sm text-snow font-mono">Kaggle</div>
+                        <div class="text-xs text-dusty">50k+ datasets</div>
+                    </a>
+                    <a href="https://archive.ics.uci.edu/ml/datasets.php" target="_blank" class="p-3 border border-slate rounded-lg hover:border-lava hover:bg-lava/5 transition-all text-center" title="UCI ML Repository: Classic benchmarks since 1987">
+                        <div class="text-2xl mb-1">🎓</div>
+                        <div class="text-sm text-snow font-mono">UCI Repository</div>
+                        <div class="text-xs text-dusty">600+ datasets</div>
+                    </a>
+                    <a href="https://huggingface.co/datasets" target="_blank" class="p-3 border border-slate rounded-lg hover:border-lava hover:bg-lava/5 transition-all text-center" title="Hugging Face Datasets: Modern datasets with built-in loaders">
+                        <div class="text-2xl mb-1">🤗</div>
+                        <div class="text-sm text-snow font-mono">Hugging Face</div>
+                        <div class="text-xs text-dusty">10k+ datasets</div>
+                    </a>
+                    <a href="https://www.openml.org/search?type=data" target="_blank" class="p-3 border border-slate rounded-lg hover:border-lava hover:bg-lava/5 transition-all text-center" title="OpenML: Collaborative ML platform with integrated datasets">
+                        <div class="text-2xl mb-1">🔬</div>
+                        <div class="text-sm text-snow font-mono">OpenML</div>
+                        <div class="text-xs text-dusty">25k+ datasets</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Data Preview -->
+            <div id="data-preview-section" class="card mb-8" style="display: none;">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">👀 Data Preview</h3>
+                <div id="data-preview" class="bg-void border border-slate rounded p-4 overflow-x-auto mb-4">
+                    <p class="text-dusty">Data preview will appear here...</p>
+                </div>
+                <div id="data-stats" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <!-- Stats will be populated -->
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="btn-secondary">← Back to Home</a>
+                <div class="flex space-x-4">
+                    <button id="next-btn" onclick="proceedToNext()" class="btn-primary" disabled>
+                        Continue to EDA →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-void to-glyon border-t border-slate mt-20">
+        <div class="max-w-7xl mx-auto px-4 py-8 text-center">
+            <p class="text-dusty text-sm font-mono">© 2024 TOOL-BOX. Made with ❤️ by Ali Kazemi.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Global state
+        let currentDataset = null;
+
+        // CSV/Excel file parser
+        class DataProcessor {
+            static async parseCSV(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const csv = e.target.result;
+                            const lines = csv.split('\n').filter(line => line.trim());
+                            if (lines.length < 2) {
+                                reject(new Error('CSV file must have at least a header and one data row'));
+                                return;
+                            }
+
+                            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                            const data = lines.slice(1).map(line => {
+                                const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+                                const row = {};
+                                headers.forEach((header, index) => {
+                                    const value = values[index] || '';
+                                    // Try to convert to number
+                                    const numValue = parseFloat(value);
+                                    row[header] = isNaN(numValue) ? value : numValue;
+                                });
+                                return row;
+                            });
+
+                            resolve({
+                                filename: file.name,
+                                columns: headers,
+                                data: data,
+                                shape: [data.length, headers.length],
+                                source: 'upload'
+                            });
+                        } catch (error) {
+                            reject(error);
+                        }
+                    };
+                    reader.onerror = () => reject(new Error('Failed to read file'));
+                    reader.readAsText(file);
+                });
+            }
+
+            static async loadSampleDataset(name) {
+                const sampleDatasets = {
+                    diabetes: {
+                        filename: 'diabetes.csv',
+                        url: '../../projects/Diabet_project/Dataset/diabetes.csv'
+                    },
+                    heart: {
+                        filename: 'heart_disease_uci.csv',
+                        url: '../../projects/Heartrate_project/Dataset/heart_disease_uci.csv'
+                    },
+                    housing: {
+                        filename: 'housing.csv',
+                        url: '../../projects/Housing_project/Dataset/housing.csv'
+                    },
+                    iris: {
+                        filename: 'iris.csv',
+                        url: 'https://raw.githubusercontent.com/uiuc-cse/data-fa14/gh-pages/data/iris.csv'
+                    },
+                    wine: {
+                        filename: 'wine.csv',
+                        url: 'https://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data'
+                    },
+                    breast_cancer: {
+                        filename: 'breast_cancer.csv',
+                        url: 'https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/breast-cancer-wisconsin.data'
+                    },
+                    titanic: {
+                        filename: 'titanic.csv',
+                        url: 'https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv'
+                    }
+                };
+
+                if (!sampleDatasets[name]) {
+                    throw new Error('Sample dataset not found');
+                }
+
+                try {
+                    const response = await fetch(sampleDatasets[name].url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const csv = await response.text();
+                    const lines = csv.split('\n').filter(line => line.trim());
+                    const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                    const data = lines.slice(1).map(line => {
+                        const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+                        const row = {};
+                        headers.forEach((header, index) => {
+                            const value = values[index] || '';
+                            const numValue = parseFloat(value);
+                            row[header] = isNaN(numValue) ? value : numValue;
+                        });
+                        return row;
+                    });
+
+                    return {
+                        filename: sampleDatasets[name].filename,
+                        columns: headers,
+                        data: data,
+                        shape: [data.length, headers.length],
+                        source: 'sample'
+                    };
+                } catch (error) {
+                    // Fallback to demo data if file not found
+                    return DataProcessor.createDemoData(name);
+                }
+            }
+
+            static createDemoData(name) {
+                const demoData = {
+                    diabetes: {
+                        columns: ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age', 'Outcome'],
+                        data: [
+                            [6, 148, 72, 35, 0, 33.6, 0.627, 50, 1],
+                            [1, 85, 66, 29, 0, 26.6, 0.351, 31, 0],
+                            [8, 183, 64, 0, 0, 23.3, 0.672, 32, 1]
+                        ]
+                    },
+                    heart: {
+                        columns: ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'target'],
+                        data: [
+                            [63, 1, 3, 145, 233, 1, 0, 150, 0, 2.3, 0, 0, 1, 1],
+                            [37, 1, 2, 130, 250, 0, 1, 187, 0, 3.5, 0, 0, 2, 1],
+                            [41, 0, 1, 130, 204, 0, 0, 172, 0, 1.4, 2, 0, 2, 1]
+                        ]
+                    },
+                    housing: {
+                        columns: ['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT', 'MEDV'],
+                        data: [
+                            [0.00632, 18.0, 2.31, 0.0, 0.538, 6.575, 65.2, 4.0900, 1.0, 296.0, 15.3, 396.90, 4.98, 24.0],
+                            [0.02731, 0.0, 7.07, 0.0, 0.469, 6.421, 78.9, 4.9671, 2.0, 242.0, 17.8, 396.90, 9.14, 21.6],
+                            [0.02729, 0.0, 7.07, 0.0, 0.469, 7.185, 61.1, 4.9671, 2.0, 242.0, 17.8, 392.83, 4.03, 34.7]
+                        ]
+                    },
+                    iris: {
+                        columns: ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species'],
+                        data: [
+                            [5.1, 3.5, 1.4, 0.2, 'setosa'],
+                            [4.9, 3.0, 1.4, 0.2, 'setosa'],
+                            [7.0, 3.2, 4.7, 1.4, 'versicolor'],
+                            [6.4, 3.2, 4.5, 1.5, 'versicolor'],
+                            [6.3, 3.3, 6.0, 2.5, 'virginica'],
+                            [5.8, 2.7, 5.1, 1.9, 'virginica']
+                        ]
+                    },
+                    wine: {
+                        columns: ['Alcohol', 'Malic_Acid', 'Ash', 'Alcalinity_of_Ash', 'Magnesium', 'Total_Phenols', 'Flavanoids', 'Nonflavanoid_Phenols', 'Proanthocyanins', 'Color_Intensity', 'Hue', 'OD280_OD315', 'Proline', 'Class'],
+                        data: [
+                            [14.23, 1.71, 2.43, 15.6, 127, 2.8, 3.06, 0.28, 2.29, 5.64, 1.04, 3.92, 1065, 1],
+                            [13.2, 1.78, 2.14, 11.2, 100, 2.65, 2.76, 0.26, 1.28, 4.38, 1.05, 3.4, 1050, 1],
+                            [12.37, 0.94, 1.36, 10.6, 88, 1.98, 0.57, 0.28, 0.42, 1.95, 1.05, 1.82, 520, 2]
+                        ]
+                    },
+                    breast_cancer: {
+                        columns: ['id', 'clump_thickness', 'uniformity_cell_size', 'uniformity_cell_shape', 'marginal_adhesion', 'single_epithelial_cell_size', 'bare_nuclei', 'bland_chromatin', 'normal_nucleoli', 'mitoses', 'class'],
+                        data: [
+                            [1000025, 5, 1, 1, 1, 2, 1, 3, 1, 1, 2],
+                            [1002945, 5, 4, 4, 5, 7, 10, 3, 2, 1, 2],
+                            [1015425, 3, 1, 1, 1, 2, 2, 3, 1, 1, 2],
+                            [1016277, 6, 8, 8, 1, 3, 4, 3, 7, 1, 2],
+                            [1017023, 4, 1, 1, 3, 2, 1, 3, 1, 1, 2]
+                        ]
+                    },
+                    titanic: {
+                        columns: ['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'SibSp', 'Parch', 'Ticket', 'Fare', 'Cabin', 'Embarked'],
+                        data: [
+                            [1, 0, 3, 'Braund, Mr. Owen Harris', 'male', 22, 1, 0, 'A/5 21171', 7.25, '', 'S'],
+                            [2, 1, 1, 'Cumings, Mrs. John Bradley (Florence Briggs Thayer)', 'female', 38, 1, 0, 'PC 17599', 71.2833, 'C85', 'C'],
+                            [3, 1, 3, 'Heikkinen, Miss. Laina', 'female', 26, 0, 0, 'STON/O2. 3101282', 7.925, '', 'S'],
+                            [4, 1, 1, 'Futrelle, Mrs. Jacques Heath (Lily May Peel)', 'female', 35, 1, 0, '113803', 53.1, 'C123', 'S'],
+                            [5, 0, 3, 'Allen, Mr. William Henry', 'male', 35, 0, 0, '373450', 8.05, '', 'S']
+                        ]
+                    }
+                };
+
+                const dataset = demoData[name];
+                return {
+                    filename: `${name}_demo.csv`,
+                    columns: dataset.columns,
+                    data: dataset.data,
+                    shape: [dataset.data.length, dataset.columns.length],
+                    source: 'demo'
+                };
+            }
+        }
+
+        // Event handlers
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                showNotification('Reading file...', 'info');
+
+                let result;
+                if (file.name.toLowerCase().endsWith('.csv')) {
+                    result = await DataProcessor.parseCSV(file);
+                } else {
+                    throw new Error('Please use CSV files for demo. Excel support available in full version.');
+                }
+
+                currentDataset = result;
+                showDataPreview(result);
+                updateFileInfo(result);
+                enableNextButton();
+
+                showNotification(`Data loaded: ${result.shape[0]} rows × ${result.shape[1]} columns`, 'success');
+
+            } catch (error) {
+                showNotification(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadSampleDataset(name) {
+            try {
+                showNotification('Loading sample dataset...', 'info');
+
+                const result = await DataProcessor.loadSampleDataset(name);
+                currentDataset = result;
+                showDataPreview(result);
+                updateFileInfo(result);
+                enableNextButton();
+
+                showNotification(`Sample dataset loaded: ${result.shape[0]} rows × ${result.shape[1]} columns`, 'success');
+
+            } catch (error) {
+                showNotification(`Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadFromURL() {
+            const url = document.getElementById('data-url').value;
+            if (!url) {
+                showNotification('Please enter a URL', 'warning');
+                return;
+            }
+
+            document.getElementById('url-progress').classList.remove('hidden');
+            document.getElementById('url-status').textContent = 'Downloading...';
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const csv = await response.text();
+                const lines = csv.split('\n').filter(line => line.trim());
+                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                const data = lines.slice(1).map(line => {
+                    const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+                    const row = {};
+                    headers.forEach((header, index) => {
+                        const value = values[index] || '';
+                        const numValue = parseFloat(value);
+                        row[header] = isNaN(numValue) ? value : numValue;
+                    });
+                    return row;
+                });
+
+                const result = {
+                    filename: url.split('/').pop() || 'data_from_url.csv',
+                    columns: headers,
+                    data: data,
+                    shape: [data.length, headers.length],
+                    source: 'url'
+                };
+
+                document.getElementById('url-status').textContent = 'Complete!';
+                currentDataset = result;
+                showDataPreview(result);
+                updateFileInfo(result);
+                showNotification(`Data loaded from URL: ${result.shape[0]} rows × ${result.shape[1]} columns`, 'success');
+            } catch (error) {
+                document.getElementById('url-status').textContent = `Error: ${error.message}`;
+                showNotification(`Error loading from URL: ${error.message}`, 'error');
+            }
+            setTimeout(() => document.getElementById('url-progress').classList.add('hidden'), 2000);
+        }
+        }
+
+        function showDataPreview(dataset) {
+            const previewSection = document.getElementById('data-preview-section');
+            const previewDiv = document.getElementById('data-preview');
+
+            previewSection.style.display = 'block';
+
+            // Create table
+            let tableHTML = '<table class="w-full border-collapse border border-slate text-xs">';
+            tableHTML += '<thead><tr class="bg-slate">';
+            dataset.columns.slice(0, 10).forEach(col => {
+                tableHTML += `<th class="border border-slate px-2 py-1 text-left text-snow font-mono">${col}</th>`;
+            });
+            tableHTML += '</tr></thead><tbody>';
+
+            dataset.data.slice(0, 5).forEach(row => {
+                tableHTML += '<tr>';
+                dataset.columns.slice(0, 10).forEach(col => {
+                    const value = row[col];
+                    const displayValue = value === null || value === undefined ? 'null' :
+                                       typeof value === 'number' ? value.toFixed(2) : String(value).substring(0, 20);
+                    tableHTML += `<td class="border border-slate px-2 py-1 text-dusty font-mono">${displayValue}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+            tableHTML += '</tbody></table>';
+
+            if (dataset.data.length > 5) {
+                tableHTML += `<p class="text-dusty font-mono text-sm mt-2">... and ${dataset.data.length - 5} more rows</p>`;
+            }
+
+            previewDiv.innerHTML = tableHTML;
+
+            // Update stats
+            updateDataStats(dataset);
+        }
+
+        function updateDataStats(dataset) {
+            const statsDiv = document.getElementById('data-stats');
+            statsDiv.innerHTML = `
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-lava">${dataset.shape[0]}</div>
+                    <div class="text-sm text-dusty">Rows</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-lava">${dataset.shape[1]}</div>
+                    <div class="text-sm text-dusty">Columns</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-info">${Math.round(JSON.stringify(dataset.data).length / 1024)} KB</div>
+                    <div class="text-sm text-dusty">Size</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-warning">${dataset.source}</div>
+                    <div class="text-sm text-dusty">Source</div>
+                </div>
+            `;
+        }
+
+        function updateFileInfo(dataset) {
+            const fileInfo = document.getElementById('file-info');
+            fileInfo.innerHTML = `
+                <div class="bg-success/20 border border-success rounded p-3 mt-4">
+                    <p class="text-success font-mono">✅ ${dataset.filename} loaded successfully</p>
+                    <p class="text-dusty font-mono text-sm">${dataset.shape[0]} rows × ${dataset.shape[1]} columns</p>
+                </div>
+            `;
+        }
+
+        function enableNextButton() {
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.disabled = false;
+            nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        function proceedToNext() {
+            if (!currentDataset) {
+                showNotification('Please load a dataset first', 'warning');
+                return;
+            }
+
+            // Store dataset in session storage for next page
+            sessionStorage.setItem('toolbox_dataset', JSON.stringify(currentDataset));
+
+            // Navigate to EDA page
+            window.location.href = 'step2_eda.html';
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const bgMap = {
+                success: 'rgba(16,185,129,0.95)',
+                error: 'rgba(239,68,68,0.95)',
+                warning: 'rgba(245,158,11,0.95)',
+                info: 'rgba(59,130,246,0.95)'
+            };
+            notification.style.cssText = `position:fixed;top:80px;right:16px;z-index:9999;padding:10px 18px;border-radius:8px;color:#FBFBFB;font-family:'Courier New',monospace;font-size:13px;background:${bgMap[type] || bgMap.info};border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(4px);max-width:420px;word-break:break-word;`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => { notification.style.opacity = '0'; notification.style.transition = 'opacity 0.3s'; setTimeout(() => notification.remove(), 300); }, 5000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('data-file');
+            if (fileInput) {
+                fileInput.addEventListener('change', handleFileUpload);
+            }
+        });
+    </script>
+</body>
+</html>

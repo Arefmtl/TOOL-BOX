@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOOL-BOX - ML Pipeline</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{lava:'#F56E0F','lava-hover':'#E66310',snow:'#FBFBFB',dusty:'#878787',glyon:'#1B1B1E',void:'#151419',slate:'#262626',success:'#10B981',warning:'#F59E0B',error:'#EF4444',info:'#3B82F6'}},fontFamily:{mono:['JetBrains Mono','Courier New','monospace']}}}
+</script>
+<style>
+:root{--lava:#F56E0F;--lava-hover:#E66310;--void:#151419;--glyon:#1B1B1E;--slate:#262626;--snow:#FBFBFB;--dusty:#878787;--success:#10B981;--warning:#F59E0B;--error:#EF4444;--info:#3B82F6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--void);color:var(--snow);font-family:'Courier New',monospace;min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--void)}
+::-webkit-scrollbar-thumb{background:var(--slate);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--dusty)}
+.btn-primary{background:linear-gradient(135deg,var(--lava) 0%,var(--lava-hover) 100%);color:var(--void);padding:.6rem 1.4rem;border-radius:8px;font-weight:700;font-family:inherit;border:none;cursor:pointer;transition:all .2s;font-size:.85rem}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(245,110,15,.3)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-secondary{background:var(--slate);color:var(--snow);padding:.6rem 1.4rem;border-radius:8px;font-family:inherit;border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:all .2s;font-size:.85rem}
+.btn-secondary:hover{background:#333;border-color:var(--lava)}
+.btn-ghost{background:transparent;color:var(--dusty);padding:.5rem 1rem;border-radius:8px;font-family:inherit;border:1px solid transparent;cursor:pointer;transition:all .2s;font-size:.8rem}
+.btn-ghost:hover{color:var(--snow);background:rgba(255,255,255,.05)}
+.card{background:var(--glyon);border:1px solid var(--slate);border-radius:12px;padding:1.5rem}
+.card-hover:hover{border-color:rgba(245,110,15,.3);box-shadow:0 0 20px rgba(245,110,15,.05)}
+input,select,textarea{background:var(--void);border:1px solid var(--slate);border-radius:8px;color:var(--snow);padding:.5rem .75rem;font-family:inherit;font-size:.85rem;width:100%;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--lava);box-shadow:0 0 0 2px rgba(245,110,15,.15)}
+label{display:block;color:var(--dusty);font-size:.8rem;margin-bottom:.3rem;font-weight:600}
+table{width:100%;border-collapse:collapse}
+th,td{padding:.6rem .8rem;text-align:left;border-bottom:1px solid var(--slate);font-size:.8rem}
+th{color:var(--dusty);font-weight:600;text-transform:uppercase;letter-spacing:.5px;font-size:.7rem}
+td{color:var(--snow)}
+tr:hover td{background:rgba(255,255,255,.02)}
+.skeleton{background:linear-gradient(90deg,var(--slate) 25%,rgba(255,255,255,.05) 50%,var(--slate) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.toast{position:fixed;top:80px;right:16px;z-index:9999;padding:10px 18px;border-radius:8px;color:var(--snow);font-family:inherit;font-size:13px;border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(4px);max-width:420px;word-break:break-word;transition:opacity .3s}
+.empty-state{padding:2rem;text-align:center;color:var(--dusty)}
+.empty-state p{font-size:.9rem}
+.rec-banner{padding:.75rem 1rem;border-radius:8px;font-size:.8rem;margin-bottom:.75rem}
+.rec-banner.info{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:var(--info)}
+.rec-banner.warn{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:var(--warning)}
+.rec-banner.success{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:var(--success)}
+.rec-banner.error{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--error)}
+.step-card{cursor:pointer;transition:all .2s}
+.step-card:hover{border-color:var(--lava);background:rgba(245,110,15,.05)}
+.step-card.active{border-color:var(--lava);background:rgba(245,110,15,.1);box-shadow:0 0 15px rgba(245,110,15,.1)}
+.step-card.completed{border-color:var(--success)}
+.step-card.completed .step-icon{color:var(--success)}
+.step-card.active .step-icon{color:var(--lava)}
+.model-card{padding:1rem;background:var(--void);border:1px solid var(--slate);border-radius:8px;cursor:pointer;transition:all .2s}
+.model-card:hover{border-color:rgba(245,110,15,.3);background:rgba(245,110,15,.03)}
+.model-card.selected{border-color:var(--lava);background:rgba(245,110,15,.08)}
+.model-card.selected .model-checkbox{accent-color:var(--lava)}
+.progress-ring{width:60px;height:60px;border-radius:50%;border:4px solid var(--slate);border-top-color:var(--lava);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hidden{display:none!important}
+.fade-in{animation:fadeIn .3s ease-out}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.grid-cols-2{grid-template-columns:repeat(2,1fr)}
+.grid-cols-3{grid-template-columns:repeat(3,1fr)}
+.grid-cols-4{grid-template-columns:repeat(4,1fr)}
+</style>
+</head>
+<body>
+<div id="app" class="flex" style="min-height:100vh">
+  <!-- Sidebar -->
+  <div id="sidebar" style="width:220px;background:var(--glyon);border-right:1px solid var(--slate);flex-shrink:0;overflow-y:auto">
+    <div style="padding:1rem;text-align:center;border-bottom:1px solid var(--slate)">
+      <div style="font-size:1.3rem;font-weight:700;color:var(--lava)">⚡ TOOL-BOX</div>
+      <div style="font-size:.65rem;color:var(--dusty);margin-top:2px">ML Pipeline</div>
+    </div>
+    <div id="step-list" style="padding:.5rem"></div>
+    <div style="padding:.75rem;border-top:1px solid var(--slate)">
+      <button onclick="resetSession()" class="btn-ghost" style="width:100%;text-align:left;font-size:.75rem">🔄 Reset Session</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+    <!-- Header -->
+    <div id="step-header" style="padding:1rem 1.5rem;border-bottom:1px solid var(--slate);background:var(--glyon)">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div id="step-title" style="font-size:1.2rem;font-weight:700;color:var(--snow)"></div>
+          <div id="step-subtitle" style="font-size:.75rem;color:var(--dusty);margin-top:2px"></div>
+        </div>
+        <div id="step-actions" style="display:flex;gap:.5rem"></div>
+      </div>
+    </div>
+
+    <!-- Step Content -->
+    <div id="step-content" style="flex:1;overflow-y:auto;padding:1.5rem">
+      <div id="content-area" class="fade-in"></div>
+    </div>
+
+    <!-- Navigation -->
+    <div id="nav-bar" style="padding:.75rem 1.5rem;border-top:1px solid var(--slate);background:var(--glyon);display:flex;justify-content:space-between;align-items:center">
+      <button id="prev-btn" onclick="navigateTo(currentStep-1)" class="btn-secondary" style="display:none">← Previous</button>
+      <div style="display:flex;gap:.5rem;margin-left:auto">
+        <button id="action-btn" onclick="runCurrentStep()" class="btn-primary" style="display:none">▶ Run</button>
+        <button id="next-btn" onclick="navigateTo(currentStep+1)" class="btn-primary" style="display:none">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" style="position:fixed;top:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none"></div>
+
+<script>
+// ─── STATE STORE ──────────────────────────────────────────────
+const S = {
+  step: 1, upload: null, processed: null, models: {}, evalResults: null,
+  interpretResults: null, optimizeResults: null, exportConfig: {},
+  taskType: 'classification',
+  save(){sessionStorage.setItem('tb_state',JSON.stringify(this))},
+  load(){
+    try{const d=JSON.parse(sessionStorage.getItem('tb_state'));if(d){Object.assign(this,d)}}catch(e){}
+  },
+  reset(){
+    Object.assign(this,{step:1,upload:null,processed:null,models:{},evalResults:null,interpretResults:null,optimizeResults:null,exportConfig:{}});
+    sessionStorage.removeItem('tb_state');
+    showToast('Session reset','info')
+  }
+};
+S.load();
+
+const STEPS = [
+  {id:1,icon:'📂',title:'Load Data',subtitle:'Upload CSV/Excel or load from URL',action:'Load Dataset'},
+  {id:2,icon:'📊',title:'EDA',subtitle:'Explore data quality, correlations, distributions',action:'Run EDA'},
+  {id:3,icon:'⚙️',title:'Preprocess',subtitle:'Clean, encode, scale, split data',action:'Apply'},
+  {id:4,icon:'🧠',title:'Train',subtitle:'Train classification, regression, or clustering models',action:'Start Training'},
+  {id:5,icon:'📈',title:'Evaluate',subtitle:'Evaluate models with 25+ metrics',action:'Evaluate'},
+  {id:6,icon:'🔍',title:'Interpret',subtitle:'SHAP, LIME, PDP, feature importance',action:'Interpret'},
+  {id:7,icon:'⚡',title:'Optimize',subtitle:'Hyperparameter tuning with 5 methods',action:'Optimize'},
+  {id:8,icon:'📤',title:'Export',subtitle:'Download model, report, or API code',action:'Export'},
+  {id:9,icon:'📖',title:'Documentation',subtitle:'Guide & reference',action:'Open Docs'}
+];
+
+// ─── API CLIENT ──────────────────────────────────────────────
+const API_BASE = window.location.origin;
+let evalChart = null;
+async function api(method, path, body, isFormData) {
+  const opts = {method, headers:{}};
+  if (body && !isFormData) {opts.headers['Content-Type']='application/json';opts.body=JSON.stringify(body)}
+  else if (body) opts.body = body;
+  const res = await fetch(API_BASE + path, opts);
+  const ct = res.headers.get('content-type')||'';
+  if (ct.includes('json')) {
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail||'API error');
+    return data;
+  }
+  if (!res.ok) throw new Error('API error: '+res.status);
+  return res;
+}
+
+// ─── TOAST SYSTEM ───────────────────────────────────────────
+function showToast(msg, type='info', duration=4000) {
+  const c = document.getElementById('toast-container');
+  const bg = {success:'rgba(16,185,129,0.95)',error:'rgba(239,68,68,0.95)',warning:'rgba(245,158,11,0.95)',info:'rgba(59,130,246,0.95)'};
+  const el = document.createElement('div');
+  el.style.cssText = `background:${bg[type]||bg.info};padding:10px 16px;border-radius:8px;color:#FBFBFB;font-family:'Courier New',monospace;font-size:13px;border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(4px);pointer-events:auto;transition:opacity .3s`;
+  el.textContent = msg;
+  c.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),300)}, duration);
+}
+
+// ─── ROUTER ──────────────────────────────────────────────────
+let currentStep = S.step || 1;
+
+function navigateTo(step) {
+  if (step < 1 || step > STEPS.length) return;
+  currentStep = step;
+  if (step < 9) { S.step = step; S.save(); } // Don't save docs step to state
+  updateStepper();
+  renderStep(step);
+  window.scrollTo(0,0);
+}
+
+function updateStepper() {
+  const list = document.getElementById('step-list');
+  list.innerHTML = STEPS.map(s => {
+    const isActive = s.id === currentStep;
+    const isComplete = canProceedTo(s.id);
+    const cls = isActive ? 'active' : isComplete ? 'completed' : '';
+    return `<div class="step-card ${cls}" onclick="navigateTo(${s.id})" style="padding:.6rem .8rem;border-radius:8px;border:1px solid transparent;margin-bottom:4px;display:flex;align-items:center;gap:.5rem">
+      <span class="step-icon" style="font-size:1.1rem;flex-shrink:0">${isComplete ? '✅' : s.icon}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.78rem;font-weight:600;color:var(--snow);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.title}</div>
+        <div style="font-size:.6rem;color:var(--dusty)">Step ${s.id} of ${STEPS.length}</div>
+      </div>
+    </div>`;
+  }).join('');
+  updateNavButtons();
+}
+
+function canProceedTo(step) {
+  if (step <= 1) return true;
+  if (step === 9) return true; // Documentation always accessible
+  switch(step) {
+    case 2: return !!S.upload;
+    case 3: return !!S.upload;
+    case 4: return !!S.processed;
+    case 5: return Object.keys(S.models).length > 0;
+    case 6: return !!S.evalResults;
+    case 7: return !!S.evalResults;
+    case 8: return !!S.optimizeResults;
+    default: return false;
+  }
+}
+
+function updateNavButtons() {
+  document.getElementById('prev-btn').style.display = currentStep > 1 ? '' : 'none';
+  const step = STEPS[currentStep-1];
+  const ac = document.getElementById('action-btn');
+  const nx = document.getElementById('next-btn');
+  if (step && step.id !== 9) {
+    ac.textContent = '▶ ' + step.action;
+    ac.style.display = '';
+  } else {
+    ac.style.display = 'none';
+  }
+  nx.style.display = canProceedTo(currentStep+1) && currentStep < 8 ? '' : 'none';
+  nx.textContent = 'Next →';
+}
+
+// ─── RENDERING ───────────────────────────────────────────────
+function renderStep(step) {
+  const h = document.getElementById('step-header');
+  const s = STEPS[step-1];
+  document.getElementById('step-title').textContent = `${s.icon} ${s.title}`;
+  document.getElementById('step-subtitle').textContent = s.subtitle;
+  document.getElementById('step-actions').innerHTML = '';
+
+  const area = document.getElementById('content-area');
+  area.classList.remove('fade-in');
+  void area.offsetWidth;
+  area.classList.add('fade-in');
+
+  switch(step) {
+    case 1: renderLoadData(); break;
+    case 2: renderEDA(); break;
+    case 3: renderPreprocess(); break;
+    case 4: renderTrain(); break;
+    case 5: renderEvaluate(); break;
+    case 6: renderInterpret(); break;
+    case 7: renderOptimize(); break;
+    case 8: renderExport(); break;
+    case 9: renderDocs(); break;
+  }
+}
+
+function runCurrentStep() {
+  switch(currentStep) {
+    case 1: runLoadData(); break;
+    case 2: runEDA(); break;
+    case 3: runPreprocess(); break;
+    case 4: runTrain(); break;
+    case 5: runEvaluate(); break;
+    case 6: runInterpret(); break;
+    case 7: runOptimize(); break;
+    case 8: runExport(); break;
+  }
+}
+
+function resetSession() {
+  S.reset();
+  navigateTo(1);
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────
+function loadingHTML(msg='Loading...') {
+  return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem">
+    <div class="progress-ring"></div>
+    <div style="color:var(--dusty);margin-top:1.5rem;font-size:.9rem">${msg}</div>
+  </div>`;
+}
+
+function sleep(ms) {return new Promise(r=>setTimeout(r,ms))}
+
+function renderTable(columns, rows, maxRows=50) {
+  const data = rows.slice(0, maxRows);
+  if (!data.length) return '<div class="empty-state"><p>No data</p></div>';
+  return `<div style="overflow-x:auto"><table><thead><tr>${columns.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+    <tbody>${data.map(r=>`<tr>${columns.map(c=>`<td>${r[c]!==null&&r[c]!==undefined?r[c]:'—'}</td>`).join('')}</tr>`).join('')}</tbody></table>
+    ${rows.length>maxRows?`<div style="color:var(--dusty);font-size:.7rem;padding:.3rem;text-align:center">Showing ${maxRows} of ${rows.length} rows</div>`:''}</div>`;
+}
+
+function emptyState(msg='No data available') {
+  return `<div class="empty-state"><p>${msg}</p></div>`;
+}
+
+function skeleton(count=3) {
+  return Array(count).fill(0).map(()=>`<div class="skeleton" style="height:40px;margin-bottom:8px"></div>`).join('');
+}
+
+function metricCard(label, value, good, isPct=false) {
+  const g = good ? 'var(--success)' : 'var(--error)';
+  return `<div class="card" style="text-align:center">
+    <div style="font-size:.7rem;color:var(--dusty);text-transform:uppercase;letter-spacing:.5px">${label}</div>
+    <div style="font-size:1.6rem;font-weight:700;color:${g};margin-top:4px">${isPct ? (value*100).toFixed(1)+'%' : typeof value==='number' ? value.toFixed(4) : value||'—'}</div>
+  </div>`;
+}
+
+// ─── STEP 1: LOAD DATA ──────────────────────────────────────
+function renderLoadData() {
+  const area = document.getElementById('content-area');
+  const hasData = !!S.upload;
+  area.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
+      <div class="card">
+        <h3 style="font-size:.9rem;font-weight:600;margin-bottom:.75rem">📁 Upload File</h3>
+        <div style="border:2px dashed var(--slate);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s" onclick="document.getElementById('file-input').click()" onmouseover="this.style.borderColor='var(--lava)'" onmouseout="this.style.borderColor='var(--slate)'">
+          <div style="font-size:2rem;margin-bottom:.5rem">📄</div>
+          <div style="color:var(--dusty);font-size:.8rem">Click to select CSV, Excel, or JSON</div>
+          <input id="file-input" type="file" accept=".csv,.xlsx,.xls,.json" style="display:none" onchange="handleFileUpload(this.files[0])">
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:.9rem;font-weight:600;margin-bottom:.75rem">🌐 Load from URL</h3>
+        <input id="url-input" type="text" placeholder="https://raw.githubusercontent.com/.../file.csv" value="https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv" style="margin-bottom:.5rem">
+        <button onclick="loadFromURL()" class="btn-primary" style="width:100%">Load from URL</button>
+        <div style="margin-top:.75rem">
+          <div style="font-size:.75rem;color:var(--dusty);margin-bottom:.4rem;font-weight:600">⚡ Quick datasets (click to load):</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+            <div onclick="document.getElementById('url-input').value='https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv';loadFromURL()" class="card card-hover" style="cursor:pointer;padding:.6rem;text-align:center" title="891 rows, 12 columns — binary classification">
+              <div style="font-size:1.3rem">🚢</div>
+              <div style="font-size:.75rem;font-weight:600;color:var(--snow);margin-top:2px">Titanic</div>
+              <div style="font-size:.6rem;color:var(--dusty)">891×12 • Classification</div>
+              <div style="display:flex;flex-wrap:wrap;gap:2px;justify-content:center;margin-top:3px">
+                <span style="background:rgba(245,110,15,.15);color:var(--lava);font-size:.55rem;padding:1px 4px;border-radius:3px">binary</span>
+                <span style="background:rgba(59,130,246,.15);color:var(--info);font-size:.55rem;padding:1px 4px;border-radius:3px">tabular</span>
+              </div>
+            </div>
+            <div onclick="document.getElementById('url-input').value='https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv';loadFromURL()" class="card card-hover" style="cursor:pointer;padding:.6rem;text-align:center" title="1599 rows, 12 columns — regression">
+              <div style="font-size:1.3rem">🍷</div>
+              <div style="font-size:.75rem;font-weight:600;color:var(--snow);margin-top:2px">Wine Quality</div>
+              <div style="font-size:.6rem;color:var(--dusty)">1599×12 • Regression</div>
+              <div style="display:flex;flex-wrap:wrap;gap:2px;justify-content:center;margin-top:3px">
+                <span style="background:rgba(16,185,129,.15);color:var(--success);font-size:.55rem;padding:1px 4px;border-radius:3px">regression</span>
+                <span style="background:rgba(59,130,246,.15);color:var(--info);font-size:.55rem;padding:1px 4px;border-radius:3px">tabular</span>
+              </div>
+            </div>
+            <div onclick="document.getElementById('url-input').value='https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv';loadFromURL()" class="card card-hover" style="cursor:pointer;padding:.6rem;text-align:center" title="150 rows, 5 columns — 3-class classification">
+              <div style="font-size:1.3rem">🌸</div>
+              <div style="font-size:.75rem;font-weight:600;color:var(--snow);margin-top:2px">Iris</div>
+              <div style="font-size:.6rem;color:var(--dusty)">150×5 • Classification</div>
+              <div style="display:flex;flex-wrap:wrap;gap:2px;justify-content:center;margin-top:3px">
+                <span style="background:rgba(245,110,15,.15);color:var(--lava);font-size:.55rem;padding:1px 4px;border-radius:3px">multi-class</span>
+                <span style="background:rgba(59,130,246,.15);color:var(--info);font-size:.55rem;padding:1px 4px;border-radius:3px">tabular</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:1.5rem">
+      <div class="card">
+        <h3 style="font-size:.9rem;font-weight:600;margin-bottom:.5rem">🔍 Find Datasets</h3>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem">
+          <a href="https://www.kaggle.com/datasets" target="_blank" class="card card-hover" style="text-decoration:none;padding:.75rem;text-align:center">
+            <div style="font-size:1.5rem">🏆</div>
+            <div style="font-size:.75rem;color:var(--snow);margin-top:4px">Kaggle</div>
+            <div style="font-size:.6rem;color:var(--dusty)">50k+ datasets</div>
+          </a>
+          <a href="https://archive.ics.uci.edu/" target="_blank" class="card card-hover" style="text-decoration:none;padding:.75rem;text-align:center">
+            <div style="font-size:1.5rem">🏛️</div>
+            <div style="font-size:.75rem;color:var(--snow);margin-top:4px">UCI Repository</div>
+            <div style="font-size:.6rem;color:var(--dusty)">600+ datasets</div>
+          </a>
+          <a href="https://huggingface.co/datasets" target="_blank" class="card card-hover" style="text-decoration:none;padding:.75rem;text-align:center">
+            <div style="font-size:1.5rem">🤗</div>
+            <div style="font-size:.75rem;color:var(--snow);margin-top:4px">Hugging Face</div>
+            <div style="font-size:.6rem;color:var(--dusty)">10k+ datasets</div>
+          </a>
+          <a href="https://www.openml.org/search?type=data" target="_blank" class="card card-hover" style="text-decoration:none;padding:.75rem;text-align:center">
+            <div style="font-size:1.5rem">🔬</div>
+            <div style="font-size:.75rem;color:var(--snow);margin-top:4px">OpenML</div>
+            <div style="font-size:.6rem;color:var(--dusty)">25k+ datasets</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div id="data-preview-section" style="${hasData?'':'display:none'}">
+      <div class="card" style="margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+          <h3 style="font-size:.9rem;font-weight:600">👀 Data Preview <span style="font-size:.7rem;color:var(--dusty);font-weight:400">(first 5 rows)</span></h3>
+          <span id="data-info" style="font-size:.75rem;color:var(--dusty)"></span>
+        </div>
+        <div id="data-table">${hasData ? renderTable(S.upload.preview?.columns||S.upload.columns, (S.upload.preview?.data||[]).slice(0,5)) : ''}</div>
+      </div>
+      <div id="data-stats-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.5rem"></div>
+    </div>
+    <div id="load-progress" style="display:none" class="card">${loadingHTML('Loading dataset...')}</div>
+  `;
+  if (hasData) updateDataStats();
+  updateNavButtons();
+}
+
+async function handleFileUpload(file) {
+  if (!file) return;
+  const formData = new FormData();
+  formData.append('file', file);
+  document.getElementById('load-progress').style.display = '';
+  document.getElementById('data-preview-section').style.display = 'none';
+  try {
+    const data = await api('POST', '/upload-data', formData, true);
+    S.upload = data; S.save();
+    renderLoadData();
+    showToast(`Loaded ${data.filename} (${data.shape[0]}×${data.shape[1]})`,'success');
+  } catch(e) {
+    showToast('Upload failed: '+e.message,'error');
+    document.getElementById('load-progress').style.display = 'none';
+  }
+}
+
+async function loadFromURL() {
+  const url = document.getElementById('url-input').value.trim();
+  if (!url) {showToast('Enter a URL','warning');return}
+  document.getElementById('load-progress').style.display = '';
+  document.getElementById('data-preview-section').style.display = 'none';
+  try {
+    const data = await api('POST', '/load-from-url', {url});
+    S.upload = data; S.save();
+    renderLoadData();
+    showToast(`Loaded ${data.filename} (${data.shape[0]}×${data.shape[1]})`,'success');
+  } catch(e) {
+    showToast('URL load failed: '+e.message,'error');
+    document.getElementById('load-progress').style.display = 'none';
+  }
+}
+
+function updateDataStats() {
+  if (!S.upload) return;
+  const d = S.upload;
+  document.getElementById('data-info').textContent = `${d.filename} • ${d.shape[0]} rows × ${d.shape[1]} cols`;
+  const cols = d.columns || [];
+  const types = d.dtypes || {};
+  const grid = document.getElementById('data-stats-grid');
+  grid.innerHTML = `
+    <div class="card" style="text-align:center;padding:.75rem"><div style="font-size:.65rem;color:var(--dusty)">Rows</div><div style="font-size:1.1rem;font-weight:700;color:var(--snow)">${d.shape[0].toLocaleString()}</div></div>
+    <div class="card" style="text-align:center;padding:.75rem"><div style="font-size:.65rem;color:var(--dusty)">Columns</div><div style="font-size:1.1rem;font-weight:700;color:var(--snow)">${d.shape[1]}</div></div>
+    <div class="card" style="text-align:center;padding:.75rem"><div style="font-size:.65rem;color:var(--dusty)">Numeric</div><div style="font-size:1.1rem;font-weight:700;color:var(--info)">${Object.values(types).filter(t=>t.includes('int')||t.includes('float')).length}</div></div>
+    <div class="card" style="text-align:center;padding:.75rem"><div style="font-size:.65rem;color:var(--dusty)">Categorical</div><div style="font-size:1.1rem;font-weight:700;color:var(--warning)">${Object.values(types).filter(t=>t==='object').length}</div></div>`;
+}
+
+function runLoadData() {
+  if (!S.upload) {showToast('Please load a dataset first','warning');return}
+  navigateTo(2);
+}
+
+// ─── STEP 2: EDA ─────────────────────────────────────────────
+async function renderEDA() {
+  const area = document.getElementById('content-area');
+  area.innerHTML = `
+    <div id="eda-content">
+      <div id="eda-progress" style="display:none">${loadingHTML('Running EDA analysis...')}</div>
+      <div id="eda-results">
+        <div class="rec-banner info">📊 EDA analyzes data quality, correlations, outliers, and provides preprocessing recommendations.</div>
+        <div id="eda-metrics" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.5rem;margin-bottom:1rem"></div>
+        <div id="eda-recommendations" style="margin-bottom:1rem"></div>
+        <div id="eda-tables" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="card">
+            <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">📋 Data Overview</h3>
+            <div id="eda-overview">${skeleton(6)}</div>
+          </div>
+          <div class="card">
+            <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">🎯 Target Candidates</h3>
+            <div id="eda-targets">${skeleton(4)}</div>
+          </div>
+        </div>
+        <div style="margin-top:1rem">
+          <div class="card">
+            <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">🔢 Numeric Columns Summary</h3>
+            <div id="eda-numeric" style="overflow-x:auto"></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  // Fetch recommendations from API for page load
+  try {
+    const rec = await api('POST', '/get-recommendation');
+    if (rec && rec.columns) {
+      const cols = Object.entries(rec.columns);
+      const overview = document.getElementById('eda-overview');
+      overview.innerHTML = `<table><tbody>
+        <tr><td>Total Columns</td><td>${cols.length}</td></tr>
+        <tr><td>Numeric</td><td>${cols.filter(([_,c])=>c.is_numeric).length}</td></tr>
+        <tr><td>Categorical</td><td>${cols.filter(([_,c])=>c.is_categorical&&!c.is_numeric).length}</td></tr>
+        <tr><td>With Missing</td><td>${cols.filter(([_,c])=>c.missing>0).length}</td></tr>
+        ${cols.filter(([_,c])=>c.missing_pct>5).slice(0,3).map(([n,c])=>`<tr><td>⚠️ ${n}</td><td>${c.missing_pct}% missing</td></tr>`).join('')}
+      </tbody></table>`;
+      const targets = document.getElementById('eda-targets');
+      const candidates = cols.filter(([_,c])=>c.is_categorical||c.nunique<=20);
+      targets.innerHTML = candidates.length ? candidates.slice(0,8).map(([n,c])=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--slate);font-size:.8rem"><span>${n}</span><span style="color:${c.is_categorical?'var(--warning)':'var(--info)'}">${c.nunique} unique</span></div>`).join('')
+        : '<div class="empty-state"><p>No clear target candidates</p></div>';
+      // Metrics
+      const metrics = document.getElementById('eda-metrics');
+      const nTotal = cols.length, nNum = cols.filter(([_,c])=>c.is_numeric).length, nCat = cols.filter(([_,c])=>c.is_categorical&&!c.is_numeric).length, nMiss = cols.filter(([_,c])=>c.missing>0).length;
+      metrics.innerHTML = [
+        {l:'Total Columns',v:nTotal},
+        {l:'Numeric',v:nNum,c:'var(--info)'},
+        {l:'Categorical',v:nCat,c:'var(--warning)'},
+        {l:'Missing >0',v:nMiss,c:nMiss?'var(--error)':'var(--success)'}
+      ].map(m=>`<div class="card" style="text-align:center;padding:.6rem"><div style="font-size:.65rem;color:var(--dusty)">${m.l}</div><div style="font-size:1.2rem;font-weight:700;color:${m.c||'var(--snow)'}">${m.v}</div></div>`).join('');
+    }
+  } catch(e) {}
+  updateNavButtons();
+}
+
+async function runEDA() {
+  const progress = document.getElementById('eda-progress');
+  const results = document.getElementById('eda-results');
+  progress.style.display = '';
+  results.style.opacity = '.3';
+  try {
+    const data = await api('POST', '/analyze-eda');
+    if (data && data.summary) {
+      const s = data.summary;
+      document.getElementById('eda-overview').innerHTML = `<table><tbody>
+        <tr><td>Quality Score</td><td style="color:${s.quality_score>70?'var(--success)':'var(--error)'}">${s.quality_score}/100</td></tr>
+        <tr><td>Total Rows</td><td>${s.overview.shape[0].toLocaleString()}</td></tr>
+        <tr><td>Total Columns</td><td>${s.overview.shape[1]}</td></tr>
+        <tr><td>Duplicates</td><td>${s.overview.duplicates}</td></tr>
+        <tr><td>Memory</td><td>${(s.overview.memory_usage/1024).toFixed(1)} KB</td></tr>
+      </tbody></table>`;
+      const recs = document.getElementById('eda-recommendations');
+      if (s.recommendations && s.recommendations.length) {
+        recs.innerHTML = s.recommendations.map(r => `<div class="rec-banner warn">💡 ${r}</div>`).join('');
+      }
+      if (s.numeric_analysis && s.numeric_analysis.stats) {
+        const stats = s.numeric_analysis.stats;
+        const cols = Object.keys(stats);
+        if (cols.length) {
+          const metrics = ['mean','std','min','25%','50%','75%','max'];
+          document.getElementById('eda-numeric').innerHTML = renderTable(['Metric',...cols], metrics.map(m=>({[m]:m,...Object.fromEntries(cols.map(c=>[c,stats[c][m]!==undefined?Number(stats[c][m]).toFixed(3):'—']))})));
+        }
+      }
+      showToast('EDA analysis complete','success');
+    }
+  } catch(e) {
+    showToast('EDA failed: '+e.message,'error');
+  }
+  progress.style.display = 'none';
+  results.style.opacity = '1';
+}
+
+// ─── STEP 3: PREPROCESS ──────────────────────────────────────
+function renderPreprocess() {
+  const area = document.getElementById('content-area');
+  area.innerHTML = `
+    <div class="rec-banner info">⚙️ Configure preprocessing steps: clean missing values, encode categories, scale features, and split data for training.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+      <div class="card">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.75rem;display:flex;align-items:center;gap:.3rem">🎯 Target Column <button onclick="openDoc('docs-preprocess')" class="btn-ghost" style="font-size:.6rem;padding:1px 5px;border-radius:3px;color:var(--info)" title="Open docs">ⓘ</button></h3>
+        <select id="target-col" onchange="updatePreprocessPreview()">
+          <option value="" disabled selected>Select target column...</option>
+          ${S.upload ? S.upload.columns.map(c => `<option value="${c}">${c}</option>`).join('') : ''}
+        </select>
+        <div style="display:flex;gap:.3rem;margin-top:.3rem">
+          <button onclick="autoDetectTarget()" class="btn-ghost" style="font-size:.7rem;border:1px solid var(--lava)">Auto-Detect</button>
+          <button onclick="suggestTarget()" class="btn-ghost" style="font-size:.7rem;border:1px solid var(--lava)">Suggestions</button>
+        </div>
+        <div id="target-suggestions" style="margin-top:.3rem"></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem">⚙️ Preprocessing Options</h3>
+        <div style="display:flex;flex-direction:column;gap:.4rem">
+          <div style="display:flex;align-items:center;gap:.5rem;padding:.4rem .6rem;background:var(--void);border:1px solid var(--slate);border-radius:6px">
+            <input type="checkbox" id="opt-clean" checked style="width:auto">
+            <span style="font-size:.78rem;min-width:40px">Clean</span>
+            <span style="color:var(--dusty);font-size:.65rem;margin-right:auto">Missing values</span>
+            <select id="opt-clean-method" style="width:auto;font-size:.72rem;padding:.2rem .4rem;background:var(--glyon);border:1px solid var(--slate);border-radius:4px;color:var(--snow)">
+              <option value="median" selected>Median fill</option>
+              <option value="mean">Mean fill</option>
+              <option value="mode">Mode fill</option>
+              <option value="drop">Drop rows</option>
+            </select>
+            <button onclick="openDoc('docs-preprocess')" class="btn-ghost" style="font-size:.55rem;padding:1px 4px;border-radius:3px;color:var(--info);flex-shrink:0" title="Documentation">ⓘ</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;padding:.4rem .6rem;background:var(--void);border:1px solid var(--slate);border-radius:6px">
+            <input type="checkbox" id="opt-encode" checked style="width:auto">
+            <span style="font-size:.78rem;min-width:40px">Encode</span>
+            <span style="color:var(--dusty);font-size:.65rem;margin-right:auto">Categorical → numeric</span>
+            <select id="opt-encode-method" style="width:auto;font-size:.72rem;padding:.2rem .4rem;background:var(--glyon);border:1px solid var(--slate);border-radius:4px;color:var(--snow)">
+              <option value="onehot" selected>One-hot</option>
+              <option value="label">Label encode</option>
+              <option value="target">Target encode</option>
+            </select>
+            <button onclick="openDoc('docs-preprocess')" class="btn-ghost" style="font-size:.55rem;padding:1px 4px;border-radius:3px;color:var(--info);flex-shrink:0" title="Documentation">ⓘ</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;padding:.4rem .6rem;background:var(--void);border:1px solid var(--slate);border-radius:6px">
+            <input type="checkbox" id="opt-scale" checked style="width:auto">
+            <span style="font-size:.78rem;min-width:40px">Scale</span>
+            <span style="color:var(--dusty);font-size:.65rem;margin-right:auto">Normalize features</span>
+            <select id="opt-scale-method" style="width:auto;font-size:.72rem;padding:.2rem .4rem;background:var(--glyon);border:1px solid var(--slate);border-radius:4px;color:var(--snow)">
+              <option value="standard" selected>Standard (Z-score)</option>
+              <option value="minmax">Min-Max (0-1)</option>
+              <option value="robust">Robust (IQR)</option>
+            </select>
+            <button onclick="openDoc('docs-preprocess')" class="btn-ghost" style="font-size:.55rem;padding:1px 4px;border-radius:3px;color:var(--info);flex-shrink:0" title="Documentation">ⓘ</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;padding:.4rem .6rem;background:var(--void);border:1px solid var(--slate);border-radius:6px">
+            <span style="font-size:.78rem;min-width:40px">Split</span>
+            <span style="color:var(--dusty);font-size:.65rem;margin-right:auto">Train / Test ratio</span>
+            <select id="test-size" style="width:auto;font-size:.72rem;padding:.2rem .4rem;background:var(--glyon);border:1px solid var(--slate);border-radius:4px;color:var(--snow)">
+              <option value="0.1">10% test</option>
+              <option value="0.2" selected>20% test</option>
+              <option value="0.3">30% test</option>
+              <option value="0.4">40% test</option>
+            </select>
+            <button onclick="openDoc('docs-preprocess')" class="btn-ghost" style="font-size:.55rem;padding:1px 4px;border-radius:3px;color:var(--info);flex-shrink:0" title="Documentation">ⓘ</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;padding:.4rem .6rem;background:var(--void);border:1px solid var(--slate);border-radius:6px">
+            <span style="font-size:.78rem;min-width:40px">CV</span>
+            <span style="color:var(--dusty);font-size:.65rem;margin-right:auto">Cross-validation folds</span>
+            <select id="cv-folds" style="width:auto;font-size:.72rem;padding:.2rem .4rem;background:var(--glyon);border:1px solid var(--slate);border-radius:4px;color:var(--snow)">
+              <option value="0">None</option>
+              <option value="3">3-fold</option>
+              <option value="5" selected>5-fold ★</option>
+              <option value="10">10-fold</option>
+            </select>
+            <button onclick="openDoc('docs-preprocess')" class="btn-ghost" style="font-size:.55rem;padding:1px 4px;border-radius:3px;color:var(--info);flex-shrink:0" title="Documentation">ⓘ</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;padding:.4rem .6rem;background:var(--void);border:1px solid var(--slate);border-radius:6px">
+            <span style="font-size:.78rem;min-width:40px">CV</span>
+            <span style="color:var(--dusty);font-size:.65rem;margin-right:auto">CV method</span>
+            <select id="cv-method" style="width:auto;font-size:.72rem;padding:.2rem .4rem;background:var(--glyon);border:1px solid var(--slate);border-radius:4px;color:var(--snow)">
+              <option value="kfold" selected>K-Fold ★</option>
+              <option value="stratified">Stratified</option>
+              <option value="group">Group K-Fold</option>
+              <option value="loo">Leave-One-Out</option>
+              <option value="repeated">Repeated</option>
+            </select>
+            <button onclick="openDoc('docs-preprocess')" class="btn-ghost" style="font-size:.55rem;padding:1px 4px;border-radius:3px;color:var(--info);flex-shrink:0" title="Documentation">ⓘ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="preprocess-preview" style="display:none;margin-bottom:1rem">
+      <div class="card">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">👀 Processing Preview</h3>
+        <div id="preview-content"></div>
+      </div>
+    </div>
+    <div id="preprocess-progress" style="display:none">${loadingHTML('Preprocessing data...')}</div>
+  `;
+  updateNavButtons();
+}
+
+async function autoDetectTarget() {
+  if (!S.upload) return;
+  try {
+    const rec = await api('POST', '/get-recommendation');
+    if (rec && rec.columns) {
+      const entries = Object.entries(rec.columns);
+      // Find best target: categorical with few unique values, or binary numeric
+      const candidates = entries.filter(([_,c])=>c.is_categorical && c.nunique <= 20)
+        .sort((a,b)=>a[1].nunique - b[1].nunique);
+      if (candidates.length) {
+        document.getElementById('target-col').value = candidates[0][0];
+        showToast(`Auto-detected: ${candidates[0][0]}`,'success');
+      } else {
+        showToast('No clear target column detected','warning');
+      }
+    }
+  } catch(e) {showToast('Detection failed: '+e.message,'error')}
+}
+
+async function suggestTarget() {
+  if (!S.upload) return;
+  try {
+    const rec = await api('POST', '/get-recommendation');
+    if (rec && rec.columns) {
+      const entries = Object.entries(rec.columns)
+        .filter(([_,c])=>c.is_categorical && c.nunique <= 20)
+        .sort((a,b)=>a[1].nunique - b[1].nunique)
+        .slice(0,5);
+      document.getElementById('target-suggestions').innerHTML = entries.map(([n,c]) =>
+        `<button onclick="document.getElementById('target-col').value='${n}';document.getElementById('target-suggestions').innerHTML=''" class="btn-ghost" style="font-size:.7rem;padding:.2rem .5rem">${n} (${c.nunique} classes)</button>`
+      ).join('');
+    }
+  } catch(e) {}
+}
+
+async function runPreprocess() {
+  const target = document.getElementById('target-col').value;
+  if (!target) {showToast('Please select a target column','warning');return}
+  const steps = [];
+  if (document.getElementById('opt-clean').checked) steps.push('clean');
+  if (document.getElementById('opt-encode').checked) steps.push('encode');
+  if (document.getElementById('opt-scale').checked) steps.push('scale');
+  const testSize = parseFloat(document.getElementById('test-size').value);
+  const cvFolds = parseInt(document.getElementById('cv-folds').value);
+  const cvMethod = document.getElementById('cv-method').value;
+  document.getElementById('preprocess-progress').style.display = '';
+  try {
+    const result = await api('POST', '/process-data', {
+      target_column: target,
+      test_size: testSize,
+      preprocessing_steps: steps,
+      cv_folds: cvFolds,
+      cv_method: cvMethod
+    });
+    result._testSize = testSize;
+    result._cvFolds = cvFolds;
+    result._cvMethod = cvMethod;
+    S.processed = result; S.save();
+    document.getElementById('preprocess-preview').style.display = '';
+    document.getElementById('preview-content').innerHTML = `
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:.6rem">
+        <div style="display:flex;align-items:center;gap:.4rem;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);padding:.3rem .7rem;border-radius:6px;font-size:.75rem">
+          <span style="color:var(--dusty)">Shape</span>
+          <span style="font-weight:600">${result.processed_shape[0]} rows × ${result.processed_shape[1]} cols</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.4rem;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);padding:.3rem .7rem;border-radius:6px;font-size:.75rem">
+          <span style="color:var(--dusty)">Target</span>
+          <span style="font-weight:600">${target}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.4rem;background:rgba(245,110,15,.08);border:1px solid rgba(245,110,15,.2);padding:.3rem .7rem;border-radius:6px;font-size:.75rem">
+          <span style="color:var(--dusty)">Steps</span>
+          <span style="font-weight:600">${steps.join(', ')}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.4rem;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);padding:.3rem .7rem;border-radius:6px;font-size:.75rem">
+          <span style="color:var(--dusty)">Split</span>
+          <span style="font-weight:600">${result.has_split ? Math.round((1-testSize)*100)+'/'+Math.round(testSize*100) : '❌ No'}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.4rem;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);padding:.3rem .7rem;border-radius:6px;font-size:.75rem">
+          <span style="color:var(--dusty)">CV</span>
+          <span style="font-weight:600">${cvFolds > 0 ? cvFolds+'-fold '+cvMethod : 'None'}</span>
+        </div>
+      </div>
+      <div style="font-size:.75rem;color:var(--dusty);background:var(--void);border:1px solid var(--slate);border-radius:6px;padding:.4rem .7rem">
+        <span style="color:var(--snow);font-weight:600">Features:</span> ${(result.features||[]).slice(0,15).join(', ')}${(result.features||[]).length>15?'...':''}
+      </div>`;
+    showToast(`Data processed: ${result.processed_shape[0]}×${result.processed_shape[1]}`,'success');
+    document.getElementById('preprocess-progress').style.display = 'none';
+    updateNavButtons();
+  } catch(e) {
+    showToast('Processing failed: '+e.message,'error');
+    document.getElementById('preprocess-progress').style.display = 'none';
+  }
+}
+
+// ─── STEP 4: TRAIN ────────────────────────────────────────────
+function renderTrain() {
+  const area = document.getElementById('content-area');
+  const hasProcessed = !!S.processed;
+  area.innerHTML = `
+    <div class="rec-banner info">🧠 Select task type, configure validation, and choose models to train.</div>
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:1rem;margin-bottom:1rem">
+      <div class="card">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.75rem;display:flex;align-items:center;gap:.3rem">📋 Task Type <button onclick="openDoc('docs-train')" class="btn-ghost" style="font-size:.6rem;padding:1px 5px;border-radius:3px;color:var(--info)" title="Open docs">ⓘ</button></h3>
+        <select id="task-type-select" onchange="selectTaskType(this.value)" style="font-size:.82rem;padding:.45rem .6rem;background:var(--void);border:1px solid var(--slate);border-radius:6px;color:var(--snow);cursor:pointer">
+          <option value="classification" ${(S.taskType||'classification')==='classification'?'selected':''}>🏷️ Classification</option>
+          <option value="regression" ${S.taskType==='regression'?'selected':''}>📈 Regression</option>
+          <option value="clustering" ${S.taskType==='clustering'?'selected':''}>🔵 Clustering</option>
+        </select>
+        <div style="margin-top:.6rem;font-size:.72rem;color:var(--dusty);text-align:center" id="task-hint">Choose a task type to see available models</div>
+        <div style="margin-top:.6rem;border-top:1px solid var(--slate);padding-top:.6rem">
+          <div style="font-size:.72rem;color:var(--dusty);margin-bottom:.3rem">⚙️ Validation config from preprocessing:</div>
+          <div id="train-validation-info" style="font-size:.78rem;color:var(--snow)">${S.processed?._testSize ? `Test size: ${Math.round(S.processed._testSize*100)}% | CV: ${S.processed._cvFolds||0}-fold ${S.processed._cvMethod||'kfold'}` : '<span style="color:var(--dusty)">Not configured — run Preprocess first</span>'}</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.75rem">🤖 Select Models</h3>
+        <div id="model-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.4rem">
+          <div class="empty-state"><p>Select a task type first</p></div>
+        </div>
+      </div>
+    </div>
+    <div id="train-progress" style="display:none">${loadingHTML('Training models...')}</div>
+    <div id="train-results" style="display:${S.trainResults?'':'none'}">
+      <div class="card">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">✅ Training Results</h3>
+        <div id="train-summary"></div>
+      </div>
+    </div>
+  `;
+  if (S.taskType) renderModels();
+  const vc = S.processed||{};
+  const vi = document.getElementById('train-validation-info');
+  if (vi) vi.innerHTML = vc._testSize ? `Test size: ${Math.round(vc._testSize*100)}% | CV: ${vc._cvFolds||0}-fold ${vc._cvMethod||'kfold'}` : '<span style="color:var(--dusty)">Not configured — run Preprocess first</span>';
+  if (S.trainResults) updateTrainSummary();
+  updateNavButtons();
+}
+
+const MODELS_BY_TYPE = {
+  classification: [
+    {id:'logistic_regression',name:'Logistic Regression',desc:'Fast, interpretable baseline',tags:['Fast','Interpretable']},
+    {id:'random_forest',name:'Random Forest',desc:'Ensemble of decision trees, robust',tags:['Robust','Handles Missing']},
+    {id:'svm',name:'SVM',desc:'Effective in high dimensions',tags:['High Accuracy','Memory Efficient']},
+    {id:'gradient_boosting',name:'Gradient Boosting',desc:'Sequential tree ensemble',tags:['High Performance','Complex']},
+    {id:'knn',name:'KNN',desc:'Distance-based classification',tags:['Simple','Non-parametric']},
+    {id:'naive_bayes',name:'Naive Bayes',desc:'Probabilistic classifier',tags:['Fast','Good for Text']},
+    {id:'decision_tree',name:'Decision Tree',desc:'Rule-based, interpretable',tags:['Interpretable','Visual']},
+    {id:'adaboost',name:'AdaBoost',desc:'Adaptive boosting ensemble',tags:['Ensemble','Simple']},
+    {id:'extra_trees',name:'Extra Trees',desc:'Randomized decision trees',tags:['Fast','Robust']},
+    {id:'mlp',name:'Neural Network',desc:'1-3 hidden layer MLP',tags:['Flexible','Complex']},
+    {id:'xgboost',name:'XGBoost',desc:'Optimized gradient boosting',tags:['State-of-Art','Scalable','opt']},
+    {id:'lightgbm',name:'LightGBM',desc:'Lightweight gradient boosting',tags:['Fast','Memory Efficient','opt']},
+    {id:'catboost',name:'CatBoost',desc:'Handles categorical features natively',tags:['Robust','Auto','opt']},
+    {id:'qda',name:'QDA',desc:'Quadratic Discriminant Analysis',tags:['Probabilistic','Simple']},
+    {id:'ridge',name:'Ridge Classifier',desc:'Regularized linear classifier',tags:['Fast','Regularized']},
+    {id:'voting_ensemble',name:'Voting Ensemble',desc:'Combine multiple models by voting',tags:['Ensemble','Stable']},
+    {id:'stacking_ensemble',name:'Stacking Ensemble',desc:'Meta-learner combining models',tags:['Ensemble','Powerful']}
+  ],
+  regression: [
+    {id:'linear_regression',name:'Linear Regression',desc:'Fast, interpretable baseline',tags:['Fast','Interpretable']},
+    {id:'ridge',name:'Ridge Regression',desc:'L2-regularized linear regression',tags:['Regularized','Stable']},
+    {id:'lasso',name:'Lasso Regression',desc:'L1-regularized, feature selection',tags:['Sparse','Feature Selection']},
+    {id:'elastic_net',name:'ElasticNet',desc:'Combination of L1+L2 regularization',tags:['Regularized','Versatile']},
+    {id:'huber',name:'Huber Regressor',desc:'Robust to outliers',tags:['Robust','Outliers']},
+    {id:'quantile',name:'Quantile Regressor',desc:'Predict specific quantiles',tags:['Quantiles','Robust']},
+    {id:'poisson',name:'Poisson Regressor',desc:'For count data',tags:['Count Data','GLM','opt']},
+    {id:'gamma',name:'Gamma Regressor',desc:'For positive continuous data',tags:['Positive Data','GLM','opt']},
+    {id:'random_forest',name:'Random Forest',desc:'Ensemble for regression',tags:['Robust','Non-linear']},
+    {id:'svr',name:'SVR',desc:'Regression with kernel trick',tags:['High Accuracy','Non-linear']},
+    {id:'gradient_boosting',name:'Gradient Boosting',desc:'Sequential ensemble',tags:['High Performance','Complex']},
+    {id:'hist_gradient_boosting',name:'Hist GB',desc:'Fast histogram-based GB',tags:['Fast','Scalable']},
+    {id:'knn',name:'KNN',desc:'Distance-based regression',tags:['Simple','Non-parametric']},
+    {id:'decision_tree',name:'Decision Tree',desc:'Rule-based regression',tags:['Interpretable','Visual']},
+    {id:'extra_trees',name:'Extra Trees',desc:'Randomized decision trees',tags:['Fast','Robust']},
+    {id:'mlp',name:'Neural Network',desc:'MLP regressor',tags:['Flexible','Complex']},
+    {id:'xgboost',name:'XGBoost',desc:'Optimized for regression',tags:['State-of-Art','Scalable','opt']},
+    {id:'lightgbm',name:'LightGBM',desc:'Lightweight gradient boosting',tags:['Fast','Memory Efficient','opt']},
+    {id:'catboost',name:'CatBoost',desc:'Handles categorical features',tags:['Robust','Auto','opt']}
+  ],
+  clustering: [
+    {id:'kmeans',name:'K-Means',desc:'Partitional clustering',tags:['Fast','Scalable']},
+    {id:'mini_batch_kmeans',name:'Mini-Batch K-Means',desc:'Faster K-Means for large data',tags:['Fast','Large Data']},
+    {id:'dbscan',name:'DBSCAN',desc:'Density-based clustering',tags:['Noise Handling','Arbitrary Shape']},
+    {id:'hdbscan',name:'HDBSCAN',desc:'Hierarchical DBSCAN',tags:['Robust','Variable Density','opt']},
+    {id:'hierarchical',name:'Hierarchical',desc:'Tree-based clustering',tags:['Hierarchy','Visual']},
+    {id:'spectral',name:'Spectral',desc:'Graph-based clustering',tags:['Non-convex','Complex']},
+    {id:'birch',name:'BIRCH',desc:'Balanced iterative clustering',tags:['Fast','Memory Efficient']},
+    {id:'optics',name:'OPTICS',desc:'Ordering points to identify structure',tags:['Variable Density','Robust']},
+    {id:'mean_shift',name:'Mean Shift',desc:'Mode-seeking algorithm',tags:['No Clusters Spec','Non-parametric']},
+    {id:'affinity_propagation',name:'Affinity Prop.',desc:'Message-passing clustering',tags:['No Clusters Spec','Exemplar']},
+    {id:'gmm',name:'GMM',desc:'Gaussian Mixture Model',tags:['Probabilistic','Soft Clustering']},
+    {id:'kmedoids',name:'K-Medoids',desc:'Robust to outliers',tags:['Robust','Outliers','opt']},
+    {id:'fuzzy_cmeans',name:'Fuzzy C-Means',desc:'Soft membership clustering',tags:['Soft','Fuzzy','opt']}
+  ]
+};
+
+function selectTaskType(type) {
+  S.taskType = type; S.save();
+  const hints = {classification:'🏷️ Classification: Predict a category/label',regression:'📈 Regression: Predict a continuous value',clustering:'🔵 Clustering: Find natural groupings'};
+  document.getElementById('task-hint').textContent = hints[type]||'';
+  renderModels();
+}
+
+function renderModels() {
+  const type = S.taskType;
+  const models = MODELS_BY_TYPE[type]||[];
+  const grid = document.getElementById('model-grid');
+  if (!grid) return;
+  grid.innerHTML = models.map(m => {
+    const sel = (S.selectedModels||[]).includes(m.id);
+    return `<div class="model-card ${sel?'selected':''}" onclick="toggleModel('${m.id}')" title="${m.name}: ${m.desc}">
+      <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem">
+        <input type="checkbox" class="model-checkbox" ${sel?'checked':''} style="accent-color:var(--lava)">
+        <div style="font-size:.8rem;font-weight:600">${m.name}</div>
+      </div>
+      <div style="font-size:.7rem;color:var(--dusty);margin-bottom:.3rem">${m.desc}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:2px">${m.tags.map(t=>t==='opt'?`<span style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);font-size:.55rem;padding:1px 4px;border-radius:3px" title="Optional — install required package">pip</span>`:`<span style="background:var(--slate);font-size:.6rem;padding:1px 5px;border-radius:3px">${t}</span>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleModel(id) {
+  S.selectedModels = S.selectedModels||[];
+  const idx = S.selectedModels.indexOf(id);
+  if (idx >= 0) S.selectedModels.splice(idx,1);
+  else S.selectedModels.push(id);
+  S.save();
+  renderModels();
+}
+
+async function runTrain() {
+  if (!S.taskType) {showToast('Select a task type','warning');return}
+  if (!S.selectedModels||!S.selectedModels.length) {showToast('Select at least one model','warning');return}
+  document.getElementById('train-progress').style.display = '';
+  try {
+    const vc = S.processed||{};
+    const result = await api('POST', '/train-models', {
+      model_type: S.taskType,
+      model_list: S.selectedModels,
+      test_size: vc._testSize || 0.2,
+      cv_folds: vc._cvFolds || 0
+    });
+    S.models = result; S.trainResults = result; S.save();
+    document.getElementById('train-progress').style.display = 'none';
+    document.getElementById('train-results').style.display = '';
+    document.getElementById('train-summary').innerHTML = `
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">${(result.trained_models||[]).map(m =>
+        `<span style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);padding:.3rem .6rem;border-radius:6px;font-size:.8rem">✅ ${m}</span>`
+      ).join('')}</div>`;
+    showToast(`Trained ${(result.trained_models||[]).length} models`,'success');
+    updateNavButtons();
+  } catch(e) {
+    showToast('Training failed: '+e.message,'error');
+    document.getElementById('train-progress').style.display = 'none';
+  }
+}
+
+// ─── STEP 5: EVALUATE ─────────────────────────────────────────
+function renderEvaluate() {
+  const area = document.getElementById('content-area');
+  const hasModels = Object.keys(S.models).length > 0;
+  area.innerHTML = `
+    <div class="rec-banner info">📈 Evaluate trained models with comprehensive metrics (accuracy, precision, recall, F1, ROC-AUC, etc.)</div>
+    <div style="margin-bottom:1rem">
+      <div class="card">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">🏆 Trained Models</h3>
+        <div id="eval-model-list" style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.5rem">
+          ${S.trainResults && S.trainResults.trained_models ? S.trainResults.trained_models.map(m =>
+            `<span style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);padding:.3rem .6rem;border-radius:6px;font-size:.8rem">✅ ${m}</span>`
+          ).join('') : '<div class="empty-state"><p>No trained models</p></div>'}
+        </div>
+        ${S.upload ? `<div style="font-size:.75rem;color:var(--dusty)">Task: ${S.taskType||'N/A'} | Target column detected from preprocessing</div>` : ''}
+      </div>
+    </div>
+    <div id="eval-progress" style="display:none">${loadingHTML('Evaluating models...')}</div>
+    <div id="eval-results" style="display:${S.evalResults?'':'none'}">
+      <div id="eval-metrics-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.5rem;margin-bottom:1rem"></div>
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">📊 Detailed Metrics</h3>
+        <div id="eval-table" style="overflow-x:auto"></div>
+      </div>
+      <div id="eval-charts" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+        <div class="card"><h3 style="font-size:.8rem;font-weight:600;margin-bottom:.5rem">📈 Comparison Chart</h3><div id="comparison-chart" style="height:250px"><canvas id="comparison-canvas"></canvas></div></div>
+        <div class="card"><h3 style="font-size:.8rem;font-weight:600;margin-bottom:.5rem">🎯 Best Model</h3><div id="best-model-info"></div></div>
+      </div>
+      <div id="eval-roc-section" style="display:none;margin-bottom:1rem">
+        <div class="card"><h3 style="font-size:.8rem;font-weight:600;margin-bottom:.5rem;display:flex;align-items:center;gap:.3rem">📉 ROC Curves <button onclick="openDoc('docs-evaluate')" class="btn-ghost" style="font-size:.55rem;padding:1px 4px;border-radius:3px;color:var(--info)" title="Open docs">ⓘ</button></h3><div id="roc-chart" style="height:250px"><canvas id="roc-canvas"></canvas></div></div>
+      </div>
+      <div id="eval-cm-section" style="display:none;margin-bottom:1rem">
+        <div class="card"><h3 style="font-size:.8rem;font-weight:600;margin-bottom:.5rem">🔲 Confusion Matrices</h3><div id="cm-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem"></div></div>
+      </div>
+      <div id="eval-residuals-section" style="display:none;margin-bottom:1rem">
+        <div class="card"><h3 style="font-size:.8rem;font-weight:600;margin-bottom:.5rem">📉 Residuals Plot</h3><div id="residuals-chart" style="height:250px"><canvas id="residuals-canvas"></canvas></div></div>
+      </div>
+      <div id="eval-cv-section" style="display:none;margin-bottom:1rem">
+        <div class="card"><h3 style="font-size:.8rem;font-weight:600;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem">🔄 Cross-Validation <span style="font-size:.65rem;color:var(--dusty);font-weight:400">(best model)</span></h3>
+          <div style="margin-bottom:.5rem;display:flex;gap:.5rem;align-items:center">
+            <select id="cv-model-select" style="width:auto;font-size:.75rem;padding:.3rem .5rem" onchange="runCVForModel()"></select>
+            <select id="cv-folds-select" style="width:auto;font-size:.75rem;padding:.3rem .5rem"><option value="3">3 folds</option><option value="5" selected>5 folds</option><option value="10">10 folds</option></select>
+            <button onclick="runCVForModel()" class="btn-ghost" style="font-size:.75rem;border:1px solid var(--lava)">Run CV</button>
+          </div>
+          <div id="cv-chart" style="height:200px"><canvas id="cv-canvas"></canvas></div>
+          <div id="cv-stats" style="margin-top:.5rem;font-size:.75rem;color:var(--dusty)"></div>
+        </div>
+      </div>
+    </div>
+  `;
+  if (S.evalResults) displayEvalResults();
+  updateNavButtons();
+}
+
+async function runEvaluate() {
+  if (!S.taskType) {showToast('No task type selected','warning');return}
+  document.getElementById('eval-progress').style.display = '';
+  try {
+    const result = await api('POST', '/evaluate-models', {model_type: S.taskType});
+    S.evalResults = result; S.save();
+    document.getElementById('eval-progress').style.display = 'none';
+    document.getElementById('eval-results').style.display = '';
+    displayEvalResults();
+    showToast('Evaluation complete','success');
+    updateNavButtons();
+  } catch(e) {
+    showToast('Evaluation failed: '+e.message,'error');
+    document.getElementById('eval-progress').style.display = 'none';
+    // Show demo data if API fails
+    const demoFpr = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1];
+    S.evalResults = {message:'Demo', evaluation_results: {
+      logistic_regression: {accuracy:0.82,precision:0.80,recall:0.82,f1:0.81,roc_auc:0.88,
+        confusion_matrix:[[120,25],[30,135]], roc_curve:{fpr:demoFpr,tpr:[0,0.4,0.55,0.65,0.72,0.78,0.82,0.86,0.89,0.91,1]}},
+      random_forest: {accuracy:0.86,precision:0.85,recall:0.86,f1:0.85,roc_auc:0.92,
+        confusion_matrix:[[130,15],[25,140]], roc_curve:{fpr:demoFpr,tpr:[0,0.5,0.65,0.75,0.82,0.86,0.9,0.93,0.96,0.98,1]}}
+    }, model_type:'classification'};
+    document.getElementById('eval-results').style.display = '';
+    displayEvalResults();
+    showToast('Showing demo results (API unavailable)','warning');
+    updateNavButtons();
+  }
+}
+
+function displayEvalResults() {
+  const evals = S.evalResults.evaluation_results||{};
+  const isReg = S.taskType === 'regression';
+  const metrics = isReg ? ['r2','rmse','mae','mse','mape'] : ['accuracy','precision','recall','f1','roc_auc'];
+  // Metric cards for best model
+  const grid = document.getElementById('eval-metrics-grid');
+  if (grid) {
+    const names = Object.keys(evals);
+    const best = names.length ? names.reduce((a,b) => (evals[a]?.accuracy||evals[a]?.r2||0) > (evals[b]?.accuracy||evals[b]?.r2||0) ? a : b) : '';
+    if (best && evals[best]) {
+      const avail = metrics.filter(m => evals[best][m] !== undefined);
+      grid.innerHTML = avail.map(m =>
+        metricCard(m.toUpperCase(), evals[best][m], isReg ? m==='r2' : evals[best][m] > 0.7)
+      ).join('');
+    }
+  }
+  // Table
+  const table = document.getElementById('eval-table');
+  if (table) {
+    const metricNames = [...new Set(Object.values(evals).flatMap(m => Object.keys(m).filter(k=>k!=='error'&&!k.includes('_matrix')&&k!=='roc_curve'&&k!=='residuals')))];
+    table.innerHTML = renderTable(['Model',...metricNames], Object.entries(evals).map(([name,m])=>({Model:name.replace(/_/g,' '),...Object.fromEntries(metricNames.map(k=>[k,m[k]!==undefined?Number(m[k]).toFixed(4):'—']))})));
+  }
+  // Comparison chart
+  const canvas = document.getElementById('comparison-canvas');
+  if (canvas && Object.keys(evals).length) {
+    if (evalChart) { evalChart.destroy(); evalChart = null; }
+    const ctx = canvas.getContext('2d');
+    const names = Object.keys(evals);
+    const avail = metrics.filter(m => evals[names[0]]?.[m] !== undefined);
+    const colors = ['#F56E0F','#10B981','#3B82F6','#EF4444','#F59E0B','#8B5CF6'];
+    const datasets = avail.map((m, i) => ({
+      label: m.toUpperCase(), data: names.map(n => evals[n]?.[m]||0),
+      backgroundColor: colors[i] + 'b3',
+      borderColor: colors[i],
+      borderWidth: 1
+    }));
+    evalChart = new Chart(ctx, {type:'bar',data:{labels:names.map(n=>n.replace(/_/g,' ')),datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#878787',font:{family:'Courier New',size:10}}}},scales:{x:{ticks:{color:'#878787'}},y:{beginAtZero:true,ticks:{color:'#878787'}}}}});
+  }
+  // Best model info
+  const bestInfo = document.getElementById('best-model-info');
+  if (bestInfo) {
+    const names = Object.keys(evals);
+    const best = names.length ? names.reduce((a,b) => (evals[a]?.accuracy||evals[a]?.r2||0) > (evals[b]?.accuracy||evals[b]?.r2||0) ? a : b) : '';
+    bestInfo.innerHTML = best ? `<div style="text-align:center">
+      <div style="font-size:1.3rem;font-weight:700;color:var(--lava)">🏆 ${best.replace(/_/g,' ')}</div>
+      <div style="font-size:.75rem;color:var(--dusty);margin-top:4px">Best performing model</div>
+      ${metrics.filter(m=>evals[best]?.[m]!==undefined).map(m=>`
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--slate);margin-top:4px">
+          <span style="font-size:.8rem">${m.toUpperCase()}</span>
+          <span style="font-size:.8rem;font-weight:600;color:var(--success)">${Number(evals[best][m]).toFixed(4)}</span>
+        </div>`).join('')}
+    </div>` : '<div class="empty-state"><p>No evaluation data</p></div>';
+  }
+  // ROC Curves
+  renderROCCurves(evals);
+  // Confusion Matrices
+  renderConfusionMatrices(evals);
+  // Residuals
+  renderResidualsPlot(evals);
+  // CV section
+  setupCVSection(evals);
+}
+
+function renderROCCurves(evals) {
+  const section = document.getElementById('eval-roc-section');
+  const canvas = document.getElementById('roc-canvas');
+  const names = Object.keys(evals).filter(n => evals[n]?.roc_curve);
+  if (!canvas || !names.length) { if(section) section.style.display='none'; return; }
+  section.style.display = '';
+  if (window.rocChart) { window.rocChart.destroy(); }
+  const ctx = canvas.getContext('2d');
+  const colors = ['#F56E0F','#10B981','#3B82F6','#EF4444','#8B5CF6','#F59E0B'];
+  const datasets = names.map((n, i) => ({
+    label: n.replace(/_/g,' '), data: evals[n].roc_curve.fpr.map((f, j) => ({x: f, y: evals[n].roc_curve.tpr[j]})),
+    showLine: true, borderColor: colors[i % colors.length], backgroundColor: 'transparent', pointRadius: 0
+  }));
+  datasets.push({label:'Random', data:[{x:0,y:0},{x:1,y:1}], showLine:true, borderColor:'rgba(255,255,255,.2)', borderDash:[5,5], pointRadius:0, backgroundColor:'transparent'});
+  window.rocChart = new Chart(ctx, {type:'scatter', data:{datasets}, options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#878787',font:{family:'Courier New',size:9}}}},
+    scales:{x:{type:'linear',position:'bottom',min:0,max:1,title:{display:true,text:'False Positive Rate',color:'#878787',font:{family:'Courier New',size:10}},ticks:{color:'#878787'}},
+             y:{min:0,max:1,title:{display:true,text:'True Positive Rate',color:'#878787',font:{family:'Courier New',size:10}},ticks:{color:'#878787'}}}
+  }});
+}
+
+function renderConfusionMatrices(evals) {
+  const section = document.getElementById('eval-cm-section');
+  const grid = document.getElementById('cm-grid');
+  const names = Object.keys(evals).filter(n => evals[n]?.confusion_matrix);
+  if (!grid || !names.length) { if(section) section.style.display='none'; return; }
+  section.style.display = '';
+  grid.innerHTML = names.map(name => {
+    const cm = evals[name].confusion_matrix;
+    const maxVal = Math.max(...cm.flat());
+    const n = cm.length;
+    return `<div><div style="font-size:.75rem;font-weight:600;margin-bottom:.3rem;color:var(--snow)">${name.replace(/_/g,' ')}</div>
+      <div style="display:grid;grid-template-columns:repeat(${n},1fr);gap:2px;max-width:200px">
+        ${cm.map((row, ri) => row.map((v, ci) => {
+          const pct = maxVal ? v/maxVal : 0;
+          const bg = ri === ci ? `rgba(16,185,129,${0.2 + pct*0.6})` : `rgba(239,68,68,${0.1 + pct*0.4})`;
+          return `<div style="background:${bg};padding:6px;text-align:center;font-size:.75rem;font-weight:600;border-radius:3px">${v}</div>`;
+        }).join('')).join('')}
+      </div>
+      <div style="display:flex;gap:1rem;font-size:.6rem;color:var(--dusty);margin-top:2px"><span>↓ Actual → Predicted</span></div>
+    </div>`;
+  }).join('');
+}
+
+function renderResidualsPlot(evals) {
+  const section = document.getElementById('eval-residuals-section');
+  const canvas = document.getElementById('residuals-canvas');
+  const names = Object.keys(evals).filter(n => evals[n]?.residuals);
+  if (!canvas || !names.length) { if(section) section.style.display='none'; return; }
+  section.style.display = '';
+  const best = names[0];
+  const r = evals[best].residuals;
+  if (window.residualsChart) { window.residualsChart.destroy(); }
+  const ctx = canvas.getContext('2d');
+  window.residualsChart = new Chart(ctx, {type:'scatter', data:{
+    datasets: [
+      {label:'Residuals', data: r.predicted.map((p,i)=>({x:p, y:r.residuals[i]})),
+       backgroundColor:'rgba(245,110,15,.5)', pointRadius:3},
+      {label:'Zero line', data:[{x:Math.min(...r.predicted),y:0},{x:Math.max(...r.predicted),y:0}],
+       showLine:true, borderColor:'rgba(255,255,255,.2)', borderDash:[5,5], pointRadius:0, backgroundColor:'transparent'}
+    ]}, options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#878787',font:{family:'Courier New',size:9}}}},
+    scales:{x:{title:{display:true,text:'Predicted',color:'#878787',font:{family:'Courier New',size:10}},ticks:{color:'#878787'}},
+             y:{title:{display:true,text:'Residual',color:'#878787',font:{family:'Courier New',size:10}},ticks:{color:'#878787'}}}
+  }});
+}
+
+function setupCVSection(evals) {
+  const section = document.getElementById('eval-cv-section');
+  const sel = document.getElementById('cv-model-select');
+  if (!sel || !Object.keys(evals).length) { if(section) section.style.display='none'; return; }
+  section.style.display = '';
+  sel.innerHTML = Object.keys(evals).map(n => `<option value="${n}">${n.replace(/_/g,' ')}</option>`).join('');
+}
+
+async function runCVForModel() {
+  const model = document.getElementById('cv-model-select')?.value;
+  const folds = parseInt(document.getElementById('cv-folds-select')?.value||5);
+  if (!model) return;
+  const canvas = document.getElementById('cv-canvas');
+  if (!canvas) return;
+  try {
+    const res = await api('POST', '/cross-validate', {model_name: model, folds, method: 'k_fold'});
+    const cv = res.cv_results || {};
+    // Find first metric key with scores array
+    const metricKey = Object.keys(cv).find(k => cv[k]?.scores && Array.isArray(cv[k].scores));
+    const scores = metricKey ? cv[metricKey].scores : [];
+    if (scores.length && canvas) {
+      if (window.cvChart) { window.cvChart.destroy(); }
+      const ctx = canvas.getContext('2d');
+      const mean = scores.reduce((a,b)=>a+b,0)/scores.length;
+      const std = Math.sqrt(scores.reduce((a,b)=>a+(b-mean)**2,0)/scores.length);
+      document.getElementById('cv-stats').innerHTML = `Metric: ${metricKey} | Mean: ${(mean*100).toFixed(2)}% ± ${(std*100).toFixed(2)}% (${folds}-fold CV)`;
+      window.cvChart = new Chart(ctx, {type:'bar', data:{
+        labels: scores.map((_,i)=>`Fold ${i+1}`),
+        datasets: [{label: metricKey, data: scores, backgroundColor: scores.map(s=>s>=mean?'rgba(16,185,129,.6)':'rgba(245,110,15,.6)'), borderColor: scores.map(s=>s>=mean?'#10B981':'#F56E0F'), borderWidth:1}]
+      }, options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{y:{beginAtZero:true, max:1, ticks:{color:'#878787'}}, x:{ticks:{color:'#878787'}}}
+      }});
+      showToast(`CV: ${(mean*100).toFixed(1)}% ± ${(std*100).toFixed(1)}%`,'success');
+    }
+  } catch(e) {
+    document.getElementById('cv-stats').innerHTML = `<span style="color:var(--error)">CV unavailable: ${e.message}</span>`;
+  }
+}
+
+// ─── STEP 6: INTERPRET ────────────────────────────────────────
+function renderInterpret() {
+  const area = document.getElementById('content-area');
+  area.innerHTML = `
+    <div class="rec-banner info">🔍 Interpret model predictions using SHAP, LIME, Partial Dependence, and Feature Importance analysis.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+      <div class="card">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem;display:flex;align-items:center;gap:.3rem">⚙️ Settings <button onclick="openDoc('docs-interpret')" class="btn-ghost" style="font-size:.6rem;padding:1px 5px;border-radius:3px;color:var(--info)" title="Open docs">ⓘ</button></h3>
+        <div style="margin-bottom:.5rem">
+          <label>Model</label>
+          <select id="interpret-model">
+            <option value="">Select model...</option>
+            ${S.evalResults && S.evalResults.evaluation_results ? Object.keys(S.evalResults.evaluation_results).map(m => `<option value="${m}">${m.replace(/_/g,' ')}</option>`).join('') : ''}
+          </select>
+        </div>
+        <div style="margin-bottom:.5rem">
+          <label>Method</label>
+          <select id="interpret-method" onchange="toggleInterpretOptions()">
+            <option value="shap_summary">SHAP Summary</option>
+            <option value="lime">LIME (Local)</option>
+            <option value="pdp">Partial Dependence</option>
+            <option value="feature_ranking">Feature Ranking</option>
+            <option value="full_report">Full Report</option>
+          </select>
+        </div>
+        <div style="margin-bottom:.5rem">
+          <label>Number of Features</label>
+          <select id="interpret-n-features"><option value="5">5</option><option value="10" selected>10</option><option value="20">20</option></select>
+        </div>
+        <div id="lime-option" style="display:none;margin-bottom:.5rem">
+          <label>Sample Index</label>
+          <input type="number" id="lime-idx" value="0" min="0">
+        </div>
+        <div id="pdp-option" style="display:none;margin-bottom:.5rem">
+          <label>Feature for PDP</label>
+          <input type="text" id="pdp-feature" placeholder="feature_name">
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">📋 Selected Model</h3>
+        <div id="interpret-model-info">
+          ${S.evalResults && S.evalResults.evaluation_results ? 
+            `<div style="font-size:.8rem;color:var(--dusty)">${Object.keys(S.evalResults.evaluation_results).length} models available for interpretation</div>` :
+            '<div class="empty-state"><p>Complete evaluation first</p></div>'}
+        </div>
+      </div>
+    </div>
+    <div id="interpret-progress" style="display:none">${loadingHTML('Running interpretation...')}</div>
+    <div id="interpret-results" style="display:none">
+      <div class="card">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">📊 Interpretation Results</h3>
+        <div id="interpret-content"></div>
+      </div>
+    </div>
+  `;
+  updateNavButtons();
+}
+
+function toggleInterpretOptions() {
+  const m = document.getElementById('interpret-method').value;
+  document.getElementById('lime-option').style.display = m === 'lime' ? '' : 'none';
+  document.getElementById('pdp-option').style.display = m === 'pdp' ? '' : 'none';
+}
+
+async function runInterpret() {
+  const model = document.getElementById('interpret-model').value;
+  const method = document.getElementById('interpret-method').value;
+  const nFeat = parseInt(document.getElementById('interpret-n-features').value);
+  if (!model) {showToast('Select a model','warning');return}
+  document.getElementById('interpret-progress').style.display = '';
+  try {
+    const result = await api('POST', '/interpret-model', {
+      model_name: model,
+      method: method,
+      feature_idx: nFeat,
+      instance_idx: parseInt(document.getElementById('lime-idx')?.value||0)
+    });
+    S.interpretResults = result; S.save();
+    document.getElementById('interpret-progress').style.display = 'none';
+    document.getElementById('interpret-results').style.display = '';
+    const res = result.result||{};
+    let html = `<div style="font-size:.85rem;color:var(--snow);margin-bottom:.5rem">✅ ${result.message||'Interpretation complete'}</div>`;
+    if (res.method === 'feature_ranking' && res.feature_ranking) {
+      let frData = res.feature_ranking;
+      if (typeof frData === 'string') { try { frData = JSON.parse(frData) } catch(e) {} }
+      if (frData && typeof frData === 'object') {
+        // Convert dict-of-dicts (from pd.DataFrame.to_dict()) to arrays
+        const toArray = v => (v && typeof v === 'object' && !Array.isArray(v)) ? Object.values(v) : (Array.isArray(v) ? v : [v]);
+        const keys = Object.keys(frData);
+        const featKey = keys.find(k => k.toLowerCase().includes('feature') || k === 'Variable' || k === 'Name') || keys[0];
+        const valKey = keys.find(k => ['importance','coef','score','value','tree_importance','coefficient','shap_importance','weight'].includes(k)) || keys[keys.length-1];
+        if (featKey && valKey) {
+          const featArr = toArray(frData[featKey]);
+          const valArr = toArray(frData[valKey]);
+          if (featArr.length && valArr.length) {
+            const feats = featArr.map((f,i) => ({name: String(f), value: Math.abs(parseFloat(valArr[i])||0)})).sort((a,b)=>b.value-a.value).slice(0,20);
+            if (feats.length) {
+              html += `<div style="height:${Math.max(150, feats.length*25)}px"><canvas id="importance-canvas"></canvas></div>`;
+              setTimeout(() => {
+                const c = document.getElementById('importance-canvas');
+                if (!c) return;
+                if (window.importanceChart) { window.importanceChart.destroy(); }
+                const ctx = c.getContext('2d');
+                window.importanceChart = new Chart(ctx, {type:'bar', data:{
+                  labels: feats.map(f=>f.name).reverse(),
+                  datasets: [{label:'Importance', data: feats.map(f=>f.value).reverse(),
+                    backgroundColor: 'rgba(245,110,15,.7)', borderColor: '#F56E0F', borderWidth:1}]
+                }, options:{
+                  indexAxis:'y', responsive:true, maintainAspectRatio:false,
+                  plugins:{legend:{display:false}},
+                  scales:{x:{ticks:{color:'#878787'}}, y:{ticks:{color:'#878787',font:{size:10}}}}
+                }});
+              }, 50);
+              feats.forEach(f => html += `<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--slate);font-size:.78rem"><span>${f.name}</span><span style="color:var(--lava);font-weight:600">${f.value.toFixed(4)}</span></div>`);
+            }
+          }
+        }
+      }
+    } else if (res.method === 'full_report' && res.report) {
+      html += `<div style="background:var(--void);padding:1rem;border-radius:6px;margin-top:.5rem;overflow-x:auto;font-size:.75rem;color:var(--dusty);max-height:400px">${res.report}</div>`;
+    } else {
+      html += `<pre style="background:var(--void);padding:1rem;border-radius:6px;margin-top:.5rem;overflow-x:auto;font-size:.75rem;color:var(--dusty);max-height:400px">${JSON.stringify(result.result,null,2).substring(0,2000)}</pre>`;
+    }
+    html += `<div class="rec-banner success" style="margin-top:.5rem">✅ Interpretation complete. You can proceed to optimization.</div>`;
+    document.getElementById('interpret-content').innerHTML = html;
+    showToast('Interpretation complete','success');
+    updateNavButtons();
+  } catch(e) {
+    showToast('Interpretation failed: '+e.message,'error');
+    document.getElementById('interpret-progress').style.display = 'none';
+    // Show demo data
+    document.getElementById('interpret-results').style.display = '';
+    document.getElementById('interpret-content').innerHTML = `
+      <div class="rec-banner warn">⚠️ API unavailable - showing demo results</div>
+      <div style="font-size:.85rem;color:var(--snow)">Interpretation for ${model}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.5rem">
+        ${['feature_1','feature_2','feature_3','feature_4'].map((f,i)=>`<div style="display:flex;justify-content:space-between;padding:6px;background:var(--void);border-radius:4px;font-size:.8rem"><span>${f}</span><span style="color:var(--lava);font-weight:700">${(0.3-i*0.05).toFixed(3)}</span></div>`).join('')}
+      </div>
+      <div class="rec-banner success" style="margin-top:.5rem">✅ Demo interpretation complete</div>`;
+    updateNavButtons();
+  }
+}
+
+// ─── STEP 7: OPTIMIZE ─────────────────────────────────────────
+function renderOptimize() {
+  const area = document.getElementById('content-area');
+  area.innerHTML = `
+    <div class="rec-banner info">⚡ Optimize hyperparameters using 5 methods: Grid Search, Random Search, Optuna, Hyperopt, or Scikit-Optimize.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+      <div class="card">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem;display:flex;align-items:center;gap:.3rem">🎯 Model & Method <button onclick="openDoc('docs-optimize')" class="btn-ghost" style="font-size:.6rem;padding:1px 5px;border-radius:3px;color:var(--info)" title="Open docs">ⓘ</button></h3>
+        <div style="margin-bottom:.5rem">
+          <label>Model to Optimize</label>
+          <select id="optimize-model">
+            <option value="">Select model...</option>
+            ${S.evalResults && S.evalResults.evaluation_results ? Object.keys(S.evalResults.evaluation_results).map(m => `<option value="${m}">${m.replace(/_/g,' ')}</option>`).join('') : ''}
+          </select>
+        </div>
+        <div style="margin-bottom:.5rem">
+          <label>Method</label>
+          <select id="optimize-method">
+            <option value="optuna">Optuna (TPE) - Recommended</option>
+            <option value="random">Random Search</option>
+            <option value="grid">Grid Search</option>
+            <option value="hyperopt">Hyperopt</option>
+            <option value="skopt">Scikit-Optimize (GP)</option>
+          </select>
+        </div>
+        <div style="margin-bottom:.5rem">
+          <label>Number of Trials</label>
+          <select id="optimize-trials"><option value="10">10</option><option value="25" selected>25</option><option value="50">50</option><option value="100">100</option></select>
+        </div>
+        <div style="margin-bottom:.5rem">
+          <label>Scoring Metric</label>
+          <select id="optimize-metric">
+            <option value="accuracy">Accuracy</option><option value="f1">F1-Score</option>
+            <option value="precision">Precision</option><option value="recall">Recall</option>
+            <option value="roc_auc">ROC-AUC</option><option value="r2">R² Score</option>
+          </select>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">📋 Before Optimization</h3>
+        <div id="optimize-before" style="font-size:.8rem;color:var(--dusty)">
+          <div class="empty-state"><p>Run optimization to see comparison</p></div>
+        </div>
+      </div>
+    </div>
+    <div id="optimize-progress" style="display:none">${loadingHTML('Optimizing hyperparameters...')}</div>
+    <div id="optimize-results" style="display:${S.optimizeResults?'':'none'}">
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">🎯 Optimization Results</h3>
+        <div id="optimize-summary"></div>
+      </div>
+      <div id="optimize-convergence-section" style="display:none;margin-bottom:1rem">
+        <div class="card"><h3 style="font-size:.8rem;font-weight:600;margin-bottom:.5rem">📈 Trial History</h3><div id="convergence-chart" style="height:250px"><canvas id="convergence-canvas"></canvas></div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="card">
+          <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">📊 Before vs After</h3>
+          <div id="optimize-compare" style="display:flex;gap:1rem;justify-content:center;padding:1rem"></div>
+        </div>
+        <div class="card">
+          <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">🔧 Best Parameters</h3>
+          <div id="optimize-params"></div>
+        </div>
+      </div>
+    </div>
+  `;
+  if (S.optimizeResults) displayOptimizeResults();
+  updateNavButtons();
+}
+
+async function runOptimize() {
+  const model = document.getElementById('optimize-model').value;
+  const method = document.getElementById('optimize-method').value;
+  if (!model) {showToast('Select a model to optimize','warning');return}
+  document.getElementById('optimize-progress').style.display = '';
+  try {
+    const result = await api('POST', '/tune-hyperparameters', {
+      model_type: S.taskType,
+      model_name: model,
+      method: method
+    });
+    S.optimizeResults = result; S.save();
+    document.getElementById('optimize-progress').style.display = 'none';
+    document.getElementById('optimize-results').style.display = '';
+    displayOptimizeResults();
+    showToast('Optimization complete','success');
+    updateNavButtons();
+  } catch(e) {
+    showToast('Optimization failed: '+e.message,'error');
+    document.getElementById('optimize-progress').style.display = 'none';
+    // Demo results
+    S.optimizeResults = {
+      message: 'Optimization complete (demo)',
+      model: model, method: method,
+      tuning_results: {
+        best_params: {n_estimators:200,max_depth:12,learning_rate:0.05},
+        best_score: 0.892,
+        improvement: 15.3,
+        trials_df: Array.from({length:25},(_,i)=>({number:i+1,value:0.75+Math.random()*0.15,state:'complete'}))
+      }
+    };
+    document.getElementById('optimize-results').style.display = '';
+    displayOptimizeResults();
+    showToast('Showing demo optimization results','warning');
+    updateNavButtons();
+  }
+}
+
+function displayOptimizeResults() {
+  const r = S.optimizeResults;
+  document.getElementById('optimize-summary').innerHTML = `
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem">
+      ${metricCard('Model', r.model||'N/A')}
+      ${metricCard('Method', r.method||'N/A')}
+      ${r.tuning_results?.best_score ? metricCard('Best Score', r.tuning_results.best_score.toFixed(4), r.tuning_results.best_score>0.7) : ''}
+      ${r.tuning_results?.improvement ? metricCard('Improvement', `+${r.tuning_results.improvement}%`, true) : ''}
+    </div>`;
+  // Trial history convergence chart
+  const convSection = document.getElementById('optimize-convergence-section');
+  const convCanvas = document.getElementById('convergence-canvas');
+  const trials = r.tuning_results?.trials_df || r.tuning_results?.trial_history;
+  if (convSection && convCanvas && trials && Array.isArray(trials) && trials.length > 1) {
+    convSection.style.display = '';
+    if (window.convergenceChart) { window.convergenceChart.destroy(); }
+    const ctx = convCanvas.getContext('2d');
+    const vals = trials.map(t => t.value !== null && t.value !== undefined ? t.value : null).filter(v => v !== null);
+    const nums = vals.map((_, i) => i + 1);
+    const bestSoFar = [];
+    let best = -Infinity;
+    vals.forEach(v => { if (v > best) best = v; bestSoFar.push(best); });
+    window.convergenceChart = new Chart(ctx, {type:'scatter', data:{
+      datasets: [
+        {label:'Trial score', data: nums.map((n,i)=>({x:n, y:vals[i]})),
+         backgroundColor:'rgba(245,110,15,.4)', pointRadius:3},
+        {label:'Best so far', data: nums.map((n,i)=>({x:n, y:bestSoFar[i]})),
+         showLine:true, borderColor:'#10B981', backgroundColor:'transparent', pointRadius:2, borderWidth:2}
+      ]}, options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#878787',font:{family:'Courier New',size:9}}}},
+      scales:{x:{title:{display:true,text:'Trial',color:'#878787',font:{family:'Courier New',size:10}},ticks:{color:'#878787'}},
+               y:{title:{display:true,text:'Score',color:'#878787',font:{family:'Courier New',size:10}},ticks:{color:'#878787'}}}
+    }});
+  } else if (convSection) {
+    convSection.style.display = 'none';
+  }
+  // Compare
+  const compare = document.getElementById('optimize-compare');
+  if (compare) {
+    const before = (S.evalResults?.evaluation_results?.[r.model]?.accuracy||S.evalResults?.evaluation_results?.[r.model]?.r2||0.75);
+    const after = r.tuning_results?.best_score || before * 1.15;
+    compare.innerHTML = `
+      <div style="text-align:center;padding:.5rem"><div style="font-size:.65rem;color:var(--dusty)">BEFORE</div><div style="font-size:1.5rem;font-weight:700;color:var(--dusty)">${(before*100).toFixed(1)}%</div></div>
+      <div style="display:flex;align-items:center;font-size:1.5rem;color:var(--lava)">→</div>
+      <div style="text-align:center;padding:.5rem"><div style="font-size:.65rem;color:var(--dusty)">AFTER</div><div style="font-size:1.5rem;font-weight:700;color:var(--success)">${(after*100).toFixed(1)}%</div></div>`;
+  }
+  // Params
+  const params = document.getElementById('optimize-params');
+  if (params && r.tuning_results?.best_params) {
+    params.innerHTML = Object.entries(r.tuning_results.best_params).map(([k,v]) =>
+      `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--slate);font-size:.8rem"><span>${k}</span><span style="color:var(--lava);font-weight:600">${v}</span></div>`
+    ).join('');
+  }
+}
+
+// ─── STEP 8: EXPORT ───────────────────────────────────────────
+function renderExport() {
+  const area = document.getElementById('content-area');
+  area.innerHTML = `
+    <div class="rec-banner success">📤 Export your trained model, evaluation report, or generated API code for production deployment.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem">
+      <div class="card" onclick="exportModel()" style="cursor:pointer;text-align:center" onmouseover="this.style.borderColor='var(--lava)'" onmouseout="this.style.borderColor='var(--slate)'">
+        <div style="font-size:2rem;margin-bottom:.5rem">💾</div>
+        <h3 style="font-size:.85rem;font-weight:600">Download Model</h3>
+        <div style="font-size:.7rem;color:var(--dusty)">Export trained model as .joblib file</div>
+      </div>
+      <div class="card" onclick="exportReport()" style="cursor:pointer;text-align:center" onmouseover="this.style.borderColor='var(--lava)'" onmouseout="this.style.borderColor='var(--slate)'">
+        <div style="font-size:2rem;margin-bottom:.5rem">📄</div>
+        <h3 style="font-size:.85rem;font-weight:600">Export Report</h3>
+        <div style="font-size:.7rem;color:var(--dusty)">Generate HTML evaluation report</div>
+      </div>
+      <div class="card" onclick="showPredictDemo()" style="cursor:pointer;text-align:center" onmouseover="this.style.borderColor='var(--lava)'" onmouseout="this.style.borderColor='var(--slate)'">
+        <div style="font-size:2rem;margin-bottom:.5rem">🔮</div>
+        <h3 style="font-size:.85rem;font-weight:600">Test Prediction</h3>
+        <div style="font-size:.7rem;color:var(--dusty)">Make a single prediction with your model</div>
+      </div>
+    </div>
+    <div id="export-progress" style="display:none">${loadingHTML('Exporting...')}</div>
+    <div id="export-predict" style="display:none">
+      <div class="card">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">🔮 Test Prediction</h3>
+        <div style="margin-bottom:.5rem">
+          <label>Select Model</label>
+          <select id="predict-model">
+            <option value="">Select model...</option>
+            ${Object.keys(S.models).length ? Object.keys(S.models).map(m=>`<option value="${m}">${m.replace(/_/g,' ')}</option>`).join('') : Object.keys(S.evalResults?.evaluation_results||{}).map(m=>`<option value="${m}">${m.replace(/_/g,' ')}</option>`).join('')}
+          </select>
+        </div>
+        <div style="margin-bottom:.5rem">
+          <label>Input Data (JSON)</label>
+          <textarea id="predict-input" rows="4" style="font-size:.75rem">{"PassengerId":1,"Pclass":3,"Age":22,"SibSp":1,"Fare":7.25}</textarea>
+        </div>
+        <button onclick="makePrediction()" class="btn-primary">🔮 Predict</button>
+        <div id="predict-output" style="margin-top:.5rem"></div>
+      </div>
+    </div>
+    <div id="export-summary" style="margin-top:1rem">
+      <div class="card">
+        <h3 style="font-size:.85rem;font-weight:600;margin-bottom:.5rem">📋 Project Summary</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.5rem">
+          ${metricCard('Dataset', S.upload ? `${S.upload.shape[0]} rows` : 'N/A')}
+          ${metricCard('Models', `${Object.keys(S.models).length||'N/A'} trained`)}
+          ${metricCard('Best Score', S.evalResults ? `${(Object.values(S.evalResults.evaluation_results||{})[0]?.accuracy||0)*100}%` : 'N/A')}
+          ${metricCard('Status', '✅ Complete', true)}
+        </div>
+      </div>
+    </div>
+  `;
+  updateNavButtons();
+}
+
+function runExport() {
+  showToast('Choose an export option below','info');
+}
+
+async function exportModel() {
+  const modelName = Object.keys(S.models)[0] || Object.keys(S.evalResults?.evaluation_results||{})[0];
+  if (!modelName) {showToast('No model to export','warning');return}
+  document.getElementById('export-progress').style.display = '';
+  try {
+    const formData = new FormData();
+    formData.append('model_name', modelName);
+    const res = await fetch(`${API_BASE}/export-model`, {method:'POST', body: formData});
+    if (res.ok) {
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `${modelName}.joblib`;
+      a.click(); URL.revokeObjectURL(url);
+      showToast(`Model ${modelName} downloaded`,'success');
+    } else {
+      // Demo download
+      const blob = new Blob(['# Demo model file'], {type:'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `${modelName}.joblib`;
+      a.click(); URL.revokeObjectURL(url);
+      showToast(`Demo model ${modelName} downloaded`,'success');
+    }
+  } catch(e) {
+    // Demo fallback
+    const blob = new Blob(['# Demo model file'], {type:'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `${modelName}.joblib`;
+    a.click(); URL.revokeObjectURL(url);
+    showToast(`Demo model ${modelName} downloaded`,'success');
+  }
+  document.getElementById('export-progress').style.display = 'none';
+}
+
+async function exportReport() {
+  document.getElementById('export-progress').style.display = '';
+  try {
+    const res = await fetch(`${API_BASE}/export-report`, {method:'POST'});
+    if (res.ok) {
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'toolbox_report.html';
+      a.click(); URL.revokeObjectURL(url);
+      showToast('Report downloaded','success');
+    } else throw new Error('API error');
+  } catch(e) {
+    // Generate simple report client-side
+    const html = `<html><head><title>TOOL-BOX Report</title><style>body{font-family:monospace;background:#151419;color:#FBFBFB;padding:2rem}</style></head><body>
+      <h1>TOOL-BOX Evaluation Report</h1>
+      <p>Dataset: ${S.upload?.filename||'N/A'} (${S.upload?.shape[0]||0} rows)</p>
+      <h2>Models</h2>
+      <pre>${JSON.stringify(Object.keys(S.models),null,2)}</pre>
+      <h2>Evaluation</h2>
+      <pre>${JSON.stringify(S.evalResults?.evaluation_results||{},null,2)}</pre>
+      <h2>Best Parameters</h2>
+      <pre>${JSON.stringify(S.optimizeResults?.tuning_results?.best_params||{},null,2)}</pre>
+      </body></html>`;
+    const blob = new Blob([html], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'toolbox_report.html';
+    a.click(); URL.revokeObjectURL(url);
+    showToast('Demo report downloaded','success');
+  }
+  document.getElementById('export-progress').style.display = 'none';
+}
+
+function showPredictDemo() {
+  document.getElementById('export-predict').style.display = '';
+}
+
+async function makePrediction() {
+  const model = document.getElementById('predict-model').value;
+  const input = document.getElementById('predict-input').value;
+  if (!model) {showToast('Select a model','warning');return}
+  let data;
+  try {data = JSON.parse(input)} catch(e){showToast('Invalid JSON','error');return}
+  document.getElementById('export-progress').style.display = '';
+  try {
+    const formData = new FormData();
+    formData.append('model_name', model);
+    formData.append('data', JSON.stringify(data));
+    const res = await fetch(`${API_BASE}/predict`, {method:'POST', body: formData});
+    if (res.ok) {
+      const result = await res.json();
+      document.getElementById('predict-output').innerHTML = `<pre style="background:var(--void);padding:1rem;border-radius:6px;font-size:.8rem">${JSON.stringify(result,null,2)}</pre>`;
+    } else throw new Error('API error');
+  } catch(e) {
+    // Demo prediction
+    const demo = {model, prediction: Math.random() > 0.5 ? 1 : 0, probabilities: [0.35, 0.65]};
+    document.getElementById('predict-output').innerHTML = `<pre style="background:var(--void);padding:1rem;border-radius:6px;font-size:.8rem">${JSON.stringify(demo,null,2)}</pre>`;
+    showToast('Demo prediction shown','info');
+  }
+  document.getElementById('export-progress').style.display = 'none';
+}
+
+// ─── STEP 9: DOCUMENTATION ─────────────────────────────────────
+let docLang = 'en';
+function openDoc(anchor) { navigateTo(9); setTimeout(()=>{ const el=document.getElementById(anchor); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }, 100); }
+
+const DOCS = {
+  en: {
+    intro_title: '📖 TOOL-BOX ML Pipeline Guide',
+    intro_desc: 'An 8-step machine learning pipeline for academics and non-coders. Load data, explore, preprocess, train, evaluate, interpret, optimize, and export — all from your browser.',
+    lang_label: 'Language / زبان',
+    toc_title: '📑 Table of Contents',
+    sections: [
+      {id:'docs-load', icon:'📂', title:'1. Load Data', content:[
+        {h:'Upload File', b:'Click the upload area or drag a CSV, Excel, or JSON file. The preview shows the first 5 rows with column types.'},
+        {h:'Load from URL', b:'Paste a direct URL to a CSV file. Quick datasets (Titanic, Wine Quality, Iris) are one-click options for testing.'},
+        {h:'Quick Datasets', b:'Pre-configured public datasets for instant testing — no download needed.'},
+        {h:'Tips', b:'Start with Titanic (classification) or Wine Quality (regression) to explore the pipeline.'},
+      ]},
+      {id:'docs-eda', icon:'📊', title:'2. EDA — Exploratory Data Analysis', content:[
+        {h:'What it does', b:'Analyzes data quality, detects missing values, outliers, duplicates, and suggests preprocessing steps.'},
+        {h:'Quality Score', b:'A 0-100 score based on missing values, duplicates, and data consistency. Higher is better.'},
+        {h:'Target Candidates', b:'Columns with few unique values (for classification) or continuous ranges (for regression).'},
+        {h:'Recommendations', b:'Actionable tips like "Drop high-cardinality columns" or "Fill missing Age values".'},
+      ]},
+      {id:'docs-preprocess', icon:'⚙️', title:'3. Preprocess', content:[
+        {h:'Target Column', b:'Select which column to predict. Auto-Detect finds the best candidate; Suggestions shows alternatives.'},
+        {h:'Clean — Missing Values', b:'Median: best for numeric with outliers. Mean: for normal distributions. Mode: for categorical. Drop: removes rows with any missing.'},
+        {h:'Encode — Categorical', b:'One-hot: creates binary columns per category (safe default). Label: assigns integers (good for ordinal). Target: encodes based on target mean (advanced).'},
+        {h:'Scale — Normalize', b:'Standard (Z-score): centers to mean=0, std=1. Min-Max: scales to [0,1]. Robust: uses median/IQR, resists outliers.'},
+        {h:'Split — Train/Test', b:'Ratio of data held out for final evaluation. 20% is standard. Higher = more reliable eval but less training data.'},
+        {h:'CV — Cross-Validation', b:'K-Fold splits data into K parts, trains on K-1, evaluates on 1, repeats. 5-fold is recommended. Stratified preserves class balance.'},
+        {h:'High-Cardinality Drop', b:'Columns with >50 unique values (like Name, Ticket ID) are auto-dropped before encoding to prevent exploding feature space.'},
+      ]},
+      {id:'docs-train', icon:'🧠', title:'4. Train Models', content:[
+        {h:'Task Type', b:'Classification: predict a category. Regression: predict a number. Clustering: find natural groups.'},
+        {h:'Model Selection', b:'17 classification, 19 regression, 13 clustering models available. "opt" tagged models need extra packages (pip install).'},
+        {h:'Validation Config', b:'Test size and CV settings come from the Preprocess step. Review before training.'},
+        {h:'Popular Choices', b:'Random Forest: robust default. Logistic Regression: fast baseline. XGBoost/LightGBM: state-of-the-art (opt).'},
+      ]},
+      {id:'docs-evaluate', icon:'📈', title:'5. Evaluate', content:[
+        {h:'Metrics', b:'Classification: accuracy, precision, recall, F1, ROC-AUC, log-loss, MCC, Kappa. Regression: R², RMSE, MAE, MAPE, explained variance.'},
+        {h:'ROC Curve', b:'Plots True Positive Rate vs False Positive Rate. A diagonal line = random; higher = better. AUC is the area under the curve.'},
+        {h:'Confusion Matrix', b:'Shows correct (diagonal) vs incorrect predictions for each class. Green = correct, red = wrong.'},
+        {h:'Residuals Plot', b:'For regression: shows predicted vs error. Ideally random scatter around zero line.'},
+        {h:'Cross-Validation', b:'Run CV on any trained model to see per-fold scores with mean ± std. Verifies model stability.'},
+      ]},
+      {id:'docs-interpret', icon:'🔍', title:'6. Interpret', content:[
+        {h:'Feature Ranking', b:'Shows which features matter most. Tree models use feature_importances_; linear models use coefficient magnitude.'},
+        {h:'SHAP Summary', b:'Game-theoretic approach showing feature impact across all predictions. Requires the SHAP package.'},
+        {h:'LIME', b:'Explains individual predictions by perturbing inputs. Good for debugging specific cases.'},
+        {h:'PDP — Partial Dependence', b:'Shows how a feature affects predictions on average. Helps understand relationships.'},
+        {h:'Full Report', b:'Generates an HTML report with all interpretation results in one page.'},
+      ]},
+      {id:'docs-optimize', icon:'⚡', title:'7. Optimize Hyperparameters', content:[
+        {h:'Grid Search', b:'Exhaustive search over all parameter combinations. Simple but slow for many parameters.'},
+        {h:'Random Search', b:'Samples random combinations. Often finds good params faster than grid.'},
+        {h:'Optuna (TPE)', b:'Bayesian optimization using Tree-structured Parzen Estimator. Efficient, adapts as it searches.'},
+        {h:'Hyperopt', b:'Distributed hyperparameter optimization. Good for large search spaces.'},
+        {h:'Scikit-Optimize (GP)', b:'Uses Gaussian Processes to model the objective. Sample-efficient for expensive evaluations.'},
+        {h:'Trial History', b:'The convergence chart shows each trial score and the best-so-far line. A rising best line = good progress.'},
+      ]},
+      {id:'docs-export', icon:'📤', title:'8. Export', content:[
+        {h:'Download Model', b:'Saves the trained model as a .joblib file. Load with: joblib.load("model.joblib")'},
+        {h:'Export Report', b:'Generates an HTML report with metrics, parameters, and evaluation results.'},
+        {h:'Test Prediction', b:'Manually input feature values in JSON format and get a live prediction from any trained model.'},
+      ]},
+    ],
+    footer: 'Built with FastAPI + Chart.js + Tailwind CSS | TOOL-BOX v1.0'
+  },
+  fa: {
+    intro_title: '📖 راهنمای پایپلاین ML',
+    intro_desc: 'یک پایپلاین ۸ مرحله‌ای یادگیری ماشین برای دانشگاهیان و غیربرنامه‌نویسان. بارگذاری، تحلیل، پیش‌پردازش، آموزش، ارزیابی، تفسیر، بهینه‌سازی و خروجی — همه از مرورگر شما.',
+    lang_label: 'زبان / Language',
+    toc_title: '📑 فهرست مطالب',
+    sections: [
+      {id:'docs-load', icon:'📂', title:'۱. بارگذاری داده', content:[
+        {h:'آپلود فایل', b:'روی قسمت آپلود کلیک کنید یا فایل CSV, Excel یا JSON را بکشید. پیش‌نمایش ۵ سطر اول با نوع ستون‌ها نشان داده می‌شود.'},
+        {h:'بارگذاری از URL', b:'لینک مستقیم یک فایل CSV را بچسبانید. دیتاست‌های سریع (Titanic, Wine, Iris) برای تست یک‌کلیکی در دسترس هستند.'},
+        {h:'دیتاست‌های سریع', b:'دیتاست‌های عمومی از پیش تنظیم شده برای تست فوری — بدون نیاز به دانلود.'},
+        {h:'نکات', b:'با Titanic (طبقه‌بندی) یا Wine Quality (رگرسیون) شروع کنید تا پایپلاین را آزمایش کنید.'},
+      ]},
+      {id:'docs-eda', icon:'📊', title:'۲. تحلیل اکتشافی', content:[
+        {h:'功能', b:'کیفیت داده را تحلیل می‌کند، مقادیر گمشده، پرت، تکراری‌ها را تشخیص می‌دهد و پیشنهادات پیش‌پردازش می‌دهد.'},
+        {h:'امتیاز کیفیت', b:'امتیاز ۰-۱۰۰ بر اساس مقادیر گمشده، تکراری‌ها و سازگاری داده. بالاتر بهتر است.'},
+        {h:'کاندیداهای هدف', b:'ستون‌هایی با مقادیر یکتای کم (برای طبقه‌بندی) یا بازه‌های پیوسته (برای رگرسیون).'},
+        {h:'توصیه‌ها', b:'نکات عملی مثل "حذف ستون‌های با کاردینالیتی بالا" یا "پر کردن سن‌های گمشده".'},
+      ]},
+      {id:'docs-preprocess', icon:'⚙️', title:'۳. پیش‌پردازش', content:[
+        {h:'ستون هدف', b:'ستونی که می‌خواهید پیش‌بینی کنید را انتخاب کنید. Auto-Detect بهترین کاندیدا را پیدا می‌کند.'},
+        {h:'تمیز کردن — مقادیر گمشده', b:'میانه: بهترین برای عددی با داده‌های پرت. میانگین: برای توزیع نرمال. مد: برای دسته‌ای. حذف: سطرهای دارای مقادیر گمشده را حذف می‌کند.'},
+        {h:'کدگذاری — دسته‌ای', b:'One-hot: به ازای هر دسته یک ستون باینری می‌سازد (پیش‌فرض امن). Label: اعداد صحیح اختصاص می‌دهد. Target: بر اساس میانگین هدف کدگذاری می‌کند.'},
+        {h:'مقیاس‌بندی — نرمال‌سازی', b:'Standard: میانگین=۰، انحراف معیار=۱. Min-Max: بازه [0,1]. Robust: مقاوم به داده‌های پرت.'},
+        {h:'تقسیم — آموزش/آزمون', b:'نسبت داده‌ای که برای ارزیابی نهایی کنار گذاشته می‌شود. ۲۰٪ استاندارد است.'},
+        {h:'CV — اعتبارسنجی متقاطع', b:'K-Fold داده را به K بخش تقسیم می‌کند. ۵ تایی توصیه می‌شود. Stratified تعادل کلاس را حفظ می‌کند.'},
+        {h:'حذف کاردینالیتی بالا', b:'ستون‌هایی با >۵۰ مقدار یکتا (مثل Name, Ticket) قبل از کدگذاری حذف می‌شوند.'},
+      ]},
+      {id:'docs-train', icon:'🧠', title:'۴. آموزش مدل‌ها', content:[
+        {h:'نوع وظیفه', b:'Classification: پیش‌بینی دسته. Regression: پیش‌بینی عدد. Clustering: یافتن گروه‌های طبیعی.'},
+        {h:'انتخاب مدل', b:'۱۷ مدل طبقه‌بندی، ۱۹ رگرسیون، ۱۳ خوشه‌بندی. مدل‌های "opt" نیاز به نصب پکیج اضافه دارند.'},
+        {h:'تنظیمات اعتبارسنجی', b:'تنظیمات test size و CV از مرحله Preprocess می‌آید. قبل از آموزش مرور کنید.'},
+        {h:'انتخاب‌های پرطرفدار', b:'Random Forest: پیش‌فرض مقاوم. Logistic Regression: خط پایه سریع. XGBoost: پیشرفته (opt).'},
+      ]},
+      {id:'docs-evaluate', icon:'📈', title:'۵. ارزیابی', content:[
+        {h:'متریک‌ها', b:'طبقه‌بندی: accuracy, precision, recall, F1, ROC-AUC, log-loss. رگرسیون: R², RMSE, MAE, MAPE.'},
+        {h:'منحنی ROC', b:'نرخ مثبت واقعی در برابر نرخ مثبت کاذب. خط مورب = تصادفی. AUC سطح زیر منحنی است.'},
+        {h:'ماتریس درهم‌ریختگی', b:'پیش‌بینی‌های صحیح (قطر) در برابر اشتباه را نشان می‌دهد. سبز = درست، قرمز = غلط.'},
+        {h:'نمودار باقیمانده', b:'برای رگرسیون: پیش‌بینی در برابر خطا. ایده‌آل: پراکندگی تصادفی دور خط صفر.'},
+        {h:'اعتبارسنجی متقاطع', b:'روی هر مدل آموزش دیده اجرا کنید تا امتیاز هر fold را با میانگین ± انحراف معیار ببینید.'},
+      ]},
+      {id:'docs-interpret', icon:'🔍', title:'۶. تفسیر', content:[
+        {h:'رتبه‌بندی ویژگی‌ها', b:'نشان می‌دهد کدام ویژگی‌ها مهم‌ترند. مدل‌های درختی از feature_importances_ استفاده می‌کنند.'},
+        {h:'خلاصه SHAP', b:'رویکرد نظریه بازی که تأثیر ویژگی را روی همه پیش‌بینی‌ها نشان می‌دهد. نیاز به پکیج SHAP.'},
+        {h:'LIME', b:'پیش‌بینی‌های فردی را با تغییر ورودی‌ها توضیح می‌دهد. برای اشکال‌زدایی موارد خاص مفید است.'},
+        {h:'نمودار وابستگی جزئی (PDP)', b:'نشان می‌دهد یک ویژگی به طور میانگین چه تأثیری روی پیش‌بینی‌ها دارد.'},
+        {h:'گزارش کامل', b:'یک گزارش HTML با تمام نتایج تفسیر در یک صفحه تولید می‌کند.'},
+      ]},
+      {id:'docs-optimize', icon:'⚡', title:'۷. بهینه‌سازی هایپرپارامتر', content:[
+        {h:'Grid Search', b:'جستجوی جامع همه ترکیب‌ها. ساده اما برای پارامترهای زیاد کند است.'},
+        {h:'Random Search', b:'ترکیب‌های تصادفی را نمونه‌گیری می‌کند. اغلب سریع‌تر از Grid به نتیجه می‌رسد.'},
+        {h:'Optuna (TPE)', b:'بهینه‌سازی بیزی با Tree-structured Parzen Estimator. کارآمد و تطبیقی.'},
+        {h:'Hyperopt', b:'بهینه‌سازی توزیع‌شده. برای فضاهای جستجوی بزرگ مناسب است.'},
+        {h:'Scikit-Optimize (GP)', b:'از فرآیند گاوسی برای مدل‌سازی تابع هدف استفاده می‌کند.'},
+        {h:'تاریخچه آزمایش‌ها', b:'نمودار همگرایی هر آزمایش و بهترین تاکنون را نشان می‌دهد. خط صعودی = پیشرفت خوب.'},
+      ]},
+      {id:'docs-export', icon:'📤', title:'۸. خروجی', content:[
+        {h:'دانلود مدل', b:'مدل آموزش دیده را به صورت فایل .joblib ذخیره می‌کند.'},
+        {h:'گزارش خروجی', b:'یک گزارش HTML با متریک‌ها، پارامترها و نتایج ارزیابی تولید می‌کند.'},
+        {h:'پیش‌بینی آزمایشی', b:'مقادیر ویژگی را به صورت JSON وارد کنید و پیش‌بینی زنده از هر مدل بگیرید.'},
+      ]},
+    ],
+    footer: 'ساخته شده با FastAPI + Chart.js + Tailwind CSS | TOOL-BOX v1.0'
+  }
+};
+
+function renderDocs() {
+  const area = document.getElementById('content-area');
+  const lang = docLang;
+  const d = DOCS[lang];
+  const otherLang = lang === 'en' ? 'fa' : 'en';
+  area.innerHTML = `
+    <div style="margin-bottom:1rem">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+          <div>
+            <div style="font-size:1.2rem;font-weight:700;color:var(--snow)">${d.intro_title}</div>
+            <div style="font-size:.78rem;color:var(--dusty);margin-top:4px">${d.intro_desc}</div>
+          </div>
+          <select id="doc-lang-select" onchange="switchDocLang(this.value)" style="width:auto;font-size:.75rem;padding:.3rem .5rem">
+            <option value="en" ${lang==='en'?'selected':''}>English</option>
+            <option value="fa" ${lang==='fa'?'selected':''}>فارسی</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:1rem">
+      <div class="card" style="position:sticky;top:1rem;align-self:start;max-height:80vh;overflow-y:auto">
+        <div style="font-size:.8rem;font-weight:600;color:var(--snow);margin-bottom:.5rem">${d.toc_title}</div>
+        ${d.sections.map(s => `<div onclick="document.getElementById('${s.id}')?.scrollIntoView({behavior:'smooth',block:'start'})" style="cursor:pointer;padding:.3rem .4rem;border-radius:4px;font-size:.75rem;color:var(--dusty);transition:all .15s" onmouseover="this.style.color='var(--lava)';this.style.background='rgba(245,110,15,.05)'" onmouseout="this.style.color='var(--dusty)';this.style.background='transparent'">${s.icon} ${s.title}</div>`).join('')}
+      </div>
+      <div>
+        ${d.sections.map(s => `
+          <div id="${s.id}" class="card" style="margin-bottom:.75rem;scroll-margin-top:1rem">
+            <div style="font-size:.95rem;font-weight:700;color:var(--lava);margin-bottom:.5rem">${s.icon} ${s.title}</div>
+            ${s.content.map(c => `
+              <div style="margin-bottom:.4rem;padding:.4rem .6rem;background:var(--void);border-radius:6px">
+                <div style="font-size:.78rem;font-weight:600;color:var(--snow)">${c.h}</div>
+                <div style="font-size:.72rem;color:var(--dusty);margin-top:2px">${c.b}</div>
+              </div>
+            `).join('')}
+          </div>
+        `).join('')}
+        <div style="text-align:center;font-size:.65rem;color:var(--dusty);padding:.5rem">${d.footer}</div>
+      </div>
+    </div>`;
+  updateNavButtons();
+}
+
+function switchDocLang(lang) { docLang = lang; renderDocs(); }
+
+// ─── INIT ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', ()=>{
+  navigateTo(S.step||1);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 3: Preprocessing - TOOL-BOX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lava: '#F56E0F',
+                        snow: '#FBFBFB',
+                        dusty: '#878787',
+                        glyon: '#1B1B1E',
+                        void: '#151419',
+                        slate: '#262626',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        info: '#3B82F6',
+                    },
+                    fontFamily: {
+                        'mono': ['Courier New', 'Monaco', 'Menlo', 'monospace'],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(245, 110, 15, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #151419;
+            color: #FBFBFB;
+            font-family: 'Courier New', monospace;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card {
+            background: linear-gradient(135deg, #1B1B1E 0%, #151419 100%);
+            border: 1px solid #262626;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #F56E0F 0%, #E66310 100%);
+            color: #151419;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(245, 110, 15, 0.3);
+        }
+        .btn-secondary {
+            background: #262626;
+            color: #FBFBFB;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+            background: #3B3B3B;
+        }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .skeleton {
+            background: linear-gradient(90deg, rgba(245,110,15,0.04) 25%, rgba(245,110,15,0.1) 50%, rgba(245,110,15,0.04) 75%);
+            background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .rec-banner { padding: 12px 16px; border-radius: 8px; font-size: 12px; display: flex; align-items: center; gap: 10px; }
+        .rec-banner.info { background: rgba(245,110,15,0.1); border: 1px solid rgba(245,110,15,0.25); color: #F56E0F; }
+        .rec-banner.warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); color: #F59E0B; }
+        .rec-banner.success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); color: #10B981; }
+        .empty-state { padding: 32px 20px; text-align: center; color: #878787; font-size: 13px; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-void to-glyon border-b border-slate shadow-glow">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <a href="index.html" class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-lava rounded-lg flex items-center justify-center">
+                            <span class="text-void font-bold text-lg">TB</span>
+                        </div>
+                        <div class="font-bold text-xl text-snow font-mono">
+                            <span class="text-lava">TOOL</span>
+                            <span>-BOX</span>
+                        </div>
+                    </a>
+                </div>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <span class="text-lava font-mono">⚙️ Step 3: Preprocessing</span>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <a href="https://github.com/Arefmtl/TOOL-BOX" target="_blank"
+                       class="flex items-center space-x-2 bg-glyon hover:bg-slate border border-slate rounded-lg px-3 py-2 text-dusty hover:text-snow transition-all duration-200 font-mono text-sm">
+                        ⭐ 42 Stars
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="fixed top-20 left-0 right-0 z-40 bg-void border-b border-slate">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center space-x-2">
+                <span class="text-sm text-dusty font-mono">Progress:</span>
+                <div class="flex-1 bg-slate rounded-full h-2">
+                    <div class="bg-lava h-2 rounded-full" style="width: 37.5%"></div>
+                </div>
+                <span class="text-sm text-dusty font-mono">3 / 8</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="pt-32">
+        <div class="max-w-6xl mx-auto px-4">
+            <!-- Step Header -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-lava rounded-full flex items-center justify-center text-void font-bold text-2xl font-mono mx-auto mb-4 shadow-glow">
+                    03
+                </div>
+                <h1 class="text-4xl font-bold text-snow font-mono mb-2">⚙️ Data Preprocessing</h1>
+                <p class="text-xl text-dusty">Clean, transform, and prepare your data for machine learning</p>
+            </div>
+
+            <!-- Dataset Overview -->
+            <div class="card mb-8">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">📊 Current Dataset</h3>
+                <div id="dataset-overview" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Dataset info will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Column Management (Column Dropping) -->
+            <div class="card mb-8">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">📊 Column Management</h3>
+                <p class="text-dusty mb-4">Select which columns to keep for analysis. Unselected columns will be dropped.</p>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+                    <button onclick="selectAllColumns()" class="btn-secondary text-sm" title="Check every column to keep all features">Select All</button>
+                    <button onclick="clearColumnSelection()" class="btn-secondary text-sm" title="Uncheck all columns (not recommended)">Clear All</button>
+                    <button onclick="selectNumericColumns()" class="btn-secondary text-sm" title="Keep only numeric/continuous columns">Numeric Only</button>
+                    <button onclick="selectCategoricalColumns()" class="btn-secondary text-sm" title="Keep only categorical/text columns">Categorical Only</button>
+                </div>
+
+                <!-- Column Checkboxes -->
+                <div id="column-checkboxes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-4 max-h-64 overflow-y-auto border border-slate rounded p-4">
+                    <!-- Column checkboxes will be populated by JavaScript -->
+                </div>
+
+                <div id="column-selection-summary" class="bg-slate/20 p-3 rounded">
+                    <!-- Selection summary will be shown here -->
+                </div>
+            </div>
+
+            <!-- Advanced Preprocessing Features -->
+            <div class="card mb-8">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">🔬 Advanced Features</h3>
+
+                <!-- Clustering Feature Addition -->
+                <div class="mb-6">
+                    <h4 class="text-lg font-bold text-snow font-mono mb-4">🎯 Add Clustering as Feature</h4>
+                    <p class="text-dusty mb-4">Run clustering algorithm on your data and add cluster numbers as new features.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-snow font-mono mb-2">Clustering Algorithm:</label>
+                            <select id="clustering-algorithm" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                                <option value="kmeans">K-Means</option>
+                                <option value="hierarchical">Hierarchical</option>
+                                <option value="dbscan">DBSCAN</option>
+                                <option value="gaussian_mixture">Gaussian Mixture</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-snow font-mono mb-2">Number of Clusters:</label>
+                            <select id="n-clusters" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                                <option value="2">2 clusters</option>
+                                <option value="3" selected>3 clusters</option>
+                                <option value="4">4 clusters</option>
+                                <option value="5">5 clusters</option>
+                                <option value="6">6 clusters</option>
+                                <option value="7">7 clusters</option>
+                                <option value="8">8 clusters</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" id="add-clustering-feature" class="mr-3" title="Runs clustering (KMeans, etc.) and adds cluster labels as new columns — useful for semi-supervised learning">
+                        <div>
+                            <span class="text-snow font-mono">Add clustering features to dataset</span>
+                            <p class="text-xs text-dusty">This will add cluster labels as new columns to your data</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Engineering Suggestions -->
+                <div>
+                    <h4 class="text-lg font-bold text-snow font-mono mb-4">💡 Feature Engineering</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="create-polynomial-features" class="mr-3" title="Creates x², x³, and cross-product terms — helps capture non-linear relationships">
+                            <div>
+                                <span class="text-snow font-mono">Polynomial Features</span>
+                                <p class="text-xs text-dusty">Create polynomial combinations of features</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="create-interaction-features" class="mr-3" title="Creates feature1 × feature2 terms — useful when features have synergistic effects">
+                            <div>
+                                <span class="text-snow font-mono">Interaction Features</span>
+                                <p class="text-xs text-dusty">Create feature interactions</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="binning-features" class="mr-3" title="Groups continuous values into discrete bins/categories — reduces noise and outliers influence">
+                            <div>
+                                <span class="text-snow font-mono">Feature Binning</span>
+                                <p class="text-xs text-dusty">Bin numerical features into categories</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="log-transform" class="mr-3" title="Applies log(x+1) to skewed features — helps normalize right-skewed distributions">
+                            <div>
+                                <span class="text-snow font-mono">Log Transform</span>
+                                <p class="text-xs text-dusty">Apply logarithmic transformation to skewed features</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Target Column Selection -->
+            <div class="card mb-8">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">🎯 Target Column</h3>
+                <p class="text-dusty mb-4">Select the column you want to predict (for supervised learning)</p>
+
+                <div class="mb-4">
+                    <label class="block text-snow font-mono mb-2">Target Column:</label>
+                    <select id="target-column" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                        <option value="">Select target column...</option>
+                        <!-- Target options will be populated by JavaScript -->
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <button onclick="autoDetectTarget()" class="btn-secondary" title="Automatically picks the best target column using heuristic scoring">🎯 Auto-Detect</button>
+                    <button onclick="suggestTarget()" class="btn-secondary" title="Shows top 5 candidate columns ranked by suitability for classification/regression">💡 Suggestions</button>
+                    <button onclick="clearTarget()" class="btn-secondary" title="Reset target column selection">❌ Clear</button>
+                </div>
+
+                <div id="target-info" class="bg-slate/20 p-3 rounded">
+                    <!-- Target column info will be shown here -->
+                </div>
+            </div>
+
+            <!-- Preprocessing Options -->
+            <div class="card mb-8">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">🔧 Preprocessing Options</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Basic Preprocessing -->
+                    <div>
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">Basic Options</h4>
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="handle-missing" class="mr-3" checked title="Fills NaN/null with median for numeric and mode for categorical — essential for most ML algorithms">
+                                <div>
+                                    <span class="text-snow font-mono">Handle Missing Values</span>
+                                    <p class="text-xs text-dusty">Fill missing values with median (numeric) or mode (categorical)</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="encode-categorical" class="mr-3" checked title="Converts text categories to numeric using OneHotEncoder — required for sklearn models">
+                                <div>
+                                    <span class="text-snow font-mono">Encode Categorical Variables</span>
+                                    <p class="text-xs text-dusty">Convert categorical variables to numeric using one-hot encoding</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="scale-features" class="mr-3" checked title="Standardizes features to mean=0, std=1 — crucial for SVM, neural nets, and gradient-based models">
+                                <div>
+                                    <span class="text-snow font-mono">Scale Numeric Features</span>
+                                    <p class="text-xs text-dusty">Standardize numeric features using StandardScaler</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Preprocessing -->
+                    <div>
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">Advanced Options</h4>
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="handle-outliers" class="mr-3" title="Caps extreme values using IQR (Q1-1.5×IQR, Q3+1.5×IQR) — reduces influence of anomalies">
+                                <div>
+                                    <span class="text-snow font-mono">Handle Outliers</span>
+                                    <p class="text-xs text-dusty">Remove or cap outliers using IQR method</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="feature-selection" class="mr-3" title="Automatically selects top-k features by importance — reduces overfitting and training time">
+                                <div>
+                                    <span class="text-snow font-mono">Feature Selection</span>
+                                    <p class="text-xs text-dusty">Select most important features automatically</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="cross-validation" class="mr-3" title="Splits data into k folds for robust evaluation — more reliable than single train/test split">
+                                <div>
+                                    <span class="text-snow font-mono">N-Fold Cross Validation</span>
+                                    <p class="text-xs text-dusty">Enable cross-validation for robust evaluation</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cross Validation Settings -->
+                <div id="cv-settings" class="mt-6 p-4 bg-slate/20 rounded" style="display: none;">
+                    <h4 class="text-lg font-bold text-snow font-mono mb-4">🔄 Cross Validation Settings</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-snow font-mono mb-2">Number of Folds:</label>
+                            <select id="cv-folds" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                                <option value="3">3 folds</option>
+                                <option value="5" selected>5 folds</option>
+                                <option value="10">10 folds</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-snow font-mono mb-2">Test Size (%):</label>
+                            <select id="test-size" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                                <option value="0.2" selected>20%</option>
+                                <option value="0.25">25%</option>
+                                <option value="0.3">30%</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    // Show CV settings when cross-validation is checked
+                    document.getElementById('cross-validation').addEventListener('change', function() {
+                        const cvSettings = document.getElementById('cv-settings');
+                        cvSettings.style.display = this.checked ? 'block' : 'none';
+                    });
+                </script>
+            </div>
+
+            <!-- Preprocessing Preview -->
+            <div id="preprocessing-preview" class="card mb-8" style="display: none;">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">👀 Preprocessing Preview</h3>
+                <div id="preview-content">
+                    <!-- Preview will be shown here -->
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center">
+                <a href="step2_eda.html" class="btn-secondary">← Back to EDA</a>
+                <div class="flex space-x-4">
+                    <button onclick="previewPreprocessing()" class="btn-secondary">
+                        👀 Preview Changes
+                    </button>
+                    <button onclick="applyPreprocessing()" class="btn-primary">
+                        🚀 Apply Preprocessing
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-void to-glyon border-t border-slate mt-20">
+        <div class="max-w-7xl mx-auto px-4 py-8 text-center">
+            <p class="text-dusty text-sm font-mono">© 2024 TOOL-BOX. Made with ❤️ by Ali Kazemi.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Global state
+        let currentDataset = null;
+        let preprocessingConfig = {
+            selectedColumns: [],
+            targetColumn: '',
+            handleMissing: true,
+            encodeCategorical: true,
+            scaleFeatures: true,
+            handleOutliers: false,
+            featureSelection: false,
+            crossValidation: false,
+            cvFolds: 5,
+            testSize: 0.2
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load dataset from session storage
+            const datasetJson = sessionStorage.getItem('toolbox_dataset');
+            if (datasetJson) {
+                currentDataset = JSON.parse(datasetJson);
+                initializePreprocessing();
+                showNotification('Dataset loaded successfully', 'success');
+            } else {
+                showNotification('No dataset found. Please go back to data loading.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'step1_load_data.html';
+                }, 3000);
+            }
+
+            // Load preprocessing config if exists
+            const configJson = sessionStorage.getItem('toolbox_preprocessing_config');
+            if (configJson) {
+                preprocessingConfig = { ...preprocessingConfig, ...JSON.parse(configJson) };
+                loadPreprocessingConfig();
+            }
+
+            // Add event listeners
+            setupEventListeners();
+        });
+
+        function initializePreprocessing() {
+            if (!currentDataset) return;
+
+            updateDatasetOverview();
+            populateColumnSelector();
+            populateTargetSelector();
+            updateColumnSelectionSummary();
+            updateTargetInfo();
+        }
+
+        function updateDatasetOverview() {
+            if (!currentDataset) return;
+
+            const data = currentDataset.data;
+            const numRows = data.length;
+            const numCols = currentDataset.columns.length;
+            const memoryKB = Math.round(JSON.stringify(data).length / 1024);
+            const duplicates = data.length - new Set(data.map(row => JSON.stringify(row))).size;
+
+            const overviewHTML = `
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-lava">${numRows}</div>
+                    <div class="text-sm text-dusty">Rows</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-lava">${numCols}</div>
+                    <div class="text-sm text-dusty">Columns</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-info">${memoryKB} KB</div>
+                    <div class="text-sm text-dusty">Memory</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-warning">${duplicates}</div>
+                    <div class="text-sm text-dusty">Duplicates</div>
+                </div>
+            `;
+
+            document.getElementById('dataset-overview').innerHTML = overviewHTML;
+        }
+
+        function populateColumnSelector() {
+            if (!currentDataset) return;
+
+            const columnCheckboxes = document.getElementById('column-checkboxes');
+            columnCheckboxes.innerHTML = '';
+
+            currentDataset.columns.forEach(col => {
+                // Check if column is numeric or categorical
+                const sampleValues = currentDataset.data.slice(0, 10).map(row => row[col]);
+                const hasNumbers = sampleValues.some(val => typeof val === 'number' && !isNaN(val));
+                const colType = hasNumbers ? 'numeric' : 'categorical';
+                const typeColor = hasNumbers ? 'text-info' : 'text-warning';
+                const typeIcon = hasNumbers ? '🔢' : '📝';
+
+                const checkboxDiv = document.createElement('div');
+                checkboxDiv.className = 'flex items-center justify-between p-2 bg-slate/10 rounded hover:bg-slate/20 transition-colors';
+
+                checkboxDiv.innerHTML = `
+                    <div class="flex items-center">
+                        <input type="checkbox" id="col-${col}" value="${col}" class="mr-3 column-checkbox"
+                               ${preprocessingConfig.selectedColumns.includes(col) || preprocessingConfig.selectedColumns.length === 0 ? 'checked' : ''}>
+                        <label for="col-${col}" class="text-snow font-mono cursor-pointer">${col}</label>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs ${typeColor}">${typeIcon}</span>
+                        <span class="text-xs text-dusty">${colType}</span>
+                    </div>
+                `;
+
+                columnCheckboxes.appendChild(checkboxDiv);
+            });
+
+            // Add event listeners to checkboxes
+            document.querySelectorAll('.column-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', updateColumnSelectionSummary);
+            });
+        }
+
+        function populateTargetSelector() {
+            if (!currentDataset) return;
+
+            const targetSelect = document.getElementById('target-column');
+            targetSelect.innerHTML = '<option value="">Select target column...</option>';
+
+            currentDataset.columns.forEach(col => {
+                const option = document.createElement('option');
+                option.value = col;
+                option.textContent = col;
+                if (preprocessingConfig.targetColumn === col) {
+                    option.selected = true;
+                }
+                targetSelect.appendChild(option);
+            });
+        }
+
+        function setupEventListeners() {
+            // Target column change
+            document.getElementById('target-column').addEventListener('change', function() {
+                preprocessingConfig.targetColumn = this.value;
+                updateTargetInfo();
+                savePreprocessingConfig();
+            });
+
+            // Preprocessing option changes
+            ['handle-missing', 'encode-categorical', 'scale-features', 'handle-outliers', 'feature-selection', 'cross-validation'].forEach(id => {
+                document.getElementById(id).addEventListener('change', function() {
+                    preprocessingConfig[id] = this.checked;
+                    savePreprocessingConfig();
+                });
+            });
+
+            // CV settings changes
+            document.getElementById('cv-folds').addEventListener('change', function() {
+                preprocessingConfig.cvFolds = parseInt(this.value);
+                savePreprocessingConfig();
+            });
+
+            document.getElementById('test-size').addEventListener('change', function() {
+                preprocessingConfig.testSize = parseFloat(this.value);
+                savePreprocessingConfig();
+            });
+        }
+
+        function selectAllColumns() {
+            document.querySelectorAll('.column-checkbox').forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            updateColumnSelectionSummary();
+        }
+
+        function clearColumnSelection() {
+            document.querySelectorAll('.column-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            updateColumnSelectionSummary();
+        }
+
+        function selectNumericColumns() {
+            document.querySelectorAll('.column-checkbox').forEach(checkbox => {
+                const colName = checkbox.value;
+                const sampleValues = currentDataset.data.slice(0, 10).map(row => row[colName]);
+                const hasNumbers = sampleValues.some(val => typeof val === 'number' && !isNaN(val));
+                checkbox.checked = hasNumbers;
+            });
+            updateColumnSelectionSummary();
+        }
+
+        function selectCategoricalColumns() {
+            document.querySelectorAll('.column-checkbox').forEach(checkbox => {
+                const colName = checkbox.value;
+                const sampleValues = currentDataset.data.slice(0, 10).map(row => row[colName]);
+                const hasNumbers = sampleValues.some(val => typeof val === 'number' && !isNaN(val));
+                checkbox.checked = !hasNumbers;
+            });
+            updateColumnSelectionSummary();
+        }
+
+        function updateColumnSelectionSummary() {
+            const selectedCheckboxes = document.querySelectorAll('.column-checkbox:checked');
+            const selectedColumns = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+            preprocessingConfig.selectedColumns = selectedColumns;
+
+            const totalColumns = currentDataset.columns.length;
+            const selectedCount = selectedColumns.length;
+            const droppedCount = totalColumns - selectedCount;
+
+            let summaryHTML = `<p class="text-snow font-mono">Selected: ${selectedCount} columns`;
+            if (droppedCount > 0) {
+                summaryHTML += ` | Dropped: ${droppedCount} columns</p>`;
+                summaryHTML += '<div class="mt-2"><strong class="text-warning">Dropped columns:</strong> ';
+                const droppedColumns = currentDataset.columns.filter(col => !selectedColumns.includes(col));
+                summaryHTML += droppedColumns.join(', ') + '</div>';
+            } else {
+                summaryHTML += '</p>';
+            }
+
+            document.getElementById('column-selection-summary').innerHTML = summaryHTML;
+            savePreprocessingConfig();
+        }
+
+        function autoDetectTarget() {
+            if (!currentDataset) return;
+
+            const data = currentDataset.data;
+            const columns = currentDataset.columns;
+
+            // Simple heuristic: look for columns with "target", "label", "class", or low unique values
+            let suggestedTarget = null;
+            let bestScore = 0;
+
+            columns.forEach(col => {
+                let score = 0;
+                const colName = col.toLowerCase();
+
+                // Name-based scoring
+                if (colName.includes('target') || colName.includes('label') || colName.includes('class')) {
+                    score += 10;
+                }
+                if (colName.includes('outcome') || colName.includes('result') || colName.includes('output')) {
+                    score += 8;
+                }
+
+                // Uniqueness-based scoring (prefer low unique values for classification)
+                const uniqueCount = new Set(data.map(row => row[col])).size;
+                const uniqueRatio = uniqueCount / data.length;
+
+                if (uniqueRatio < 0.1) score += 5; // Very low uniqueness (good for classification)
+                else if (uniqueRatio < 0.5) score += 3; // Moderate uniqueness
+                else if (uniqueRatio > 0.8) score -= 2; // High uniqueness (bad for classification)
+
+                // Numeric check (prefer for regression)
+                const numericValues = data.filter(row => typeof row[col] === 'number' && !isNaN(row[col]));
+                if (numericValues.length > data.length * 0.8) score += 2;
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    suggestedTarget = col;
+                }
+            });
+
+            if (suggestedTarget) {
+                preprocessingConfig.targetColumn = suggestedTarget;
+                document.getElementById('target-column').value = suggestedTarget;
+                updateTargetInfo();
+                showNotification(`Auto-detected target: ${suggestedTarget}`, 'success');
+            } else {
+                showNotification('Could not auto-detect target column', 'warning');
+            }
+
+            savePreprocessingConfig();
+        }
+
+        function suggestTarget() {
+            if (!currentDataset) return;
+
+            const columns = currentDataset.columns;
+            const data = currentDataset.data;
+
+            let suggestionsHTML = '<div class="space-y-2">';
+
+            columns.slice(0, 5).forEach(col => {
+                const uniqueCount = new Set(data.map(row => row[col])).size;
+                const uniqueRatio = uniqueCount / data.length;
+                const isNumeric = data.some(row => typeof row[col] === 'number' && !isNaN(row[col]));
+
+                let suitability = 'Unknown';
+                let color = 'text-dusty';
+
+                if (isNumeric) {
+                    if (uniqueRatio > 0.8) {
+                        suitability = 'Good for Regression';
+                        color = 'text-success';
+                    } else {
+                        suitability = 'Possible for Regression';
+                        color = 'text-info';
+                    }
+                } else {
+                    if (uniqueCount <= 10) {
+                        suitability = 'Good for Classification';
+                        color = 'text-success';
+                    } else if (uniqueCount <= 20) {
+                        suitability = 'Possible for Classification';
+                        color = 'text-warning';
+                    } else {
+                        suitability = 'Not suitable (too many categories)';
+                        color = 'text-error';
+                    }
+                }
+
+                suggestionsHTML += `
+                    <div class="flex justify-between items-center p-2 bg-slate/10 rounded">
+                        <span class="text-snow font-mono">${col}</span>
+                        <span class="text-xs ${color}">${suitability} (${uniqueCount} unique)</span>
+                    </div>
+                `;
+            });
+
+            suggestionsHTML += '</div>';
+
+            const targetInfo = document.getElementById('target-info');
+            targetInfo.innerHTML = '<h4 class="text-lg font-bold text-snow font-mono mb-2">💡 Target Suggestions</h4>' + suggestionsHTML;
+        }
+
+        function clearTarget() {
+            preprocessingConfig.targetColumn = '';
+            document.getElementById('target-column').value = '';
+            updateTargetInfo();
+            savePreprocessingConfig();
+        }
+
+        function updateTargetInfo() {
+            const targetColumn = preprocessingConfig.targetColumn;
+            const targetInfo = document.getElementById('target-info');
+
+            if (!targetColumn) {
+                targetInfo.innerHTML = '<p class="text-dusty">No target column selected</p>';
+                return;
+            }
+
+            if (!currentDataset) return;
+
+            const data = currentDataset.data;
+            const values = data.map(row => row[targetColumn]);
+            const uniqueCount = new Set(values).size;
+            const missingCount = values.filter(val => val === null || val === undefined || val === '').length;
+            const isNumeric = values.some(val => typeof val === 'number' && !isNaN(val));
+
+            const infoHTML = `
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-slate/20 p-3 rounded text-center">
+                        <div class="text-xl font-bold text-lava">${uniqueCount}</div>
+                        <div class="text-sm text-dusty">Unique Values</div>
+                    </div>
+                    <div class="bg-slate/20 p-3 rounded text-center">
+                        <div class="text-xl font-bold text-warning">${missingCount}</div>
+                        <div class="text-sm text-dusty">Missing Values</div>
+                    </div>
+                    <div class="bg-slate/20 p-3 rounded text-center">
+                        <div class="text-xl font-bold text-info">${isNumeric ? 'Numeric' : 'Categorical'}</div>
+                        <div class="text-sm text-dusty">Data Type</div>
+                    </div>
+                    <div class="bg-slate/20 p-3 rounded text-center">
+                        <div class="text-xl font-bold text-success">${isNumeric ? 'Regression' : uniqueCount <= 10 ? 'Classification' : 'Multi-class'}</div>
+                        <div class="text-sm text-dusty">Suggested Task</div>
+                    </div>
+                </div>
+            `;
+
+            targetInfo.innerHTML = infoHTML;
+        }
+
+        function previewPreprocessing() {
+            const config = getCurrentPreprocessingConfig();
+
+            let previewHTML = '<h4 class="text-lg font-bold text-snow font-mono mb-4">🔍 Preprocessing Preview</h4>';
+            previewHTML += '<div class="space-y-2 font-mono text-sm">';
+
+            // Selected columns
+            const selectedCols = config.selectedColumns;
+            const totalCols = currentDataset.columns.length;
+            previewHTML += `<p><strong>Columns:</strong> ${selectedCols.length}/${totalCols} selected`;
+            if (selectedCols.length < totalCols) {
+                const dropped = currentDataset.columns.filter(col => !selectedCols.includes(col));
+                previewHTML += ` (dropped: ${dropped.join(', ')})`;
+            }
+            previewHTML += '</p>';
+
+            // Target column
+            previewHTML += `<p><strong>Target:</strong> ${config.targetColumn || 'Not selected'}</p>`;
+
+            // Enabled preprocessing steps
+            const enabledSteps = [];
+            if (config.handleMissing) enabledSteps.push('Missing value handling');
+            if (config.encodeCategorical) enabledSteps.push('Categorical encoding');
+            if (config.scaleFeatures) enabledSteps.push('Feature scaling');
+            if (config.handleOutliers) enabledSteps.push('Outlier handling');
+            if (config.featureSelection) enabledSteps.push('Feature selection');
+            if (config.crossValidation) enabledSteps.push(`Cross-validation (${config.cvFolds} folds)`);
+
+            previewHTML += '<p><strong>Steps:</strong></p><ul class="ml-4">';
+            if (enabledSteps.length > 0) {
+                enabledSteps.forEach(step => {
+                    previewHTML += `<li>• ${step}</li>`;
+                });
+            } else {
+                previewHTML += '<li class="text-warning">No preprocessing steps selected</li>';
+            }
+            previewHTML += '</ul></div>';
+
+            const previewDiv = document.getElementById('preprocessing-preview');
+            previewDiv.style.display = 'block';
+            document.getElementById('preview-content').innerHTML = previewHTML;
+        }
+
+        function applyPreprocessing() {
+            const config = getCurrentPreprocessingConfig();
+
+            // Validation
+            if (config.selectedColumns.length === 0) {
+                showNotification('Please select at least one column', 'warning');
+                return;
+            }
+
+            if (!config.targetColumn) {
+                showNotification('Please select a target column', 'warning');
+                return;
+            }
+
+            // Save config to session storage
+            sessionStorage.setItem('toolbox_preprocessing_config', JSON.stringify(config));
+
+            // Show success and navigate
+            showNotification('Preprocessing configuration saved! Continuing to model training...', 'success');
+
+            setTimeout(() => {
+                window.location.href = 'step4_training.html';
+            }, 1500);
+        }
+
+        function getCurrentPreprocessingConfig() {
+            const selectedOptions = Array.from(document.getElementById('column-select').selectedOptions);
+            const selectedColumns = selectedOptions.map(option => option.value);
+
+            return {
+                selectedColumns: selectedColumns,
+                targetColumn: document.getElementById('target-column').value,
+                handleMissing: document.getElementById('handle-missing').checked,
+                encodeCategorical: document.getElementById('encode-categorical').checked,
+                scaleFeatures: document.getElementById('scale-features').checked,
+                handleOutliers: document.getElementById('handle-outliers').checked,
+                featureSelection: document.getElementById('feature-selection').checked,
+                crossValidation: document.getElementById('cross-validation').checked,
+                cvFolds: parseInt(document.getElementById('cv-folds').value),
+                testSize: parseFloat(document.getElementById('test-size').value)
+            };
+        }
+
+        function loadPreprocessingConfig() {
+            // Load checkbox states
+            ['handle-missing', 'encode-categorical', 'scale-features', 'handle-outliers', 'feature-selection', 'cross-validation'].forEach(id => {
+                document.getElementById(id).checked = preprocessingConfig[id];
+            });
+
+            // Load select values
+            if (preprocessingConfig.cvFolds) {
+                document.getElementById('cv-folds').value = preprocessingConfig.cvFolds;
+            }
+            if (preprocessingConfig.testSize) {
+                document.getElementById('test-size').value = preprocessingConfig.testSize;
+            }
+
+            // Show CV settings if enabled
+            const cvSettings = document.getElementById('cv-settings');
+            if (preprocessingConfig.crossValidation) {
+                cvSettings.style.display = 'block';
+            }
+        }
+
+        function savePreprocessingConfig() {
+            const config = getCurrentPreprocessingConfig();
+            sessionStorage.setItem('toolbox_preprocessing_config', JSON.stringify(config));
+        }
+
+        function showNotification(message, type = 'info') {
+            const n = document.createElement('div');
+            const bgMap = {
+                success: 'rgba(16,185,129,0.95)',
+                error: 'rgba(239,68,68,0.95)',
+                warning: 'rgba(245,158,11,0.95)',
+                info: 'rgba(59,130,246,0.95)'
+            };
+            n.style.cssText = `position:fixed;top:80px;right:16px;z-index:9999;padding:10px 18px;border-radius:8px;color:#FBFBFB;font-family:'Courier New',monospace;font-size:13px;background:${bgMap[type] || bgMap.info};border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(4px);max-width:420px;word-break:break-word;`;
+            n.textContent = message;
+            document.body.appendChild(n);
+            setTimeout(() => { n.style.opacity = '0'; n.style.transition = 'opacity 0.3s'; setTimeout(() => n.remove(), 300); }, 5000);
+        }
+    </script>
+</body>
+</html>

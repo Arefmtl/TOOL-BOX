@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 4: Model Training - TOOL-BOX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lava: '#F56E0F',
+                        snow: '#FBFBFB',
+                        dusty: '#878787',
+                        glyon: '#1B1B1E',
+                        void: '#151419',
+                        slate: '#262626',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        info: '#3B82F6',
+                    },
+                    fontFamily: {
+                        'mono': ['Courier New', 'Monaco', 'Menlo', 'monospace'],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(245, 110, 15, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #151419;
+            color: #FBFBFB;
+            font-family: 'Courier New', monospace;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card {
+            background: linear-gradient(135deg, #1B1B1E 0%, #151419 100%);
+            border: 1px solid #262626;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #F56E0F 0%, #E66310 100%);
+            color: #151419;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(245, 110, 15, 0.3);
+        }
+        .btn-secondary {
+            background: #262626;
+            color: #FBFBFB;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+            background: #3B3B3B;
+        }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .skeleton {
+            background: linear-gradient(90deg, rgba(245,110,15,0.04) 25%, rgba(245,110,15,0.1) 50%, rgba(245,110,15,0.04) 75%);
+            background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .rec-banner { padding: 12px 16px; border-radius: 8px; font-size: 12px; display: flex; align-items: center; gap: 10px; }
+        .rec-banner.info { background: rgba(245,110,15,0.1); border: 1px solid rgba(245,110,15,0.25); color: #F56E0F; }
+        .rec-banner.warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); color: #F59E0B; }
+        .rec-banner.success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); color: #10B981; }
+        .empty-state { padding: 32px 20px; text-align: center; color: #878787; font-size: 13px; }
+        .model-card {
+            background: linear-gradient(135deg, #1B1B1E 0%, #151419 100%);
+            border: 1px solid #262626;
+            border-radius: 12px;
+            padding: 1rem;
+            transition: all 0.2s ease;
+        }
+        .model-card:hover {
+            border-color: #F56E0F;
+            box-shadow: 0 0 20px rgba(245, 110, 15, 0.2);
+        }
+        .model-card.selected {
+            border-color: #F56E0F;
+            background: linear-gradient(135deg, #2A1B1E 0%, #251419 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-void to-glyon border-b border-slate shadow-glow">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <a href="index.html" class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-lava rounded-lg flex items-center justify-center">
+                            <span class="text-void font-bold text-lg">TB</span>
+                        </div>
+                        <div class="font-bold text-xl text-snow font-mono">
+                            <span class="text-lava">TOOL</span>
+                            <span>-BOX</span>
+                        </div>
+                    </a>
+                </div>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <span class="text-lava font-mono">🤖 Step 4: Training</span>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <a href="https://github.com/Arefmtl/TOOL-BOX" target="_blank"
+                       class="flex items-center space-x-2 bg-glyon hover:bg-slate border border-slate rounded-lg px-3 py-2 text-dusty hover:text-snow transition-all duration-200 font-mono text-sm">
+                        ⭐ 42 Stars
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="fixed top-20 left-0 right-0 z-40 bg-void border-b border-slate">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center space-x-2">
+                <span class="text-sm text-dusty font-mono">Progress:</span>
+                <div class="flex-1 bg-slate rounded-full h-2">
+                    <div class="bg-lava h-2 rounded-full" style="width: 50%"></div>
+                </div>
+                <span class="text-sm text-dusty font-mono">4 / 8</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="pt-32">
+        <div class="max-w-6xl mx-auto px-4">
+            <!-- Step Header -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-lava rounded-full flex items-center justify-center text-void font-bold text-2xl font-mono mx-auto mb-4 shadow-glow">
+                    04
+                </div>
+                <h1 class="text-4xl font-bold text-snow font-mono mb-2">🤖 Model Training</h1>
+                <p class="text-xl text-dusty">Train multiple ML algorithms simultaneously and compare their performance</p>
+            </div>
+
+            <!-- Dataset Summary -->
+            <div class="card mb-8">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">📊 Training Configuration</h3>
+                <div id="training-config" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Config info will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Task Type Selection -->
+            <div class="card mb-8">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">🎯 Problem Type</h3>
+                <p class="text-dusty mb-4">Select the type of machine learning problem you're solving:</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div id="classification-card" class="task-type-card border-2 border-slate rounded-lg p-6 cursor-pointer transition-all hover:border-lava">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">📊</div>
+                            <h4 class="text-xl font-bold text-snow font-mono mb-2">Classification</h4>
+                            <p class="text-dusty">Predict categories or classes (e.g., spam/not spam, disease types)</p>
+                            <div class="mt-4 text-sm text-dusty">
+                                <p>• Logistic Regression</p>
+                                <p>• Random Forest</p>
+                                <p>• SVM, XGBoost</p>
+                                <p>• Neural Networks</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="regression-card" class="task-type-card border-2 border-slate rounded-lg p-6 cursor-pointer transition-all hover:border-lava">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">📈</div>
+                            <h4 class="text-xl font-bold text-snow font-mono mb-2">Regression</h4>
+                            <p class="text-dusty">Predict continuous values (e.g., house prices, temperature)</p>
+                            <div class="mt-4 text-sm text-dusty">
+                                <p>• Linear Regression</p>
+                                <p>• Random Forest</p>
+                                <p>• Gradient Boosting</p>
+                                <p>• Support Vector Regression</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="task-type-display" class="mt-4 text-center">
+                    <!-- Selected task type will be shown here -->
+                </div>
+            </div>
+
+            <!-- Model Selection -->
+            <div id="model-selection-section" class="card mb-8" style="display: none;">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">🎯 Select Models to Train</h3>
+                <p class="text-dusty mb-6">Choose which algorithms you want to train. Multiple selection allowed.</p>
+
+                <!-- Classification Models -->
+                <div id="classification-models" class="mb-8" style="display: none;">
+                    <h4 class="text-lg font-bold text-snow font-mono mb-4">🤖 Classification Algorithms</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="model-card cursor-pointer" data-model="logistic_regression" title="Logistic Regression: Simple, fast, interpretable. Best for binary classification with linear decision boundaries. Uses L1/L2 regularization (C parameter).">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <input type="checkbox" class="model-checkbox" data-model="logistic_regression">
+                                <h5 class="text-lg font-bold text-snow font-mono">Logistic Regression</h5>
+                            </div>
+                            <p class="text-dusty text-sm">Simple and interpretable classification algorithm</p>
+                            <div class="mt-2 text-xs text-dusty">
+                                <span class="bg-slate px-2 py-1 rounded">Fast</span>
+                                <span class="bg-slate px-2 py-1 rounded ml-1">Interpretable</span>
+                            </div>
+                        </div>
+
+                        <div class="model-card cursor-pointer" data-model="random_forest" title="Random Forest: Ensemble of decision trees. Robust to outliers, handles missing data, captures non-linear relationships. Good default choice for most problems.">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <input type="checkbox" class="model-checkbox" data-model="random_forest">
+                                <h5 class="text-lg font-bold text-snow font-mono">Random Forest</h5>
+                            </div>
+                            <p class="text-dusty text-sm">Ensemble of decision trees for robust predictions</p>
+                            <div class="mt-2 text-xs text-dusty">
+                                <span class="bg-slate px-2 py-1 rounded">Robust</span>
+                                <span class="bg-slate px-2 py-1 rounded ml-1">Handles Missing</span>
+                            </div>
+                        </div>
+
+                        <div class="model-card cursor-pointer" data-model="svm" title="SVM: Effective in high-dimensional spaces. Uses kernel trick (RBF/poly/linear) for non-linear boundaries. Memory efficient, works well with clear margins.">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <input type="checkbox" class="model-checkbox" data-model="svm">
+                                <h5 class="text-lg font-bold text-snow font-mono">Support Vector Machine</h5>
+                            </div>
+                            <p class="text-dusty text-sm">Effective in high-dimensional spaces</p>
+                            <div class="mt-2 text-xs text-dusty">
+                                <span class="bg-slate px-2 py-1 rounded">High Accuracy</span>
+                                <span class="bg-slate px-2 py-1 rounded ml-1">Memory Efficient</span>
+                            </div>
+                        </div>
+
+                        <div class="model-card cursor-pointer" data-model="gradient_boosting" title="Gradient Boosting: Sequentially builds trees correcting previous errors. High performance, handles complex patterns. Sensitive to noisy data, requires tuning.">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <input type="checkbox" class="model-checkbox" data-model="gradient_boosting">
+                                <h5 class="text-lg font-bold text-snow font-mono">Gradient Boosting</h5>
+                            </div>
+                            <p class="text-dusty text-sm">Sequential ensemble learning method</p>
+                            <div class="mt-2 text-xs text-dusty">
+                                <span class="bg-slate px-2 py-1 rounded">High Performance</span>
+                                <span class="bg-slate px-2 py-1 rounded ml-1">Handles Complex</span>
+                            </div>
+                        </div>
+
+                        <div class="model-card cursor-pointer" data-model="xgboost" title="XGBoost: Optimized gradient boosting with regularization. State-of-the-art on tabular data. Handles missing values, supports GPU acceleration, L1/L2 regularization.">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <input type="checkbox" class="model-checkbox" data-model="xgboost">
+                                <h5 class="text-lg font-bold text-snow font-mono">XGBoost</h5>
+                            </div>
+                            <p class="text-dusty text-sm">Optimized gradient boosting implementation</p>
+                            <div class="mt-2 text-xs text-dusty">
+                                <span class="bg-slate px-2 py-1 rounded">State-of-Art</span>
+                                <span class="bg-slate px-2 py-1 rounded ml-1">Scalable</span>
+                            </div>
+                        </div>
+
+                        <div class="model-card cursor-pointer" data-model="neural_network" title="Neural Network: Flexible deep learning with 1-3 hidden layers. Captures complex non-linear patterns. Requires feature scaling, more data, longer training time.">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <input type="checkbox" class="model-checkbox" data-model="neural_network">
+                                <h5 class="text-lg font-bold text-snow font-mono">Neural Network</h5>
+                            </div>
+                            <p class="text-dusty text-sm">Deep learning with customizable architecture</p>
+                            <div class="mt-2 text-xs text-dusty">
+                                <span class="bg-slate px-2 py-1 rounded">Flexible</span>
+                                <span class="bg-slate px-2 py-1 rounded ml-1">Complex Patterns</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regression Models -->
+                <div id="regression-models" class="mb-8" style="display: none;">
+                    <h4 class="text-lg font-bold text-snow font-mono mb-4">📈 Regression Algorithms</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="model-card cursor-pointer" data-model="linear_regression" title="Linear Regression: Fastest, most interpretable regression. Assumes linear relationship between features and target. Baseline model for regression problems.">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <input type="checkbox" class="model-checkbox" data-model="linear_regression">
+                                <h5 class="text-lg font-bold text-snow font-mono">Linear Regression</h5>
+                            </div>
+                            <p class="text-dusty text-sm">Simple linear relationship modeling</p>
+                            <div class="mt-2 text-xs text-dusty">
+                                <span class="bg-slate px-2 py-1 rounded">Fast</span>
+                                <span class="bg-slate px-2 py-1 rounded ml-1">Interpretable</span>
+                            </div>
+                        </div>
+
+                        <div class="model-card cursor-pointer" data-model="random_forest" title="Random Forest Regressor: Ensemble of decision trees. Captures non-linear relationships, robust to outliers, provides feature importance. Good default choice.">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <input type="checkbox" class="model-checkbox" data-model="random_forest">
+                                <h5 class="text-lg font-bold text-snow font-mono">Random Forest</h5>
+                            </div>
+                            <p class="text-dusty text-sm">Ensemble regression with decision trees</p>
+                            <div class="mt-2 text-xs text-dusty">
+                                <span class="bg-slate px-2 py-1 rounded">Robust</span>
+                                <span class="bg-slate px-2 py-1 rounded ml-1">Non-linear</span>
+                            </div>
+                        </div>
+
+                        <div class="model-card cursor-pointer" data-model="gradient_boosting" title="Gradient Boosting Regressor: Sequential ensemble, high accuracy on complex patterns. Good for heterogeneous data. Requires more tuning than RF.">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <input type="checkbox" class="model-checkbox" data-model="gradient_boosting">
+                                <h5 class="text-lg font-bold text-snow font-mono">Gradient Boosting</h5>
+                            </div>
+                            <p class="text-dusty text-sm">Sequential ensemble for regression</p>
+                            <div class="mt-2 text-xs text-dusty">
+                                <span class="bg-slate px-2 py-1 rounded">High Accuracy</span>
+                                <span class="bg-slate px-2 py-1 rounded ml-1">Handles Outliers</span>
+                            </div>
+                        </div>
+
+                        <div class="model-card cursor-pointer" data-model="xgboost" title="XGBoost Regressor: State-of-the-art gradient boosting with L1/L2 regularization. Handles missing values, GPU-accelerated, competition-winning performance.">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <input type="checkbox" class="model-checkbox" data-model="xgboost">
+                                <h5 class="text-lg font-bold text-snow font-mono">XGBoost</h5>
+                            </div>
+                            <p class="text-dusty text-sm">Extreme gradient boosting for regression</p>
+                            <div class="mt-2 text-xs text-dusty">
+                                <span class="bg-slate px-2 py-1 rounded">Competition Winner</span>
+                                <span class="bg-slate px-2 py-1 rounded ml-1">Regularized</span>
+                            </div>
+                        </div>
+
+                        <div class="model-card cursor-pointer" data-model="svr" title="SVR: SVM adapted for continuous prediction. Works well with high-dimensional data. Kernel trick captures non-linear patterns. Requires feature scaling.">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <input type="checkbox" class="model-checkbox" data-model="svr">
+                                <h5 class="text-lg font-bold text-snow font-mono">Support Vector Regression</h5>
+                            </div>
+                            <p class="text-dusty text-sm">SVM adaptation for continuous prediction</p>
+                            <div class="mt-2 text-xs text-dusty">
+                                <span class="bg-slate px-2 py-1 rounded">Robust</span>
+                                <span class="bg-slate px-2 py-1 rounded ml-1">Kernel Trick</span>
+                            </div>
+                        </div>
+
+                        <div class="model-card cursor-pointer" data-model="ridge" title="Ridge Regression: Linear regression with L2 regularization. Prevents overfitting, handles multicollinearity. Good when many correlated features exist.">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <input type="checkbox" class="model-checkbox" data-model="ridge">
+                                <h5 class="text-lg font-bold text-snow font-mono">Ridge Regression</h5>
+                            </div>
+                            <p class="text-dusty text-sm">Regularized linear regression</p>
+                            <div class="mt-2 text-xs text-dusty">
+                                <span class="bg-slate px-2 py-1 rounded">Prevents Overfitting</span>
+                                <span class="bg-slate px-2 py-1 rounded ml-1">L2 Regularization</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Selection Summary -->
+                <div id="model-selection-summary" class="bg-slate/20 p-4 rounded">
+                    <p class="text-snow font-mono">No models selected</p>
+                </div>
+            </div>
+
+            <div id="training-recommendation" class="rec-banner info mb-6 hidden">
+                💡 Try selecting all algorithms and compare their performance. Random Forest and XGBoost are strong defaults for most problems.
+            </div>
+
+            <!-- Training Options -->
+            <div id="training-options" class="card mb-8" style="display: none;">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">⚙️ Training Options</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">Training Mode</h4>
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input type="radio" name="training-mode" value="auto" checked class="mr-3" title="Automatically uses best default parameters for each model — recommended for most users">
+                                <div>
+                                    <span class="text-snow font-mono">AutoML Mode</span>
+                                    <p class="text-xs text-dusty">Use recommended default parameters</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="training-mode" value="custom" class="mr-3" title="Manually configure model hyperparameters — for advanced users familiar with ML algorithms">
+                                <div>
+                                    <span class="text-snow font-mono">Custom Mode</span>
+                                    <p class="text-xs text-dusty">Advanced users can customize parameters</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">Validation Strategy</h4>
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input type="radio" name="validation" value="simple" checked class="mr-3" title="Simple 80/20 train/test split — faster but less reliable estimate of performance">
+                                <div>
+                                    <span class="text-snow font-mono">Simple Split</span>
+                                    <p class="text-xs text-dusty">Train/test split only</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="validation" value="cross_validation" class="mr-3" title="K-fold cross-validation (default 5 folds) — more robust, uses all data for training and validation">
+                                <div>
+                                    <span class="text-snow font-mono">Cross Validation</span>
+                                    <p class="text-xs text-dusty">K-fold cross validation</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CV Settings -->
+                <div id="cv-settings" class="mt-6 p-4 bg-slate/20 rounded" style="display: none;">
+                    <h4 class="text-lg font-bold text-snow font-mono mb-4">🔄 Cross Validation Settings</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-snow font-mono mb-2">Number of Folds:</label>
+                            <select id="cv-folds" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                                <option value="3">3 folds</option>
+                                <option value="5" selected>5 folds</option>
+                                <option value="10">10 folds</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-snow font-mono mb-2">Random State:</label>
+                            <input type="number" id="random-state" value="42" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Progress -->
+            <div id="training-progress" class="card mb-8" style="display: none;">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">🚀 Training Progress</h3>
+                <div id="progress-container">
+                    <!-- Progress bars will be added here -->
+                </div>
+            </div>
+
+            <!-- Training Results -->
+            <div id="training-results" class="card mb-8" style="display: none;">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">🎯 Training Results</h3>
+                <div id="results-summary">
+                    <!-- Results will be displayed here -->
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center">
+                <a href="step3_preprocessing.html" class="btn-secondary">← Back to Preprocessing</a>
+                <div class="flex space-x-4">
+                    <button onclick="startTraining()" id="train-btn" class="btn-primary" disabled>
+                        🚀 Start Training
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-void to-glyon border-t border-slate mt-20">
+        <div class="max-w-7xl mx-auto px-4 py-8 text-center">
+            <p class="text-dusty text-sm font-mono">© 2024 TOOL-BOX. Made with ❤️ by Ali Kazemi.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Global state
+        let currentDataset = null;
+        let preprocessingConfig = null;
+        let selectedTaskType = null;
+        let selectedModels = [];
+        let trainingResults = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load data from session storage
+            const datasetJson = sessionStorage.getItem('toolbox_dataset');
+            const configJson = sessionStorage.getItem('toolbox_preprocessing_config');
+
+            if (datasetJson) {
+                currentDataset = JSON.parse(datasetJson);
+                showNotification('Dataset loaded successfully', 'success');
+            } else {
+                showNotification('No dataset found. Please go back to preprocessing.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'step3_preprocessing.html';
+                }, 3000);
+                return;
+            }
+
+            if (configJson) {
+                preprocessingConfig = JSON.parse(configJson);
+            }
+
+            initializeTrainingPage();
+            setupEventListeners();
+        });
+
+        function initializeTrainingPage() {
+            updateTrainingConfig();
+            setupTaskTypeSelection();
+        }
+
+        function updateTrainingConfig() {
+            if (!currentDataset || !preprocessingConfig) return;
+
+            const configHTML = `
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-lava">${currentDataset.data.length}</div>
+                    <div class="text-sm text-dusty">Training Samples</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-lava">${preprocessingConfig.selectedColumns.length}</div>
+                    <div class="text-sm text-dusty">Features</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-info">${preprocessingConfig.targetColumn}</div>
+                    <div class="text-sm text-dusty">Target</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-warning">${preprocessingConfig.testSize * 100}%</div>
+                    <div class="text-sm text-dusty">Test Size</div>
+                </div>
+            `;
+
+            document.getElementById('training-config').innerHTML = configHTML;
+        }
+
+        function setupTaskTypeSelection() {
+            const classificationCard = document.getElementById('classification-card');
+            const regressionCard = document.getElementById('regression-card');
+
+            classificationCard.addEventListener('click', () => selectTaskType('classification'));
+            regressionCard.addEventListener('click', () => selectTaskType('regression'));
+        }
+
+        function selectTaskType(taskType) {
+            selectedTaskType = taskType;
+
+            // Update UI
+            document.querySelectorAll('.task-type-card').forEach(card => {
+                card.classList.remove('border-lava', 'bg-lava/10');
+            });
+
+            const selectedCard = document.getElementById(`${taskType}-card`);
+            selectedCard.classList.add('border-lava', 'bg-lava/10');
+
+            // Show task type display
+            const displayHTML = `
+                <div class="mt-4 inline-block bg-lava/20 border border-lava rounded-lg px-4 py-2">
+                    <span class="text-lava font-mono font-bold">Selected: ${taskType.charAt(0).toUpperCase() + taskType.slice(1)}</span>
+                </div>
+            `;
+            document.getElementById('task-type-display').innerHTML = displayHTML;
+
+            // Show model selection
+            showModelSelection(taskType);
+            showTrainingOptions();
+
+            updateTrainButton();
+        }
+
+        function showModelSelection(taskType) {
+            document.getElementById('training-recommendation').classList.remove('hidden');
+            const modelSection = document.getElementById('model-selection-section');
+            const classificationModels = document.getElementById('classification-models');
+            const regressionModels = document.getElementById('regression-models');
+
+            modelSection.style.display = 'block';
+
+            if (taskType === 'classification') {
+                classificationModels.style.display = 'block';
+                regressionModels.style.display = 'none';
+            } else {
+                classificationModels.style.display = 'none';
+                regressionModels.style.display = 'block';
+            }
+
+            // Setup model card clicks
+            document.querySelectorAll('.model-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const checkbox = this.querySelector('.model-checkbox');
+                    checkbox.checked = !checkbox.checked;
+                    updateModelSelection();
+                });
+            });
+
+            // Setup checkbox changes
+            document.querySelectorAll('.model-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', updateModelSelection);
+            });
+        }
+
+        function updateModelSelection() {
+            selectedModels = [];
+            document.querySelectorAll('.model-checkbox:checked').forEach(checkbox => {
+                selectedModels.push(checkbox.dataset.model);
+            });
+
+            // Update UI
+            document.querySelectorAll('.model-card').forEach(card => {
+                const checkbox = card.querySelector('.model-checkbox');
+                card.classList.toggle('selected', checkbox.checked);
+            });
+
+            // Update summary
+            const summaryDiv = document.getElementById('model-selection-summary');
+            if (selectedModels.length > 0) {
+                summaryDiv.innerHTML = `
+                    <p class="text-success font-mono">${selectedModels.length} models selected:</p>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        ${selectedModels.map(model => `<span class="bg-lava/20 text-lava px-2 py-1 rounded text-sm font-mono">${model.replace('_', ' ')}</span>`).join('')}
+                    </div>
+                `;
+            } else {
+                summaryDiv.innerHTML = '<p class="text-warning font-mono">No models selected</p>';
+            }
+
+            updateTrainButton();
+        }
+
+        function showTrainingOptions() {
+            document.getElementById('training-options').style.display = 'block';
+
+            // Setup validation radio buttons
+            document.querySelectorAll('input[name="validation"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const cvSettings = document.getElementById('cv-settings');
+                    cvSettings.style.display = this.value === 'cross_validation' ? 'block' : 'none';
+                });
+            });
+        }
+
+        function updateTrainButton() {
+            const trainBtn = document.getElementById('train-btn');
+            const canTrain = selectedTaskType && selectedModels.length > 0;
+            trainBtn.disabled = !canTrain;
+            trainBtn.classList.toggle('opacity-50', !canTrain);
+            trainBtn.classList.toggle('cursor-not-allowed', !canTrain);
+        }
+
+        function setupEventListeners() {
+            // CV settings toggle
+            document.querySelectorAll('input[name="validation"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const cvSettings = document.getElementById('cv-settings');
+                    cvSettings.style.display = this.value === 'cross_validation' ? 'block' : 'none';
+                });
+            });
+        }
+
+        async function startTraining() {
+            if (!selectedTaskType || selectedModels.length === 0) {
+                showNotification('Please select task type and models', 'warning');
+                return;
+            }
+
+            // Show training progress
+            document.getElementById('training-progress').style.display = 'block';
+
+            // Create progress bars
+            const progressContainer = document.getElementById('progress-container');
+            progressContainer.innerHTML = '';
+
+            selectedModels.forEach(model => {
+                const progressDiv = document.createElement('div');
+                progressDiv.className = 'mb-4';
+                progressDiv.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-snow font-mono">${model.replace('_', ' ').toUpperCase()}</span>
+                        <span class="text-dusty font-mono text-sm" id="progress-${model}">0%</span>
+                    </div>
+                    <div class="bg-slate rounded-full h-2">
+                        <div class="bg-lava h-2 rounded-full transition-all duration-300" id="bar-${model}" style="width: 0%"></div>
+                    </div>
+                `;
+                progressContainer.appendChild(progressDiv);
+            });
+
+            showNotification('Training started...', 'info');
+
+            try {
+                // Simulate training (in real implementation, this would call the API)
+                trainingResults = await simulateTraining(selectedModels, selectedTaskType);
+
+                // Hide progress, show results
+                document.getElementById('training-progress').style.display = 'none';
+                document.getElementById('training-results').style.display = 'block';
+
+                displayTrainingResults(trainingResults);
+                showNotification('Training completed successfully!', 'success');
+
+                // Enable navigation to next step
+                setTimeout(() => {
+                    const nextBtn = document.createElement('a');
+                    nextBtn.href = 'step5_evaluation.html';
+                    nextBtn.className = 'btn-primary ml-4';
+                    nextBtn.textContent = 'Continue to Evaluation →';
+                    document.querySelector('.flex.space-x-4').appendChild(nextBtn);
+                }, 2000);
+
+            } catch (error) {
+                showNotification(`Training failed: ${error.message}`, 'error');
+                document.getElementById('training-progress').style.display = 'none';
+            }
+        }
+
+        async function simulateTraining(models, taskType) {
+            // Simulate API call - in real implementation, this would call the backend
+            const results = [];
+
+            for (let i = 0; i < models.length; i++) {
+                const model = models[i];
+
+                // Simulate progress
+                for (let progress = 0; progress <= 100; progress += 10) {
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    document.getElementById(`progress-${model}`).textContent = `${progress}%`;
+                    document.getElementById(`bar-${model}`).style.width = `${progress}%`;
+                }
+
+                // Generate mock results
+                const mockResult = {
+                    model: model,
+                    accuracy: taskType === 'classification' ?
+                        (0.75 + Math.random() * 0.25).toFixed(3) :
+                        null,
+                    r2_score: taskType === 'regression' ?
+                        (0.7 + Math.random() * 0.3).toFixed(3) :
+                        null,
+                    training_time: (1 + Math.random() * 5).toFixed(2),
+                    status: 'completed'
+                };
+
+                results.push(mockResult);
+            }
+
+            return {
+                task_type: taskType,
+                models_trained: models.length,
+                model_names: models,
+                results: results,
+                best_model: results.reduce((best, current) =>
+                    (taskType === 'classification' ? parseFloat(current.accuracy) : parseFloat(current.r2_score)) >
+                    (taskType === 'classification' ? parseFloat(best.accuracy) : parseFloat(best.r2_score)) ?
+                    current : best
+                )
+            };
+        }
+
+        function displayTrainingResults(results) {
+            const resultsDiv = document.getElementById('results-summary');
+
+            let resultsHTML = `
+                <div class="mb-6">
+                    <h4 class="text-lg font-bold text-snow font-mono mb-4">📊 Summary</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-slate/20 p-3 rounded text-center">
+                            <div class="text-2xl font-bold text-lava">${results.models_trained}</div>
+                            <div class="text-sm text-dusty">Models Trained</div>
+                        </div>
+                        <div class="bg-slate/20 p-3 rounded text-center">
+                            <div class="text-2xl font-bold text-success">${results.best_model.model.replace('_', ' ')}</div>
+                            <div class="text-sm text-dusty">Best Model</div>
+                        </div>
+                        <div class="bg-slate/20 p-3 rounded text-center">
+                            <div class="text-2xl font-bold text-info">${results.task_type}</div>
+                            <div class="text-sm text-dusty">Task Type</div>
+                        </div>
+                        <div class="bg-slate/20 p-3 rounded text-center">
+                            <div class="text-2xl font-bold text-warning">${results.best_model.training_time}s</div>
+                            <div class="text-sm text-dusty">Best Time</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-bold text-snow font-mono mb-4">🎯 Detailed Results</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse border border-slate text-sm">
+                            <thead>
+                                <tr class="bg-slate">
+                                    <th class="border border-slate px-3 py-2 text-left text-snow font-mono">Model</th>
+                                    ${results.task_type === 'classification' ?
+                                        '<th class="border border-slate px-3 py-2 text-left text-snow font-mono">Accuracy</th>' :
+                                        '<th class="border border-slate px-3 py-2 text-left text-snow font-mono">R² Score</th>'}
+                                    <th class="border border-slate px-3 py-2 text-left text-snow font-mono">Training Time</th>
+                                    <th class="border border-slate px-3 py-2 text-left text-snow font-mono">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
+
+            results.results.forEach(result => {
+                const isBest = result.model === results.best_model.model;
+                const rowClass = isBest ? 'bg-lava/10 border-lava' : '';
+
+                resultsHTML += `
+                    <tr class="${rowClass}">
+                        <td class="border border-slate px-3 py-2 text-snow font-mono">
+                            ${result.model.replace('_', ' ')}
+                            ${isBest ? '<span class="text-lava ml-2">🏆</span>' : ''}
+                        </td>
+                        <td class="border border-slate px-3 py-2 text-dusty font-mono">
+                            ${results.task_type === 'classification' ? result.accuracy : result.r2_score}
+                        </td>
+                        <td class="border border-slate px-3 py-2 text-dusty font-mono">
+                            ${result.training_time}s
+                        </td>
+                        <td class="border border-slate px-3 py-2">
+                            <span class="bg-success text-void px-2 py-1 rounded text-xs font-mono">Trained</span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            resultsHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+            resultsDiv.innerHTML = resultsHTML;
+
+            // Store results for next page
+            sessionStorage.setItem('toolbox_training_results', JSON.stringify(results));
+        }
+
+        function showNotification(message, type = 'info') {
+            const n = document.createElement('div');
+            const bgMap = {
+                success: 'rgba(16,185,129,0.95)',
+                error: 'rgba(239,68,68,0.95)',
+                warning: 'rgba(245,158,11,0.95)',
+                info: 'rgba(59,130,246,0.95)'
+            };
+            n.style.cssText = `position:fixed;top:80px;right:16px;z-index:9999;padding:10px 18px;border-radius:8px;color:#FBFBFB;font-family:'Courier New',monospace;font-size:13px;background:${bgMap[type] || bgMap.info};border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(4px);max-width:420px;word-break:break-word;`;
+            n.textContent = message;
+            document.body.appendChild(n);
+            setTimeout(() => { n.style.opacity = '0'; n.style.transition = 'opacity 0.3s'; setTimeout(() => n.remove(), 300); }, 5000);
+        }
+    </script>
+</body>
+</html>

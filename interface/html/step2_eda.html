@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 2: EDA - TOOL-BOX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lava: '#F56E0F',
+                        snow: '#FBFBFB',
+                        dusty: '#878787',
+                        glyon: '#1B1B1E',
+                        void: '#151419',
+                        slate: '#262626',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        info: '#3B82F6',
+                    },
+                    fontFamily: {
+                        'mono': ['Courier New', 'Monaco', 'Menlo', 'monospace'],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(245, 110, 15, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #151419;
+            color: #FBFBFB;
+            font-family: 'Courier New', monospace;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card {
+            background: linear-gradient(135deg, #1B1B1E 0%, #151419 100%);
+            border: 1px solid #262626;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #F56E0F 0%, #E66310 100%);
+            color: #151419;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(245, 110, 15, 0.3);
+        }
+        .btn-secondary {
+            background: #262626;
+            color: #FBFBFB;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+            background: #3B3B3B;
+        }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .skeleton {
+            background: linear-gradient(90deg, rgba(245,110,15,0.04) 25%, rgba(245,110,15,0.1) 50%, rgba(245,110,15,0.04) 75%);
+            background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .rec-banner { padding: 12px 16px; border-radius: 8px; font-size: 12px; display: flex; align-items: center; gap: 10px; }
+        .rec-banner.info { background: rgba(245,110,15,0.1); border: 1px solid rgba(245,110,15,0.25); color: #F56E0F; }
+        .rec-banner.warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); color: #F59E0B; }
+        .rec-banner.success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); color: #10B981; }
+        .empty-state { padding: 32px 20px; text-align: center; color: #878787; font-size: 13px; }
+        .eda-content {
+            display: none;
+        }
+        .eda-content:not(.hidden) {
+            display: block;
+        }
+        .eda-tab {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-void to-glyon border-b border-slate shadow-glow">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <a href="index.html" class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-lava rounded-lg flex items-center justify-center">
+                            <span class="text-void font-bold text-lg">TB</span>
+                        </div>
+                        <div class="font-bold text-xl text-snow font-mono">
+                            <span class="text-lava">TOOL</span>
+                            <span>-BOX</span>
+                        </div>
+                    </a>
+                </div>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <span class="text-lava font-mono">📊 Step 2: EDA</span>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <a href="https://github.com/Arefmtl/TOOL-BOX" target="_blank"
+                       class="flex items-center space-x-2 bg-glyon hover:bg-slate border border-slate rounded-lg px-3 py-2 text-dusty hover:text-snow transition-all duration-200 font-mono text-sm">
+                        ⭐ 42 Stars
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="fixed top-20 left-0 right-0 z-40 bg-void border-b border-slate">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center space-x-2">
+                <span class="text-sm text-dusty font-mono">Progress:</span>
+                <div class="flex-1 bg-slate rounded-full h-2">
+                    <div class="bg-lava h-2 rounded-full" style="width: 25%"></div>
+                </div>
+                <span class="text-sm text-dusty font-mono">2 / 8</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="pt-32">
+        <div class="max-w-6xl mx-auto px-4">
+            <!-- Step Header -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-lava rounded-full flex items-center justify-center text-void font-bold text-2xl font-mono mx-auto mb-4 shadow-glow">
+                    02
+                </div>
+                <h1 class="text-4xl font-bold text-snow font-mono mb-2">📊 Exploratory Data Analysis</h1>
+                <p class="text-xl text-dusty">Comprehensive data analysis and visualization</p>
+            </div>
+
+            <!-- EDA Navigation Tabs -->
+            <div class="card mb-8">
+                <div class="mb-6">
+                    <div class="flex flex-wrap gap-2 border-b border-slate pb-2">
+                        <button onclick="showEDATab('understanding')"
+                                class="eda-tab px-4 py-2 text-dusty hover:text-snow font-mono text-sm border-b-2 border-transparent hover:border-lava active-tab"
+                                data-tab="understanding">
+                            📋 Data Understanding
+                        </button>
+                        <button onclick="showEDATab('cleaning')"
+                                class="eda-tab px-4 py-2 text-dusty hover:text-snow font-mono text-sm border-b-2 border-transparent hover:border-lava"
+                                data-tab="cleaning">
+                            🧹 Data Cleaning
+                        </button>
+                        <button onclick="showEDATab('univariate')"
+                                class="eda-tab px-4 py-2 text-dusty hover:text-snow font-mono text-sm border-b-2 border-transparent hover:border-lava"
+                                data-tab="univariate">
+                            📊 Univariate Analysis
+                        </button>
+                        <button onclick="showEDATab('bivariate')"
+                                class="eda-tab px-4 py-2 text-dusty hover:text-snow font-mono text-sm border-b-2 border-transparent hover:border-lava"
+                                data-tab="bivariate">
+                            🔗 Bivariate Analysis
+                        </button>
+                        <button onclick="showEDATab('advanced')"
+                                class="eda-tab px-4 py-2 text-dusty hover:text-snow font-mono text-sm border-b-2 border-transparent hover:border-lava"
+                                data-tab="advanced">
+                            🎨 Advanced Visualizations
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Data Understanding Tab -->
+                <div id="eda-understanding" class="eda-content">
+                    <h3 class="text-2xl font-bold text-snow font-mono mb-6">🔍 Data Understanding</h3>
+
+                    <div id="dataset-overview" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <!-- Dataset overview will be populated by JavaScript -->
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h4 class="text-lg font-bold text-snow font-mono mb-4">Sample Data</h4>
+                            <div class="space-y-2">
+                                <button onclick="showDataSample('head')" class="btn-secondary w-full text-left">📋 First 5 Rows</button>
+                                <button onclick="showDataSample('tail')" class="btn-secondary w-full text-left">📄 Last 5 Rows</button>
+                                <button onclick="showDataSample('random')" class="btn-secondary w-full text-left">🔀 Random Sample</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-bold text-snow font-mono mb-4">Dataset Info</h4>
+                            <div id="dataset-info" class="bg-void border border-slate rounded p-4 text-sm font-mono">
+                                <!-- Dataset info will be populated -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="data-sample-display" class="bg-void border border-slate rounded p-4 overflow-x-auto">
+                        <p class="text-dusty">Click a button above to view data samples</p>
+                    </div>
+                </div>
+
+                <!-- Data Cleaning Tab -->
+                <div id="eda-cleaning" class="eda-content hidden">
+                    <h3 class="text-2xl font-bold text-snow font-mono mb-6">🧹 Data Cleaning Insights</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-lg font-bold text-snow font-mono mb-4">Missing Values Analysis</h4>
+                            <div id="missing-heatmap" class="bg-void border border-slate rounded p-4 mb-4">
+                                <!-- Missing values heatmap -->
+                            </div>
+                            <div id="missing-summary" class="text-sm font-mono">
+                                <!-- Missing values summary -->
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-lg font-bold text-snow font-mono mb-4">Duplicate Analysis</h4>
+                            <div id="duplicate-analysis" class="bg-void border border-slate rounded p-4 text-sm font-mono">
+                                <!-- Duplicate analysis -->
+                            </div>
+
+                            <h4 class="text-lg font-bold text-snow font-mono mb-4 mt-6">Data Type Issues</h4>
+                            <div id="data-type-issues" class="bg-void border border-slate rounded p-4 text-sm font-mono">
+                                <!-- Data type issues -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Univariate Analysis Tab -->
+                <div id="eda-univariate" class="eda-content hidden">
+                    <h3 class="text-2xl font-bold text-snow font-mono mb-6">📊 Univariate Analysis</h3>
+
+                    <div class="mb-6">
+                        <label class="block text-snow font-mono mb-2">Select Column for Analysis:</label>
+                        <select id="univariate-column" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow" onchange="analyzeColumn()">
+                            <option value="">Choose a column...</option>
+                        </select>
+                    </div>
+
+                    <div id="univariate-results" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Univariate analysis results will be populated -->
+                    </div>
+                </div>
+
+                <!-- Bivariate Analysis Tab -->
+                <div id="eda-bivariate" class="eda-content hidden">
+                    <h3 class="text-2xl font-bold text-snow font-mono mb-6">🔗 Bivariate & Multivariate Analysis</h3>
+
+                    <div class="mb-6">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">Correlation Matrix</h4>
+                        <div id="correlation-matrix" class="bg-void border border-slate rounded p-4 overflow-x-auto mb-4">
+                            <!-- Correlation matrix will be generated -->
+                        </div>
+                        <div id="correlation-summary" class="text-sm font-mono">
+                            <!-- Strong correlations summary -->
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-snow font-mono mb-2">X-axis Variable:</label>
+                            <select id="scatter-x" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                                <option value="">Select X variable...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-snow font-mono mb-2">Y-axis Variable:</label>
+                            <select id="scatter-y" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow">
+                                <option value="">Select Y variable...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="createScatterPlot()" class="btn-primary mb-4">📈 Create Scatter Plot</button>
+
+                    <div id="scatter-plot-container" class="bg-void border border-slate rounded p-4">
+                        <p class="text-dusty">Select variables and click "Create Scatter Plot" to visualize relationships</p>
+                    </div>
+                </div>
+
+                <!-- Advanced Visualizations Tab -->
+                <div id="eda-advanced" class="eda-content hidden">
+                    <h3 class="text-2xl font-bold text-snow font-mono mb-6">🎨 Advanced Visualizations</h3>
+
+                    <div class="mb-6">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">Pair Plot</h4>
+                        <label class="block text-snow font-mono mb-2">Select Features (2-5):</label>
+                        <select id="pair-features" multiple class="w-full px-3 py-2 bg-void border border-slate rounded text-snow mb-4" size="3">
+                            <!-- Features will be populated -->
+                        </select>
+                        <button onclick="createPairPlot()" class="btn-primary">🔗 Create Pair Plot</button>
+                        <div id="pair-plot-container" class="bg-void border border-slate rounded p-4 mt-4">
+                            <p class="text-dusty">Select 2-5 features and click "Create Pair Plot"</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">Violin Plot</h4>
+                        <label class="block text-snow font-mono mb-2">Select Feature:</label>
+                        <select id="violin-feature" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow mb-4">
+                            <option value="">Select feature...</option>
+                        </select>
+                        <button onclick="createViolinPlot()" class="btn-primary">🎻 Create Violin Plot</button>
+                        <div id="violin-plot-container" class="bg-void border border-slate rounded p-4 mt-4">
+                            <p class="text-dusty">Select a feature and click "Create Violin Plot"</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">Outlier Detection</h4>
+                        <label class="block text-snow font-mono mb-2">Select Feature for Outlier Analysis:</label>
+                        <select id="outlier-feature" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow mb-4">
+                            <option value="">Select feature...</option>
+                        </select>
+                        <button onclick="detectOutliers()" class="btn-primary">🔍 Detect Outliers</button>
+                        <div id="outlier-results" class="bg-void border border-slate rounded p-4 mt-4">
+                            <p class="text-dusty">Select a feature and click "Detect Outliers"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Engineering Suggestions -->
+            <div class="card mb-8">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">💡 Feature Engineering Suggestions</h3>
+                <div id="feature-suggestions" class="space-y-2">
+                    <!-- Suggestions will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center">
+                <a href="step1_load_data.html" class="btn-secondary">← Back to Data Loading</a>
+                <div class="flex space-x-4">
+                    <button onclick="runCompleteEDA()" class="btn-primary">
+                        🔍 Run Complete EDA
+                    </button>
+                    <a href="step3_preprocessing.html" class="btn-primary">
+                        Continue to Preprocessing →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-void to-glyon border-t border-slate mt-20">
+        <div class="max-w-7xl mx-auto px-4 py-8 text-center">
+            <p class="text-dusty text-sm font-mono">© 2024 TOOL-BOX. Made with ❤️ by Ali Kazemi.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Global state
+        let currentDataset = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load dataset from session storage
+            const datasetJson = sessionStorage.getItem('toolbox_dataset');
+            if (datasetJson) {
+                currentDataset = JSON.parse(datasetJson);
+                initializeEDA();
+                showNotification('Dataset loaded successfully', 'success');
+            } else {
+                showNotification('No dataset found. Please go back to data loading.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'step1_load_data.html';
+                }, 3000);
+            }
+
+            // Initialize first tab
+            showEDATab('understanding');
+        });
+
+        function initializeEDA() {
+            if (!currentDataset) return;
+
+            populateColumnSelectors();
+            generateDatasetOverview();
+            generateDataCleaningInsights();
+            generateFeatureSuggestions();
+        }
+
+        function populateColumnSelectors() {
+            if (!currentDataset || !currentDataset.columns) return;
+
+            const columns = currentDataset.columns;
+            const numericColumns = columns.filter(col => {
+                const sampleValues = currentDataset.data.slice(0, 10).map(row => row[col]);
+                return sampleValues.some(val => typeof val === 'number' && !isNaN(val));
+            });
+
+            // Populate univariate selector
+            const univariateSelect = document.getElementById('univariate-column');
+            univariateSelect.innerHTML = '<option value="">Choose a column...</option>';
+            columns.forEach(col => {
+                const option = document.createElement('option');
+                option.value = col;
+                option.textContent = col;
+                univariateSelect.appendChild(option);
+            });
+
+            // Populate scatter plot selectors
+            const scatterX = document.getElementById('scatter-x');
+            const scatterY = document.getElementById('scatter-y');
+            [scatterX, scatterY].forEach(select => {
+                select.innerHTML = '<option value="">Select variable...</option>';
+                numericColumns.forEach(col => {
+                    const option = document.createElement('option');
+                    option.value = col;
+                    option.textContent = col;
+                    select.appendChild(option);
+                });
+            });
+
+            // Populate pair plot selector
+            const pairFeatures = document.getElementById('pair-features');
+            pairFeatures.innerHTML = '';
+            numericColumns.slice(0, 5).forEach(col => {
+                const option = document.createElement('option');
+                option.value = col;
+                option.textContent = col;
+                option.selected = numericColumns.indexOf(col) < 3;
+                pairFeatures.appendChild(option);
+            });
+
+            // Populate violin and outlier selectors
+            const violinSelect = document.getElementById('violin-feature');
+            const outlierSelect = document.getElementById('outlier-feature');
+
+            [violinSelect, outlierSelect].forEach(select => {
+                select.innerHTML = '<option value="">Select feature...</option>';
+                numericColumns.forEach(col => {
+                    const option = document.createElement('option');
+                    option.value = col;
+                    option.textContent = col;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        function showEDATab(tabName) {
+            // Hide all EDA content
+            document.querySelectorAll('.eda-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.eda-tab').forEach(tab => {
+                tab.classList.remove('border-lava', 'text-snow');
+                tab.classList.add('text-dusty');
+            });
+
+            // Show selected tab content
+            const selectedContent = document.getElementById(`eda-${tabName}`);
+            const selectedTab = document.querySelector(`[data-tab="${tabName}"]`);
+
+            if (selectedContent) {
+                selectedContent.classList.remove('hidden');
+            }
+            if (selectedTab) {
+                selectedTab.classList.add('border-lava', 'text-snow');
+                selectedTab.classList.remove('text-dusty');
+            }
+        }
+
+        function generateDatasetOverview() {
+            if (!currentDataset) return;
+
+            const data = currentDataset.data;
+            const columns = currentDataset.columns;
+
+            // Calculate statistics
+            const numRows = data.length;
+            const numCols = columns.length;
+            const memoryKB = Math.round(JSON.stringify(data).length / 1024);
+            const duplicates = data.length - new Set(data.map(row => JSON.stringify(row))).size;
+
+            const overviewHTML = `
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-lava">${numRows}</div>
+                    <div class="text-sm text-dusty">Rows</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-lava">${numCols}</div>
+                    <div class="text-sm text-dusty">Columns</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-info">${memoryKB} KB</div>
+                    <div class="text-sm text-dusty">Memory</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-warning">${duplicates}</div>
+                    <div class="text-sm text-dusty">Duplicates</div>
+                </div>
+            `;
+
+            document.getElementById('dataset-overview').innerHTML = overviewHTML;
+
+            // Dataset info
+            const typeCounts = {};
+            columns.forEach(col => {
+                const sampleValues = data.slice(0, 10).map(row => row[col]);
+                const hasNumbers = sampleValues.some(val => typeof val === 'number' && !isNaN(val));
+                const type = hasNumbers ? 'numeric' : 'categorical';
+                typeCounts[type] = (typeCounts[type] || 0) + 1;
+            });
+
+            const infoHTML = `
+                <p><strong>Data Types:</strong></p>
+                <ul class="ml-4">
+                    <li>• Numeric: ${typeCounts.numeric || 0}</li>
+                    <li>• Categorical: ${typeCounts.categorical || 0}</li>
+                </ul>
+                <p class="mt-2"><strong>Source:</strong> ${currentDataset.source || 'Unknown'}</p>
+            `;
+
+            document.getElementById('dataset-info').innerHTML = infoHTML;
+        }
+
+        function generateDataCleaningInsights() {
+            if (!currentDataset) return;
+
+            const data = currentDataset.data;
+            const columns = currentDataset.columns;
+
+            // Missing values analysis
+            const missingStats = columns.map(col => {
+                const missingCount = data.filter(row => row[col] === null || row[col] === undefined || row[col] === '').length;
+                return { column: col, missingCount };
+            }).filter(stat => stat.missingCount > 0);
+
+            let heatmapHTML = '<div class="grid grid-cols-20 gap-px mb-4" style="max-width: 400px;">';
+            data.slice(0, 20).forEach((row, rowIndex) => {
+                columns.slice(0, 20).forEach((col, colIndex) => {
+                    const isMissing = row[col] === null || row[col] === undefined || row[col] === '';
+                    const colorClass = isMissing ? 'bg-error' : 'bg-success';
+                    heatmapHTML += `<div class="w-3 h-3 ${colorClass} rounded-sm"></div>`;
+                });
+            });
+            heatmapHTML += '</div>';
+            heatmapHTML += '<p class="text-xs text-dusty">Green = Present, Red = Missing (showing first 20x20)</p>';
+
+            document.getElementById('missing-heatmap').innerHTML = heatmapHTML;
+
+            const missingSummary = missingStats.length > 0
+                ? missingStats.map(stat => `${stat.column}: ${stat.missingCount} missing`).join('<br>')
+                : 'No missing values found!';
+            document.getElementById('missing-summary').innerHTML = missingSummary;
+
+            // Duplicate analysis
+            const hasDuplicates = data.length !== new Set(data.map(row => JSON.stringify(row))).size;
+            const duplicateInfo = hasDuplicates
+                ? '<span class="text-warning">⚠️ Duplicate rows detected in dataset</span>'
+                : '<span class="text-success">✅ No duplicate rows found</span>';
+            document.getElementById('duplicate-analysis').innerHTML = duplicateInfo;
+
+            // Data type issues
+            const typeIssues = [];
+            columns.forEach(col => {
+                const sampleValues = data.slice(0, 10).map(row => row[col]);
+                const uniqueTypes = [...new Set(sampleValues.map(val => typeof val))];
+                if (uniqueTypes.length > 1) {
+                    typeIssues.push(`${col}: Mixed types (${uniqueTypes.join(', ')})`);
+                }
+            });
+
+            const typeIssuesHTML = typeIssues.length > 0
+                ? typeIssues.join('<br>')
+                : '✅ No data type issues detected';
+            document.getElementById('data-type-issues').innerHTML = typeIssuesHTML;
+        }
+
+        function showDataSample(type) {
+            if (!currentDataset) return;
+
+            const data = currentDataset.data;
+            let sampleData;
+            let title;
+
+            switch(type) {
+                case 'head':
+                    sampleData = data.slice(0, 5);
+                    title = 'First 5 Rows (Head)';
+                    break;
+                case 'tail':
+                    sampleData = data.slice(-5);
+                    title = 'Last 5 Rows (Tail)';
+                    break;
+                case 'random':
+                    const shuffled = [...data].sort(() => 0.5 - Math.random());
+                    sampleData = shuffled.slice(0, 5);
+                    title = 'Random Sample (5 rows)';
+                    break;
+            }
+
+            const displayDiv = document.getElementById('data-sample-display');
+
+            let tableHTML = `<h4 class="text-lg font-bold text-snow font-mono mb-4">${title}</h4>`;
+            tableHTML += '<table class="w-full border-collapse border border-slate text-xs">';
+            tableHTML += '<thead><tr class="bg-slate">';
+
+            currentDataset.columns.slice(0, 8).forEach(col => {
+                tableHTML += `<th class="border border-slate px-2 py-1 text-left text-snow font-mono">${col}</th>`;
+            });
+            tableHTML += '</tr></thead><tbody>';
+
+            sampleData.forEach(row => {
+                tableHTML += '<tr>';
+                currentDataset.columns.slice(0, 8).forEach(col => {
+                    const value = row[col];
+                    const displayValue = value === null || value === undefined ? 'null' :
+                                       typeof value === 'number' ? value.toFixed(2) : String(value).substring(0, 15);
+                    tableHTML += `<td class="border border-slate px-2 py-1 text-dusty font-mono">${displayValue}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+            tableHTML += '</tbody></table>';
+
+            displayDiv.innerHTML = tableHTML;
+        }
+
+        function analyzeColumn() {
+            const columnName = document.getElementById('univariate-column').value;
+            if (!columnName || !currentDataset) return;
+
+            const data = currentDataset.data;
+            const values = data.map(row => row[columnName]);
+            const numericValues = values.filter(val => typeof val === 'number' && !isNaN(val));
+
+            const resultsDiv = document.getElementById('univariate-results');
+
+            if (numericValues.length > 0) {
+                // Numeric column analysis
+                const mean = numericValues.reduce((a, b) => a + b, 0) / numericValues.length;
+                const sorted = [...numericValues].sort((a, b) => a - b);
+                const median = sorted.length % 2 === 0
+                    ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
+                    : sorted[Math.floor(sorted.length / 2)];
+                const variance = numericValues.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / numericValues.length;
+                const std = Math.sqrt(variance);
+
+                const statsHTML = `
+                    <div>
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">📈 Statistics</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-slate/20 p-3 rounded text-center">
+                                <div class="text-xl font-bold text-lava">${mean.toFixed(2)}</div>
+                                <div class="text-sm text-dusty">Mean</div>
+                            </div>
+                            <div class="bg-slate/20 p-3 rounded text-center">
+                                <div class="text-xl font-bold text-lava">${median.toFixed(2)}</div>
+                                <div class="text-sm text-dusty">Median</div>
+                            </div>
+                            <div class="bg-slate/20 p-3 rounded text-center">
+                                <div class="text-xl font-bold text-info">${std.toFixed(2)}</div>
+                                <div class="text-sm text-dusty">Std Dev</div>
+                            </div>
+                            <div class="bg-slate/20 p-3 rounded text-center">
+                                <div class="text-xl font-bold text-warning">${variance.toFixed(2)}</div>
+                                <div class="text-sm text-dusty">Variance</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">📊 Distribution</h4>
+                        <div class="bg-void border border-slate rounded p-4">
+                            <p class="text-dusty">Distribution plot would be shown here in full version</p>
+                            <p class="text-dusty text-sm">Range: ${Math.min(...numericValues).toFixed(2)} - ${Math.max(...numericValues).toFixed(2)}</p>
+                        </div>
+                    </div>
+                `;
+
+                resultsDiv.innerHTML = statsHTML;
+            } else {
+                // Categorical column analysis
+                const valueCounts = {};
+                values.forEach(val => {
+                    const key = val || 'null';
+                    valueCounts[key] = (valueCounts[key] || 0) + 1;
+                });
+
+                const unique = Object.keys(valueCounts).length;
+                const mostCommon = Object.entries(valueCounts).sort((a, b) => b[1] - a[1])[0];
+
+                const statsHTML = `
+                    <div>
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">📊 Category Statistics</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-slate/20 p-3 rounded text-center">
+                                <div class="text-xl font-bold text-lava">${unique}</div>
+                                <div class="text-sm text-dusty">Unique Values</div>
+                            </div>
+                            <div class="bg-slate/20 p-3 rounded text-center">
+                                <div class="text-xl font-bold text-info">${mostCommon ? mostCommon[1] : 0}</div>
+                                <div class="text-sm text-dusty">Most Common Count</div>
+                            </div>
+                        </div>
+                        ${mostCommon ? `<p class="mt-2 text-dusty">Most common: <strong>${mostCommon[0]}</strong></p>` : ''}
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">📋 Value Distribution</h4>
+                        <div class="bg-void border border-slate rounded p-4 max-h-40 overflow-y-auto">
+                            ${Object.entries(valueCounts).slice(0, 10).map(([val, count]) =>
+                                `<div class="flex justify-between text-sm">
+                                    <span>${val}:</span>
+                                    <span>${count}</span>
+                                </div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+
+                resultsDiv.innerHTML = statsHTML;
+            }
+        }
+
+        function runCompleteEDA() {
+            showNotification('Running complete EDA analysis...', 'info');
+
+            // Generate all EDA components
+            generateDatasetOverview();
+            generateDataCleaningInsights();
+
+            // Generate correlation matrix
+            if (currentDataset) {
+                const data = currentDataset.data;
+                const numericColumns = currentDataset.columns.filter(col => {
+                    const sampleValues = data.slice(0, 10).map(row => row[col]);
+                    return sampleValues.some(val => typeof val === 'number' && !isNaN(val));
+                });
+
+                if (numericColumns.length >= 2) {
+                    generateCorrelationMatrix(numericColumns, data);
+                }
+            }
+
+            showNotification('EDA analysis completed!', 'success');
+        }
+
+        function generateCorrelationMatrix(numericColumns, data) {
+            const correlations = {};
+
+            for (let i = 0; i < numericColumns.length; i++) {
+                for (let j = 0; j < numericColumns.length; j++) {
+                    const col1 = numericColumns[i];
+                    const col2 = numericColumns[j];
+
+                    if (i === j) {
+                        correlations[`${col1}-${col2}`] = 1.0;
+                    } else {
+                        const values1 = data.map(row => row[col1]).filter(v => typeof v === 'number' && !isNaN(v));
+                        const values2 = data.map(row => row[col2]).filter(v => typeof v === 'number' && !isNaN(v));
+
+                        const correlation = calculateCorrelation(values1, values2);
+                        correlations[`${col1}-${col2}`] = correlation;
+                    }
+                }
+            }
+
+            // Create correlation table
+            let tableHTML = '<table class="w-full border-collapse border border-slate text-xs">';
+            tableHTML += '<thead><tr class="bg-slate">';
+            tableHTML += '<th class="border border-slate px-2 py-1 text-snow font-mono">Feature</th>';
+            numericColumns.slice(0, 8).forEach(col => {
+                tableHTML += `<th class="border border-slate px-2 py-1 text-snow font-mono">${col.substring(0, 8)}</th>`;
+            });
+            tableHTML += '</tr></thead><tbody>';
+
+            numericColumns.slice(0, 8).forEach(col1 => {
+                tableHTML += `<tr><td class="border border-slate px-2 py-1 text-snow font-mono bg-slate/50">${col1.substring(0, 12)}</td>`;
+                numericColumns.slice(0, 8).forEach(col2 => {
+                    const corr = correlations[`${col1}-${col2}`];
+                    const colorClass = Math.abs(corr) > 0.7 ? 'text-lava font-bold' :
+                                     Math.abs(corr) > 0.5 ? 'text-warning' : 'text-dusty';
+                    tableHTML += `<td class="border border-slate px-2 py-1 text-center ${colorClass}">${corr.toFixed(2)}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+            tableHTML += '</tbody></table>';
+
+            document.getElementById('correlation-matrix').innerHTML = tableHTML;
+
+            // Find strong correlations
+            const strongCorr = [];
+            for (let i = 0; i < numericColumns.length; i++) {
+                for (let j = i + 1; j < numericColumns.length; j++) {
+                    const corr = correlations[`${numericColumns[i]}-${numericColumns[j]}`];
+                    if (Math.abs(corr) > 0.7) {
+                        strongCorr.push(`${numericColumns[i]} ↔ ${numericColumns[j]}: ${corr.toFixed(3)}`);
+                    }
+                }
+            }
+
+            const summaryHTML = strongCorr.length > 0
+                ? strongCorr.map(corr => `• ${corr}`).join('<br>')
+                : 'No strong correlations (|r| > 0.7) found';
+            document.getElementById('correlation-summary').innerHTML = summaryHTML;
+        }
+
+        function calculateCorrelation(x, y) {
+            const n = Math.min(x.length, y.length);
+            if (n < 2) return 0;
+
+            const sumX = x.reduce((a, b) => a + b, 0);
+            const sumY = y.reduce((a, b) => a + b, 0);
+            const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
+            const sumX2 = x.reduce((sum, xi) => sum + xi * xi, 0);
+            const sumY2 = y.reduce((sum, yi) => sum + yi * yi, 0);
+
+            const numerator = n * sumXY - sumX * sumY;
+            const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+
+            return denominator === 0 ? 0 : numerator / denominator;
+        }
+
+        function createScatterPlot() {
+            const xVar = document.getElementById('scatter-x').value;
+            const yVar = document.getElementById('scatter-y').value;
+
+            if (!xVar || !yVar || !currentDataset) {
+                showNotification('Please select both X and Y variables', 'warning');
+                return;
+            }
+
+            const container = document.getElementById('scatter-plot-container');
+
+            // Simple scatter plot visualization (text-based for demo)
+            const data = currentDataset.data.slice(0, 20); // Limit for demo
+            let plotHTML = `<h4 class="text-lg font-bold text-snow font-mono mb-4">Scatter Plot: ${xVar} vs ${yVar}</h4>`;
+            plotHTML += '<div class="bg-slate/10 p-4 rounded text-sm font-mono">';
+            plotHTML += '<p class="mb-2">Sample points (first 20):</p>';
+
+            data.forEach((row, i) => {
+                const x = typeof row[xVar] === 'number' ? row[xVar].toFixed(2) : 'N/A';
+                const y = typeof row[yVar] === 'number' ? row[yVar].toFixed(2) : 'N/A';
+                plotHTML += `<div class="mb-1">Point ${i+1}: (${x}, ${y})</div>`;
+            });
+
+            plotHTML += '</div>';
+            container.innerHTML = plotHTML;
+        }
+
+        function createPairPlot() {
+            const selectedFeatures = Array.from(document.getElementById('pair-features').selectedOptions)
+                .map(option => option.value);
+
+            if (selectedFeatures.length < 2 || selectedFeatures.length > 5) {
+                showNotification('Please select 2-5 features for pair plot', 'warning');
+                return;
+            }
+
+            const container = document.getElementById('pair-plot-container');
+            container.innerHTML = `
+                <h4 class="text-lg font-bold text-snow font-mono mb-4">Pair Plot: ${selectedFeatures.join(', ')}</h4>
+                <div class="bg-slate/10 p-4 rounded text-sm font-mono">
+                    <p>Pair plot visualization would show here in full version</p>
+                    <p class="text-dusty">Selected features: ${selectedFeatures.join(', ')}</p>
+                    <p class="text-dusty">This would show scatter plots for each pair of features</p>
+                </div>
+            `;
+        }
+
+        function createViolinPlot() {
+            const feature = document.getElementById('violin-feature').value;
+            if (!feature) {
+                showNotification('Please select a feature', 'warning');
+                return;
+            }
+
+            const container = document.getElementById('violin-plot-container');
+            container.innerHTML = `
+                <h4 class="text-lg font-bold text-snow font-mono mb-4">Violin Plot: ${feature}</h4>
+                <div class="bg-slate/10 p-4 rounded text-sm font-mono">
+                    <p>Violin plot visualization would show here in full version</p>
+                    <p class="text-dusty">This would show the distribution shape and density of ${feature}</p>
+                </div>
+            `;
+        }
+
+        function detectOutliers() {
+            const feature = document.getElementById('outlier-feature').value;
+            if (!feature || !currentDataset) {
+                showNotification('Please select a feature', 'warning');
+                return;
+            }
+
+            const values = currentDataset.data.map(row => row[feature])
+                .filter(val => typeof val === 'number' && !isNaN(val));
+
+            if (values.length === 0) {
+                showNotification('No numeric values found for outlier detection', 'warning');
+                return;
+            }
+
+            // Z-score method
+            const mean = values.reduce((a, b) => a + b, 0) / values.length;
+            const std = Math.sqrt(values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length);
+            const zScores = values.map(val => Math.abs((val - mean) / std));
+            const zOutliers = zScores.filter(score => score > 3).length;
+
+            // IQR method
+            const sorted = [...values].sort((a, b) => a - b);
+            const q1 = sorted[Math.floor(sorted.length * 0.25)];
+            const q3 = sorted[Math.floor(sorted.length * 0.75)];
+            const iqr = q3 - q1;
+            const lowerBound = q1 - 1.5 * iqr;
+            const upperBound = q3 + 1.5 * iqr;
+            const iqrOutliers = values.filter(val => val < lowerBound || val > upperBound).length;
+
+            const container = document.getElementById('outlier-results');
+            container.innerHTML = `
+                <h4 class="text-lg font-bold text-snow font-mono mb-4">Outlier Detection: ${feature}</h4>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="bg-slate/20 p-3 rounded text-center">
+                        <div class="text-xl font-bold text-warning">${zOutliers}</div>
+                        <div class="text-sm text-dusty">Z-score outliers (|z| > 3)</div>
+                    </div>
+                    <div class="bg-slate/20 p-3 rounded text-center">
+                        <div class="text-xl font-bold text-error">${iqrOutliers}</div>
+                        <div class="text-sm text-dusty">IQR outliers</div>
+                    </div>
+                </div>
+                <div class="text-sm font-mono text-dusty">
+                    <p>Z-score method: Values more than 3 standard deviations from mean</p>
+                    <p>IQR method: Values outside 1.5 * IQR from Q1/Q3</p>
+                </div>
+            `;
+        }
+
+        function generateFeatureSuggestions() {
+            if (!currentDataset) return;
+
+            const suggestions = [];
+            const data = currentDataset.data;
+            const columns = currentDataset.columns;
+
+            // Check for potential date columns
+            columns.forEach(col => {
+                if (data.some(row => {
+                    const val = String(row[col]).toLowerCase();
+                    return val.includes('date') || val.includes('time') ||
+                           /[\d]{4}-[\d]{2}-[\d]{2}/.test(val) ||
+                           /[\d]{2}\/[\d]{2}\/[\d]{4}/.test(val);
+                })) {
+                    suggestions.push(`🔗 Consider converting '${col}' to datetime format`);
+                }
+            });
+
+            // Check for high cardinality
+            columns.forEach(col => {
+                const uniqueCount = new Set(data.map(row => row[col])).size;
+                if (uniqueCount > 10 && data.length > 20) {
+                    const uniqueRatio = uniqueCount / data.length;
+                    if (uniqueRatio > 0.8) {
+                        suggestions.push(`📊 '${col}' has high cardinality (${uniqueCount} unique values). Consider grouping or encoding.`);
+                    }
+                }
+            });
+
+            // Check for skewed features
+            columns.forEach(col => {
+                const values = data.map(row => row[col]).filter(val => typeof val === 'number' && !isNaN(val));
+                if (values.length > 10) {
+                    const mean = values.reduce((a, b) => a + b, 0) / values.length;
+                    const skewness = values.reduce((sum, val) => sum + Math.pow((val - mean) / (values.length - 1), 3), 0);
+                    if (Math.abs(skewness) > 1) {
+                        const transform = skewness > 0 ? 'log transformation' : 'exponential transformation';
+                        suggestions.push(`📈 '${col}' is skewed (skewness: ${skewness.toFixed(2)}). Consider ${transform}.`);
+                    }
+                }
+            });
+
+            const suggestionsDiv = document.getElementById('feature-suggestions');
+            if (suggestions.length > 0) {
+                suggestionsDiv.innerHTML = suggestions.map(suggestion =>
+                    `<div class="bg-info/20 border border-info rounded p-3 mb-2">
+                        <p class="text-info text-sm">${suggestion}</p>
+                    </div>`
+                ).join('');
+            } else {
+                suggestionsDiv.innerHTML = '<div class="bg-success/20 border border-success rounded p-3"><p class="text-success text-sm">✅ Dataset looks well-prepared for modeling!</p></div>';
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const n = document.createElement('div');
+            const bgMap = {
+                success: 'rgba(16,185,129,0.95)',
+                error: 'rgba(239,68,68,0.95)',
+                warning: 'rgba(245,158,11,0.95)',
+                info: 'rgba(59,130,246,0.95)'
+            };
+            n.style.cssText = `position:fixed;top:80px;right:16px;z-index:9999;padding:10px 18px;border-radius:8px;color:#FBFBFB;font-family:'Courier New',monospace;font-size:13px;background:${bgMap[type] || bgMap.info};border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(4px);max-width:420px;word-break:break-word;`;
+            n.textContent = message;
+            document.body.appendChild(n);
+            setTimeout(() => { n.style.opacity = '0'; n.style.transition = 'opacity 0.3s'; setTimeout(() => n.remove(), 300); }, 5000);
+        }
+    </script>
+</body>
+</html>

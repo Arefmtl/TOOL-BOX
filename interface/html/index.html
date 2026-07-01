@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOOL-BOX - Professional ML Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lava: '#F56E0F',
+                        snow: '#FBFBFB',
+                        dusty: '#878787',
+                        glyon: '#1B1B1E',
+                        void: '#151419',
+                        slate: '#262626',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        info: '#3B82F6',
+                    },
+                    fontFamily: {
+                        'mono': ['Courier New', 'Monaco', 'Menlo', 'monospace'],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(245, 110, 15, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #151419;
+            color: #FBFBFB;
+            font-family: 'Courier New', monospace;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #F56E0F 0%, #E66310 100%);
+            color: #151419;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(245, 110, 15, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-void to-glyon border-b border-slate shadow-glow">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-lava rounded-lg flex items-center justify-center">
+                        <span class="text-void font-bold text-lg">TB</span>
+                    </div>
+                    <div class="font-bold text-xl text-snow font-mono">
+                        <span class="text-lava">TOOL</span>
+                        <span>-BOX</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="https://github.com/Arefmtl/TOOL-BOX" target="_blank"
+                       class="flex items-center space-x-2 bg-glyon hover:bg-slate border border-slate rounded-lg px-3 py-2 text-dusty hover:text-snow transition-all duration-200 font-mono text-sm">
+                        ⭐ 42 Stars
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section class="py-20 px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="animate-fade-in">
+                    <h1 class="text-5xl md:text-7xl font-bold text-snow font-mono mb-6">
+                        <span class="text-gradient-lava">TOOL-BOX</span>
+                        <br>
+                        <span class="text-2xl md:text-4xl text-dusty">Professional ML Platform</span>
+                    </h1>
+                    <p class="text-xl text-dusty mb-8 max-w-2xl mx-auto leading-relaxed">
+                        Advanced Machine Learning Platform for Data Scientists.
+                        Build, train, and deploy models with cutting-edge tools and intuitive interfaces.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="step1_load_data.html" class="btn-primary">🚀 Start ML Workflow</a>
+                        <a href="TOOLBOX_INTERFACE.html" class="btn-primary">🎯 Single Page Demo</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workflow Overview -->
+        <section class="py-16 px-4 bg-glyon">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-snow font-mono mb-12">
+                    Complete ML <span class="text-lava">Workflow</span>
+                </h2>
+
+                <div class="relative">
+                    <div class="hidden md:block absolute top-8 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-lava to-transparent"></div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-8 gap-4">
+                        <a href="step1_load_data.html" class="text-center group">
+                            <div class="w-16 h-16 bg-gradient-lava rounded-full flex items-center justify-center text-void font-bold text-xl font-mono mx-auto mb-4 shadow-glow group-hover:scale-110 transition-transform">
+                                01
+                            </div>
+                            <h3 class="text-xl font-bold text-snow font-mono mb-2">Load Data</h3>
+                            <p class="text-dusty text-sm">Upload CSV or use sample datasets</p>
+                        </a>
+
+                        <a href="step2_eda.html" class="text-center group">
+                            <div class="w-16 h-16 bg-slate rounded-full flex items-center justify-center text-snow font-bold text-xl font-mono mx-auto mb-4 group-hover:bg-lava group-hover:scale-110 transition-all">
+                                02
+                            </div>
+                            <h3 class="text-xl font-bold text-snow font-mono mb-2">EDA</h3>
+                            <p class="text-dusty text-sm">Explore and analyze your data</p>
+                        </a>
+
+                        <a href="step3_preprocessing.html" class="text-center group">
+                            <div class="w-16 h-16 bg-slate rounded-full flex items-center justify-center text-snow font-bold text-xl font-mono mx-auto mb-4 group-hover:bg-lava group-hover:scale-110 transition-all">
+                                03
+                            </div>
+                            <h3 class="text-xl font-bold text-snow font-mono mb-2">Preprocess</h3>
+                            <p class="text-dusty text-sm">Clean and prepare data</p>
+                        </a>
+
+                        <a href="step4_training.html" class="text-center group">
+                            <div class="w-16 h-16 bg-slate rounded-full flex items-center justify-center text-snow font-bold text-xl font-mono mx-auto mb-4 group-hover:bg-lava group-hover:scale-110 transition-all">
+                                04
+                            </div>
+                            <h3 class="text-xl font-bold text-snow font-mono mb-2">Train</h3>
+                            <p class="text-dusty text-sm">Train ML models</p>
+                        </a>
+
+                        <a href="step5_evaluation.html" class="text-center group">
+                            <div class="w-16 h-16 bg-slate rounded-full flex items-center justify-center text-snow font-bold text-xl font-mono mx-auto mb-4 group-hover:bg-lava group-hover:scale-110 transition-all">
+                                05
+                            </div>
+                            <h3 class="text-xl font-bold text-snow font-mono mb-2">Evaluate</h3>
+                            <p class="text-dusty text-sm">Compare model performance</p>
+                        </a>
+
+                        <a href="step6_interpretation.html" class="text-center group">
+                            <div class="w-16 h-16 bg-slate rounded-full flex items-center justify-center text-snow font-bold text-xl font-mono mx-auto mb-4 group-hover:bg-lava group-hover:scale-110 transition-all">
+                                06
+                            </div>
+                            <h3 class="text-xl font-bold text-snow font-mono mb-2">Interpret</h3>
+                            <p class="text-dusty text-sm">Understand model decisions</p>
+                        </a>
+
+                        <a href="step6_optimization.html" class="text-center group">
+                            <div class="w-16 h-16 bg-slate rounded-full flex items-center justify-center text-snow font-bold text-xl font-mono mx-auto mb-4 group-hover:bg-lava group-hover:scale-110 transition-all">
+                                07
+                            </div>
+                            <h3 class="text-xl font-bold text-snow font-mono mb-2">Optimize</h3>
+                            <p class="text-dusty text-sm">Fine-tune hyperparameters</p>
+                        </a>
+
+                        <a href="step7_export.html" class="text-center group">
+                            <div class="w-16 h-16 bg-slate rounded-full flex items-center justify-center text-snow font-bold text-xl font-mono mx-auto mb-4 group-hover:bg-lava group-hover:scale-110 transition-all">
+                                08
+                            </div>
+                            <h3 class="text-xl font-bold text-snow font-mono mb-2">Export</h3>
+                            <p class="text-dusty text-sm">Export models and reports</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="py-16 px-4">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-snow font-mono mb-12">
+                    Powerful Features for <span class="text-lava">Data Scientists</span>
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="card animate-fade-in">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-lava/20 rounded-lg flex items-center justify-center">
+                                <span class="text-lava text-2xl">🧠</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-snow font-mono mb-2">Advanced ML Algorithms</h3>
+                                <p class="text-dusty leading-relaxed">
+                                    8 classification & 9 regression algorithms including XGBoost, Neural Networks, and more
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card animate-fade-in" style="animation-delay: 0.1s">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                                <span class="text-blue-400 text-2xl">⚡</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-snow font-mono mb-2">Real-time Processing</h3>
+                                <p class="text-dusty leading-relaxed">
+                                    Interactive data analysis with instant visualizations and statistical insights
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card animate-fade-in" style="animation-delay: 0.2s">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                <span class="text-green-400 text-2xl">📊</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-snow font-mono mb-2">Comprehensive EDA</h3>
+                                <p class="text-dusty leading-relaxed">
+                                    Multi-dimensional exploratory data analysis with advanced statistical methods
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card animate-fade-in" style="animation-delay: 0.3s">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                                <span class="text-purple-400 text-2xl">👥</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-snow font-mono mb-2">Step-by-Step Workflow</h3>
+                                <p class="text-dusty leading-relaxed">
+                                    Guided machine learning pipeline with separate pages for each professional step
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Start -->
+        <section class="py-16 px-4 bg-glyon">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl font-bold text-snow font-mono mb-8">Quick Start Guide</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="card">
+                        <div class="text-4xl mb-4">📁</div>
+                        <h3 class="text-xl font-bold text-snow font-mono mb-2">1. Load Your Data</h3>
+                        <p class="text-dusty">Upload CSV files or use built-in sample datasets</p>
+                    </div>
+                    <div class="card">
+                        <div class="text-4xl mb-4">🔍</div>
+                        <h3 class="text-xl font-bold text-snow font-mono mb-2">2. Explore & Analyze</h3>
+                        <p class="text-dusty">Comprehensive EDA with statistical insights</p>
+                    </div>
+                    <div class="card">
+                        <div class="text-4xl mb-4">🚀</div>
+                        <h3 class="text-xl font-bold text-snow font-mono mb-2">3. Build ML Models</h3>
+                        <p class="text-dusty">Train, evaluate, and optimize your models</p>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <a href="step1_load_data.html" class="btn-primary text-xl px-8 py-4">🚀 Start Your ML Journey</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-void to-glyon border-t border-slate mt-20">
+        <div class="max-w-7xl mx-auto px-4 py-12 text-center">
+            <p class="text-dusty text-sm font-mono">© 2024 TOOL-BOX. Made with ❤️ by Ali Kazemi.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.card').forEach(card => {
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>

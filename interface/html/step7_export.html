@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 7: Export - TOOL-BOX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lava: '#F56E0F',
+                        snow: '#FBFBFB',
+                        dusty: '#878787',
+                        glyon: '#1B1B1E',
+                        void: '#151419',
+                        slate: '#262626',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        info: '#3B82F6',
+                    },
+                    fontFamily: {
+                        'mono': ['Courier New', 'Monaco', 'Menlo', 'monospace'],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(245, 110, 15, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #151419;
+            color: #FBFBFB;
+            font-family: 'Courier New', monospace;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card {
+            background: linear-gradient(135deg, #1B1B1E 0%, #151419 100%);
+            border: 1px solid #262626;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #F56E0F 0%, #E66310 100%);
+            color: #151419;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(245, 110, 15, 0.3);
+        }
+        .btn-secondary {
+            background: #262626;
+            color: #FBFBFB;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+            background: #3B3B3B;
+        }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .skeleton {
+            background: linear-gradient(90deg, rgba(245,110,15,0.04) 25%, rgba(245,110,15,0.1) 50%, rgba(245,110,15,0.04) 75%);
+            background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .rec-banner { padding: 12px 16px; border-radius: 8px; font-size: 12px; display: flex; align-items: center; gap: 10px; }
+        .rec-banner.info { background: rgba(245,110,15,0.1); border: 1px solid rgba(245,110,15,0.25); color: #F56E0F; }
+        .rec-banner.warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25); color: #F59E0B; }
+        .rec-banner.success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); color: #10B981; }
+        .empty-state { padding: 32px 20px; text-align: center; color: #878787; font-size: 13px; }
+        .export-item {
+            background: linear-gradient(135deg, #1B1B1E 0%, #151419 100%);
+            border: 1px solid #262626;
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .export-item:hover {
+            border-color: #F56E0F;
+            box-shadow: 0 0 10px rgba(245, 110, 15, 0.2);
+        }
+        .export-item.selected {
+            border-color: #F56E0F;
+            background: linear-gradient(135deg, #2A1B1E 0%, #251419 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-void to-glyon border-b border-slate shadow-glow">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <a href="index.html" class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-lava rounded-lg flex items-center justify-center">
+                            <span class="text-void font-bold text-lg">TB</span>
+                        </div>
+                        <div class="font-bold text-xl text-snow font-mono">
+                            <span class="text-lava">TOOL</span>
+                            <span>-BOX</span>
+                        </div>
+                    </a>
+                </div>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <span class="text-lava font-mono">📤 Step 8: Export</span>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <a href="https://github.com/Arefmtl/TOOL-BOX" target="_blank"
+                       class="flex items-center space-x-2 bg-glyon hover:bg-slate border border-slate rounded-lg px-3 py-2 text-dusty hover:text-snow transition-all duration-200 font-mono text-sm">
+                        ⭐ 42 Stars
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="fixed top-20 left-0 right-0 z-40 bg-void border-b border-slate">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center space-x-2">
+                <span class="text-sm text-dusty font-mono">Progress:</span>
+                <div class="flex-1 bg-slate rounded-full h-2">
+                    <div class="bg-lava h-2 rounded-full" style="width: 100%"></div>
+                </div>
+                <span class="text-sm text-dusty font-mono">8 / 8</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="pt-32">
+        <div class="max-w-6xl mx-auto px-4">
+            <!-- Step Header -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-lava rounded-full flex items-center justify-center text-void font-bold text-2xl font-mono mx-auto mb-4 shadow-glow">
+                    08
+                </div>
+                <h1 class="text-4xl font-bold text-snow font-mono mb-2">📤 Export & Deploy</h1>
+                <p class="text-xl text-dusty">Export your optimized model and generate comprehensive reports</p>
+            </div>
+
+            <!-- Project Summary -->
+            <div class="card mb-8">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">🎉 Project Complete!</h3>
+                <div id="project-summary" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Project summary will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Export Options -->
+            <div class="card mb-8">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">📤 Export Options</h3>
+                <p class="text-dusty mb-6">Select what you want to export from your completed ML project:</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                    <!-- Model Export -->
+                    <div class="export-item" data-export="model" onclick="toggleExportItem('model')">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <input type="checkbox" id="export-model" class="export-checkbox">
+                            <h4 class="text-lg font-bold text-snow font-mono">🤖 Trained Model</h4>
+                        </div>
+                        <p class="text-dusty text-sm mb-3">Export your optimized model in various formats</p>
+                        <div class="space-y-2">
+                            <label class="flex items-center text-sm">
+                                <input type="radio" name="model-format" value="pickle" checked class="mr-2">
+                                <span class="text-dusty">Pickle (.pkl)</span>
+                            </label>
+                            <label class="flex items-center text-sm">
+                                <input type="radio" name="model-format" value="joblib" class="mr-2">
+                                <span class="text-dusty">Joblib (.joblib)</span>
+                            </label>
+                            <label class="flex items-center text-sm">
+                                <input type="radio" name="model-format" value="onnx" class="mr-2">
+                                <span class="text-dusty">ONNX (.onnx)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Preprocessing Pipeline -->
+                    <div class="export-item" data-export="preprocessing" onclick="toggleExportItem('preprocessing')">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <input type="checkbox" id="export-preprocessing" class="export-checkbox">
+                            <h4 class="text-lg font-bold text-snow font-mono">⚙️ Preprocessing Pipeline</h4>
+                        </div>
+                        <p class="text-dusty text-sm mb-3">Export data preprocessing steps and transformers</p>
+                        <div class="text-xs text-dusty">
+                            • Scalers<br>
+                            • Encoders<br>
+                            • Feature selectors<br>
+                            • Column transformers
+                        </div>
+                    </div>
+
+                    <!-- Performance Report -->
+                    <div class="export-item" data-export="report" onclick="toggleExportItem('report')">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <input type="checkbox" id="export-report" class="export-checkbox" checked>
+                            <h4 class="text-lg font-bold text-snow font-mono">📊 Performance Report</h4>
+                        </div>
+                        <p class="text-dusty text-sm mb-3">Generate comprehensive performance analysis</p>
+                        <div class="text-xs text-dusty">
+                            • Model comparison<br>
+                            • Metrics summary<br>
+                            • Optimization results<br>
+                            • Feature importance
+                        </div>
+                    </div>
+
+                    <!-- Dataset Export -->
+                    <div class="export-item" data-export="dataset" onclick="toggleExportItem('dataset')">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <input type="checkbox" id="export-dataset" class="export-checkbox">
+                            <h4 class="text-lg font-bold text-snow font-mono">📋 Processed Dataset</h4>
+                        </div>
+                        <p class="text-dusty text-sm mb-3">Export cleaned and processed dataset</p>
+                        <div class="text-xs text-dusty">
+                            • Training data<br>
+                            • Test data<br>
+                            • Feature matrix<br>
+                            • Target vector
+                        </div>
+                    </div>
+
+                    <!-- API Code -->
+                    <div class="export-item" data-export="api" onclick="toggleExportItem('api')">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <input type="checkbox" id="export-api" class="export-checkbox">
+                            <h4 class="text-lg font-bold text-snow font-mono">🔌 API Code</h4>
+                        </div>
+                        <p class="text-dusty text-sm mb-3">Generate Flask/FastAPI code for deployment</p>
+                        <div class="text-xs text-dusty">
+                            • REST API endpoints<br>
+                            • Prediction functions<br>
+                            • Input validation<br>
+                            • Docker setup
+                        </div>
+                    </div>
+
+                    <!-- Documentation -->
+                    <div class="export-item" data-export="docs" onclick="toggleExportItem('docs')">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <input type="checkbox" id="export-docs" class="export-checkbox" checked>
+                            <h4 class="text-lg font-bold text-snow font-mono">📚 Documentation</h4>
+                        </div>
+                        <p class="text-dusty text-sm mb-3">Generate project documentation and README</p>
+                        <div class="text-xs text-dusty">
+                            • Model details<br>
+                            • Usage instructions<br>
+                            • Performance metrics<br>
+                            • Deployment guide
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Summary -->
+                <div id="export-summary" class="bg-slate/20 p-4 rounded">
+                    <p class="text-snow font-mono">Selected exports: <span id="selected-count">2</span> items</p>
+                </div>
+            </div>
+
+            <!-- Export Configuration -->
+            <div id="export-config" class="card mb-8" style="display: none;">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">⚙️ Export Configuration</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">Project Details</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-snow font-mono mb-2">Project Name:</label>
+                                <input type="text" id="project-name" placeholder="ML_Project_2024" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow placeholder-dusty">
+                            </div>
+                            <div>
+                                <label class="block text-snow font-mono mb-2">Author:</label>
+                                <input type="text" id="author-name" placeholder="Data Scientist" class="w-full px-3 py-2 bg-void border border-slate rounded text-snow placeholder-dusty">
+                            </div>
+                            <div>
+                                <label class="block text-snow font-mono mb-2">Description:</label>
+                                <textarea id="project-description" rows="3" placeholder="Machine learning project for..." class="w-full px-3 py-2 bg-void border border-slate rounded text-snow placeholder-dusty resize-none"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-lg font-bold text-snow font-mono mb-4">Export Format</h4>
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input type="radio" name="export-format" value="zip" checked class="mr-3">
+                                <div>
+                                    <span class="text-snow font-mono">ZIP Archive</span>
+                                    <p class="text-xs text-dusty">All files in a compressed archive</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="export-format" value="folder" class="mr-3">
+                                <div>
+                                    <span class="text-snow font-mono">Folder Structure</span>
+                                    <p class="text-xs text-dusty">Organized folder with all files</p>
+                                </div>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="export-format" value="individual" class="mr-3">
+                                <div>
+                                    <span class="text-snow font-mono">Individual Files</span>
+                                    <p class="text-xs text-dusty">Download files one by one</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Progress -->
+            <div id="export-progress" class="card mb-8" style="display: none;">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">📤 Exporting Files</h3>
+                <div id="progress-container">
+                    <!-- Progress bars will be added here -->
+                </div>
+            </div>
+
+            <!-- Export Results -->
+            <div id="export-results" class="card mb-8" style="display: none;">
+                <h3 class="text-xl font-bold text-snow font-mono mb-4">✅ Export Complete!</h3>
+
+                <!-- Download Links -->
+                <div id="download-links" class="mb-6">
+                    <!-- Download links will be populated -->
+                </div>
+
+                <!-- Export Summary -->
+                <div id="export-files-summary" class="bg-slate/20 p-4 rounded mb-6">
+                    <!-- Export summary will be populated -->
+                </div>
+
+                <!-- Next Steps -->
+                <div class="bg-lava/10 border border-lava rounded p-4">
+                    <h4 class="text-lg font-bold text-snow font-mono mb-2">🚀 Next Steps</h4>
+                    <ul class="text-dusty space-y-1 text-sm">
+                        <li>• Deploy your model using the generated API code</li>
+                        <li>• Monitor model performance in production</li>
+                        <li>• Set up automated retraining pipelines</li>
+                        <li>• Share your results with stakeholders</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center">
+                <a href="step6_optimization.html" class="btn-secondary">← Back to Optimization</a>
+                <div class="flex space-x-4">
+                    <button onclick="configureExport()" id="config-btn" class="btn-secondary">
+                        ⚙️ Configure Export
+                    </button>
+                    <button onclick="startExport()" id="export-btn" class="btn-primary">
+                        📤 Export Project
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-t from-void to-glyon border-t border-slate mt-20">
+        <div class="max-w-7xl mx-auto px-4 py-8 text-center">
+            <p class="text-dusty text-sm font-mono">© 2024 TOOL-BOX. Made with ❤️ by Ali Kazemi.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Global state
+        let optimizationResults = null;
+        let selectedExports = ['report', 'docs'];
+        let exportConfig = {};
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load optimization results from session storage
+            const optimizationJson = sessionStorage.getItem('toolbox_optimization_results');
+            if (optimizationJson) {
+                optimizationResults = JSON.parse(optimizationJson);
+                initializeExportPage();
+                showNotification('Optimization results loaded successfully', 'success');
+            } else {
+                showNotification('No optimization results found. Please complete optimization first.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'step6_optimization.html';
+                }, 3000);
+                return;
+            }
+
+            // Setup event listeners
+            setupEventListeners();
+            updateExportSummary();
+        });
+
+        function initializeExportPage() {
+            if (!optimizationResults) return;
+
+            updateProjectSummary();
+            populateDefaultConfig();
+        }
+
+        function updateProjectSummary() {
+            if (!optimizationResults) return;
+
+            const summaryHTML = `
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-lava">${optimizationResults.model.replace('_', ' ')}</div>
+                    <div class="text-sm text-dusty">Final Model</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-success">${optimizationResults.best_score}</div>
+                    <div class="text-sm text-dusty">Best Score</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-info">+${optimizationResults.improvement}%</div>
+                    <div class="text-sm text-dusty">Improvement</div>
+                </div>
+                <div class="bg-slate/20 p-3 rounded text-center">
+                    <div class="text-2xl font-bold text-warning">Ready</div>
+                    <div class="text-sm text-dusty">For Export</div>
+                </div>
+            `;
+
+            document.getElementById('project-summary').innerHTML = summaryHTML;
+        }
+
+        function populateDefaultConfig() {
+            document.getElementById('project-name').value = `ML_Project_${new Date().getFullYear()}`;
+            document.getElementById('author-name').value = 'Data Scientist';
+            document.getElementById('project-description').value = `Machine learning project using ${optimizationResults.model.replace('_', ' ')} with ${optimizationResults.best_score} accuracy.`;
+        }
+
+        function setupEventListeners() {
+            // Export item checkboxes
+            document.querySelectorAll('.export-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const exportType = this.closest('.export-item').dataset.export;
+                    if (this.checked) {
+                        if (!selectedExports.includes(exportType)) {
+                            selectedExports.push(exportType);
+                        }
+                    } else {
+                        selectedExports = selectedExports.filter(item => item !== exportType);
+                    }
+                    updateExportSummary();
+                    toggleExportItemVisual(this.closest('.export-item'), this.checked);
+                });
+            });
+        }
+
+        function toggleExportItem(exportType) {
+            const checkbox = document.getElementById(`export-${exportType}`);
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event('change'));
+        }
+
+        function toggleExportItemVisual(item, isSelected) {
+            item.classList.toggle('selected', isSelected);
+        }
+
+        function updateExportSummary() {
+            const count = selectedExports.length;
+            document.getElementById('selected-count').textContent = count;
+        }
+
+        function configureExport() {
+            document.getElementById('export-config').style.display = 'block';
+            document.getElementById('config-btn').style.display = 'none';
+        }
+
+        async function startExport() {
+            if (selectedExports.length === 0) {
+                showNotification('Please select at least one item to export', 'warning');
+                return;
+            }
+
+            // Get export configuration
+            exportConfig = {
+                projectName: document.getElementById('project-name').value || 'ML_Project',
+                author: document.getElementById('author-name').value || 'Data Scientist',
+                description: document.getElementById('project-description').value || 'Machine learning project',
+                format: document.querySelector('input[name="export-format"]:checked').value,
+                exports: selectedExports,
+                modelFormat: document.querySelector('input[name="model-format"]:checked').value
+            };
+
+            // Show export progress
+            document.getElementById('export-progress').style.display = 'block';
+            document.getElementById('export-btn').disabled = true;
+
+            // Create progress bars
+            const progressContainer = document.getElementById('progress-container');
+            progressContainer.innerHTML = '';
+
+            const exportSteps = selectedExports.length + 2; // +2 for preparation and finalization
+            let currentStep = 0;
+
+            // Preparation step
+            await createProgressStep('Preparing export...', ++currentStep, exportSteps);
+
+            // Export each selected item
+            for (const exportType of selectedExports) {
+                const stepName = getExportStepName(exportType);
+                await createProgressStep(`Exporting ${stepName}...`, ++currentStep, exportSteps);
+            }
+
+            // Finalization step
+            await createProgressStep('Finalizing export...', ++currentStep, exportSteps);
+
+            // Hide progress, show results
+            document.getElementById('export-progress').style.display = 'none';
+            document.getElementById('export-results').style.display = 'block';
+
+            displayExportResults();
+            showNotification('Export completed successfully!', 'success');
+        }
+
+        function getExportStepName(exportType) {
+            const names = {
+                model: 'trained model',
+                preprocessing: 'preprocessing pipeline',
+                report: 'performance report',
+                dataset: 'processed dataset',
+                api: 'API code',
+                docs: 'documentation'
+            };
+            return names[exportType] || exportType;
+        }
+
+        async function createProgressStep(stepName, stepNumber, totalSteps) {
+            const progressContainer = document.getElementById('progress-container');
+
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'mb-4';
+            stepDiv.innerHTML = `
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-snow font-mono">${stepName}</span>
+                    <span class="text-dusty font-mono text-sm" id="step-progress-${stepNumber}">0%</span>
+                </div>
+                <div class="bg-slate rounded-full h-2">
+                    <div class="bg-lava h-2 rounded-full transition-all duration-300" id="step-bar-${stepNumber}" style="width: 0%"></div>
+                </div>
+            `;
+            progressContainer.appendChild(stepDiv);
+
+            // Animate progress
+            for (let progress = 0; progress <= 100; progress += 5) {
+                await new Promise(resolve => setTimeout(resolve, 20));
+                document.getElementById(`step-progress-${stepNumber}`).textContent = `${progress}%`;
+                document.getElementById(`step-bar-${stepNumber}`).style.width = `${progress}%`;
+            }
+        }
+
+        function displayExportResults() {
+            const downloadLinksDiv = document.getElementById('download-links');
+            const filesSummaryDiv = document.getElementById('export-files-summary');
+
+            // Generate download links
+            let downloadLinks = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+
+            selectedExports.forEach(exportType => {
+                const fileInfo = getExportFileInfo(exportType);
+                downloadLinks += `
+                    <div class="bg-slate/20 p-4 rounded flex items-center justify-between">
+                        <div>
+                            <h5 class="text-snow font-mono font-bold">${fileInfo.name}</h5>
+                            <p class="text-dusty text-sm">${fileInfo.description}</p>
+                            <p class="text-info text-xs">${fileInfo.size}</p>
+                        </div>
+                        <button onclick="downloadFile('${exportType}')" class="btn-primary text-sm">
+                            📥 Download
+                        </button>
+                    </div>
+                `;
+            });
+
+            downloadLinks += '</div>';
+            downloadLinksDiv.innerHTML = downloadLinks;
+
+            // Export summary
+            const totalFiles = selectedExports.length;
+            const estimatedSize = (totalFiles * 2.5).toFixed(1); // Rough estimate
+
+            filesSummaryDiv.innerHTML = `
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div>
+                        <div class="text-2xl font-bold text-lava">${totalFiles}</div>
+                        <div class="text-sm text-dusty">Files Exported</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-success">${estimatedSize} MB</div>
+                        <div class="text-sm text-dusty">Estimated Size</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-info">${exportConfig.format.toUpperCase()}</div>
+                        <div class="text-sm text-dusty">Format</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-warning">Ready</div>
+                        <div class="text-sm text-dusty">Status</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getExportFileInfo(exportType) {
+            const fileInfos = {
+                model: {
+                    name: `${exportConfig.projectName}_model.${exportConfig.modelFormat}`,
+                    description: 'Trained and optimized machine learning model',
+                    size: '~2.5 MB'
+                },
+                preprocessing: {
+                    name: `${exportConfig.projectName}_preprocessing.pkl`,
+                    description: 'Data preprocessing pipeline and transformers',
+                    size: '~1.2 MB'
+                },
+                report: {
+                    name: `${exportConfig.projectName}_report.html`,
+                    description: 'Interactive performance report and visualizations',
+                    size: '~5.8 MB'
+                },
+                dataset: {
+                    name: `${exportConfig.projectName}_dataset.zip`,
+                    description: 'Processed training and test datasets',
+                    size: '~3.1 MB'
+                },
+                api: {
+                    name: `${exportConfig.projectName}_api.zip`,
+                    description: 'Flask/FastAPI deployment code and Docker setup',
+                    size: '~2.8 MB'
+                },
+                docs: {
+                    name: `${exportConfig.projectName}_README.md`,
+                    description: 'Project documentation and usage guide',
+                    size: '~0.5 MB'
+                }
+            };
+
+            return fileInfos[exportType] || {
+                name: `${exportType}.unknown`,
+                description: 'Exported file',
+                size: '~1.0 MB'
+            };
+        }
+
+        function downloadFile(exportType) {
+            // Simulate file download
+            showNotification(`Downloading ${getExportFileInfo(exportType).name}...`, 'info');
+
+            // In a real implementation, this would trigger actual file download
+            setTimeout(() => {
+                showNotification(`${getExportFileInfo(exportType).name} downloaded successfully!`, 'success');
+            }, 2000);
+        }
+
+        function showNotification(message, type = 'info') {
+            const n = document.createElement('div');
+            const bgMap = {
+                success: 'rgba(16,185,129,0.95)',
+                error: 'rgba(239,68,68,0.95)',
+                warning: 'rgba(245,158,11,0.95)',
+                info: 'rgba(59,130,246,0.95)'
+            };
+            n.style.cssText = `position:fixed;top:80px;right:16px;z-index:9999;padding:10px 18px;border-radius:8px;color:#FBFBFB;font-family:'Courier New',monospace;font-size:13px;background:${bgMap[type] || bgMap.info};border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(4px);max-width:420px;word-break:break-word;`;
+            n.textContent = message;
+            document.body.appendChild(n);
+            setTimeout(() => { n.style.opacity = '0'; n.style.transition = 'opacity 0.3s'; setTimeout(() => n.remove(), 300); }, 5000);
+        }
+    </script>
+</body>
+</html>

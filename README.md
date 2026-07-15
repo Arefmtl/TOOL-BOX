@@ -1,4 +1,4 @@
-# TOOL-BOX Repository
+<picture><source media="(prefers-color-scheme: dark)" srcset=".github/banner.svg"><img src=".github/banner.svg" alt="Banner" width="100%"></picture>\n\n# TOOL-BOX Repository
 
 A comprehensive machine learning and data science toolbox with **8 specialized modular tools**, API server, web interface, and example projects.
 

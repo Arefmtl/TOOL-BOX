@@ -31,6 +31,21 @@
             }
         }
     </script>
+<style>
+  *{transition:background-color .2s,border-color .2s,box-shadow .2s}
+  html{scroll-behavior:smooth}
+  .card,.card-hover{transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease}
+  .card:hover,.card-hover:hover{transform:translateY(-3px) scale(1.005);box-shadow:0 12px 32px rgba(17,46,129,.15)}
+  .btn,.btn-primary,.button{transition:transform .15s,box-shadow .2s,background .2s;cursor:pointer}
+  .btn:active,.btn-primary:active{transform:scale(.96)}
+  input,select,textarea{transition:border-color .2s,box-shadow .2s,transform .15s}
+  input:focus,select:focus,textarea:focus{border-color:#4382DF;box-shadow:0 0 0 3px rgba(67,130,223,.15);transform:translateY(-1px)}
+  .fade-in{animation:fadeUp .5s ease both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  ::-webkit-scrollbar{width:6px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px}
+</style>
     <style>
         body {
             background: #151419;
